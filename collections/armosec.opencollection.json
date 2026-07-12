@@ -1,0 +1,161 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ARMO Platform API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "apikey": {
+        "in": "header",
+        "key": "X-API-KEY",
+        "value": "{{apiKey}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Vulnerabilities", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Issue a vulnerability scan.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/vulnerability/scan", "body": { "type": "json", "data": "{}" } },
+          "docs": "Issues a vulnerability scan for a specific context or workload."
+        },
+        {
+          "info": { "name": "List vulnerabilities.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/vulnerabilities/list", "body": { "type": "json", "data": "{}" } },
+          "docs": "Retrieves a filtered, paginated list of vulnerabilities (CVEs)."
+        },
+        {
+          "info": { "name": "List vulnerabilities by image.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/vulnerabilities/images/list", "body": { "type": "json", "data": "{}" } },
+          "docs": "Retrieves vulnerabilities scoped to container images."
+        },
+        {
+          "info": { "name": "Get vulnerability scan summary.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/vulnerability/scanResults/summary", "body": { "type": "json", "data": "{}" } },
+          "docs": "Returns a summary of a vulnerability scan."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Posture and Compliance", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get posture frameworks summary.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/posture/frameworks", "body": { "type": "json", "data": "{}" } },
+          "docs": "Returns the scan summary for each compliance framework."
+        },
+        {
+          "info": { "name": "Get posture controls.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/posture/controls", "body": { "type": "json", "data": "{}" } },
+          "docs": "Returns the list of posture controls and their run results."
+        },
+        {
+          "info": { "name": "Get resources affected by posture issues.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/posture/resources", "body": { "type": "json", "data": "{}" } },
+          "docs": "Returns resources affected by posture issues."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Clusters and Workloads", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get clusters with history.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/clusters/overtime", "body": { "type": "json", "data": "{}" } },
+          "docs": "Returns the list of connected clusters with historical posture over time."
+        },
+        {
+          "info": { "name": "List workloads.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/workload/list", "body": { "type": "json", "data": "{}" } },
+          "docs": "Retrieves workloads with their vulnerability and posture context."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Runtime Incidents (CADR)", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List runtime incidents.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.armosec.io/api/v1/runtime/incidents" },
+          "docs": "Retrieves all runtime incidents detected by ARMO's runtime sensor."
+        },
+        {
+          "info": { "name": "Get incident alerts.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/runtime/incidents/:incidentGUID/alerts",
+            "params": [
+              { "name": "incidentGUID", "value": "", "type": "path", "description": "The GUID of the runtime incident." }
+            ]
+          },
+          "docs": "Retrieves alerts for a specific incident."
+        },
+        {
+          "info": { "name": "Resolve an incident.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/runtime/incidents/:incidentGUID/resolve",
+            "params": [
+              { "name": "incidentGUID", "value": "", "type": "path", "description": "The GUID of the runtime incident." }
+            ]
+          },
+          "docs": "Marks a runtime incident as resolved."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Security Risks and Attack Chains", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List security risks.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.armosec.io/api/v1/security/risks" },
+          "docs": "Retrieves the list of correlated security risks."
+        },
+        {
+          "info": { "name": "Get attack chains.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.armosec.io/api/v1/attack/chains" },
+          "docs": "Retrieves attack chains matching the provided filters."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Registry Scanning", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Issue a registry scan.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/registry/scan", "body": { "type": "json", "data": "{}" } },
+          "docs": "Issues a container registry scan or sets a scan scheduler (cron)."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Integrations", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Create a Jira issue.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/integrations/jira/issueV2", "body": { "type": "json", "data": "{}" } },
+          "docs": "Creates a Jira issue/ticket from an ARMO finding."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Access Keys", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List access keys.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.armosec.io/api/v1/authentication/accessKeys" },
+          "docs": "Retrieves all account access keys."
+        },
+        {
+          "info": { "name": "Create an access key.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.armosec.io/api/v1/authentication/accessKeys", "body": { "type": "json", "data": "{}" } },
+          "docs": "Creates a new account access key."
+        }
+      ]
+    }
+  ]
+}

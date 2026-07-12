@@ -1,0 +1,133 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: ARMO
+providerId: armosec
+created: '2026-07-11'
+modified: '2026-07-11'
+reconciled: false
+tags:
+- Kubernetes Security
+- Cloud Native Security
+- CNAPP
+- Vulnerability Management
+- Plans
+description: >-
+  ARMO offers a free tier to start and paid tiers quoted on the size of the
+  cloud-native environment. ARMO states its pricing model depends on factors
+  specific to your environment - primarily the number of vCPUs and other cloud
+  resources - plus the chosen support tier; on-premises and air-gapped
+  installations carry additional setup and integration fees. The underlying
+  scanning engine, Kubescape, is fully open source (Apache 2.0, CNCF) and free to
+  self-host. Named tier structures and exact per-vCPU rates are not published on
+  ARMO's site; the tiers below are modeled as free / paid (usage-based on vCPU) /
+  enterprise and are not reconciled to public dollar figures.
+notes: >-
+  ARMO does not publish exact per-vCPU dollar amounts. Verify current tiers,
+  vCPU-based pricing, support tiers, and on-prem fees on the ARMO pricing page or
+  via a sales quote during reconciliation. The API itself carries no separate fee
+  beyond the platform subscription.
+sources:
+- https://www.armosec.io/pricing/
+- https://www.armosec.io/kubescape/
+- https://aws.amazon.com/marketplace/pp/prodview-heui7qoubkypq
+- https://github.com/kubescape/kubescape
+plans:
+- id: armosec-kubescape-open-source
+  name: Kubescape (Open Source)
+  type: free
+  description: >-
+    The open-source Kubescape CLI and in-cluster operator (Apache 2.0, CNCF),
+    free to self-host. Provides posture scanning against frameworks, image
+    vulnerability scanning, and an eBPF runtime sensor, without the managed ARMO
+    Platform backend, dashboards, or the hosted API.
+  entries:
+  - label: Self-Hosted Usage
+    name: self_hosted_usage
+    type: usage
+    metric: clusters
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: free (self-hosted; you provide infrastructure)
+    userMultiplied: false
+  elements:
+  - name: Posture and Compliance Scanning
+  - name: Image Vulnerability Scanning
+  - name: eBPF Runtime Sensor
+  - name: Open Source (Apache 2.0)
+- id: armosec-free
+  name: ARMO Platform - Free
+  type: free
+  description: >-
+    Free tier of the managed ARMO Platform to get started, including the hosted
+    dashboards and the documented REST API against a connected environment.
+    Bounded by the free-tier scope; start free without a sales call.
+  entries:
+  - label: Included Environment
+    name: free_environment
+    type: usage
+    metric: vcpu
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0 within the free-tier scope
+    userMultiplied: false
+  elements:
+  - name: Managed ARMO Platform
+  - name: KSPM and Compliance
+  - name: Vulnerability Scanning
+  - name: REST API Access
+- id: armosec-paid
+  name: ARMO Platform - Paid (vCPU-Based)
+  type: usage
+  description: >-
+    Managed ARMO Platform billed on the size of the environment - primarily the
+    number of protected vCPUs and cloud resources - plus the selected support
+    tier. Adds full runtime CADR, security-risk correlation, attack chains,
+    network/seccomp policy generation, and integrations.
+  entries:
+  - label: Protected vCPUs
+    name: protected_vcpu
+    type: usage
+    metric: vcpu
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: usage-based per vCPU (contact ARMO for a quote)
+    userMultiplied: false
+  elements:
+  - name: Runtime CADR
+  - name: Security Risks and Attack Chains
+  - name: Network and Seccomp Policy Generation
+  - name: Integrations (Jira, Notifications)
+  - name: Support Tier
+- id: armosec-enterprise
+  name: Enterprise / On-Premises
+  type: enterprise
+  description: >-
+    Custom enterprise agreements including on-premises and air-gapped
+    installations (which carry additional setup and integration fees), higher
+    support tiers, SSO, and negotiated terms. Contact ARMO sales.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: On-Premises / Air-Gapped
+  - name: Custom Volume Pricing
+  - name: SLAs and Premium Support
+  - name: SSO and Governance
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

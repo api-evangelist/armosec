@@ -1,0 +1,96 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: ARMO
+providerId: armosec
+created: '2026-07-11'
+modified: '2026-07-11'
+reconciled: false
+tags:
+- Kubernetes Security
+- Cloud Native Security
+- CNAPP
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of ARMO spend. ARMO Platform is a managed SaaS billed primarily on
+  the size of the protected environment - the number of vCPUs and cloud resources
+  - plus a chosen support tier, with a free tier to start and additional setup /
+  integration fees for on-premises and air-gapped installations. The dominant
+  cost driver is the count of protected vCPUs across connected Kubernetes
+  clusters. The underlying Kubescape engine is open source and free to self-host,
+  trading the subscription fee for your own infrastructure and operational cost.
+notes: >-
+  Per-vCPU rates are not published by ARMO; verify via the pricing page or a
+  sales quote. For self-hosted Kubescape, the dominant costs are the compute and
+  operational overhead of running the operator and sensors rather than an ARMO
+  license fee.
+sources:
+- https://www.armosec.io/pricing/
+- https://www.armosec.io/kubescape/
+- https://github.com/kubescape/kubescape
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: ARMO
+serviceCategory: Security
+billingModel:
+  pricingCategory: Usage-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+  - Adjustment
+focusColumns:
+  ServiceName: ARMO Platform
+  ServiceCategory: Security
+  ProviderName: ARMO
+  PublisherName: ARMO
+  InvoiceIssuerName: ARMO
+  BillingCurrency: USD
+  ChargeCategory: Usage
+  PricingCategory: Usage-Based
+meters:
+- name: protected_vcpu
+  description: Number of protected vCPUs across connected Kubernetes clusters; the primary ARMO Platform billing driver.
+  unit: vcpu
+  aggregation: max
+  dimensions:
+  - account
+  - cluster
+- name: support_tier
+  description: Selected support tier, which adjusts the subscription cost.
+  unit: tier
+  aggregation: max
+  dimensions:
+  - account
+- name: onprem_setup
+  description: One-time setup and integration fees for on-premises / air-gapped installations.
+  unit: fee
+  aggregation: sum
+  dimensions:
+  - account
+- name: self_hosted_compute
+  description: Infrastructure cost of running open-source Kubescape yourself (no ARMO invoice).
+  unit: hours
+  aggregation: sum
+  dimensions:
+  - deployment
+principles:
+- name: Visibility
+  description: Track protected vCPU counts per cluster; monitor how scanning scope maps to the subscription driver.
+- name: Allocation
+  description: Map clusters and workloads to teams so security spend is attributable to internal cost centers.
+- name: Optimization
+  description: Right-size protected scope; use exceptions to suppress accepted risks; self-host Kubescape where the vCPU-based subscription outweighs owned infrastructure cost.
+- name: Accountability
+  description: Assign owners per cluster; review vCPU-based spend and support tier against budget periodically.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

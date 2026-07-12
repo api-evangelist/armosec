@@ -1,0 +1,277 @@
+aid: armosec
+url: https://raw.githubusercontent.com/api-evangelist/armosec/refs/heads/main/apis.yml
+name: ARMO
+kind: company
+description: ARMO is the cloud-native and Kubernetes security company behind the
+  leading open-source project Kubescape. ARMO Platform is a runtime-driven CNAPP
+  that unifies Kubernetes Security Posture Management (KSPM), vulnerability and
+  image scanning, compliance frameworks, network and seccomp policy generation,
+  and runtime Cloud Application Detection and Response (CADR) - correlating
+  runtime behavior with posture and vulnerabilities to cut alert noise. ARMO
+  exposes a documented REST API over HTTPS (base https://api.armosec.io/api/v1 in
+  the EU region and https://api.us.armosec.io/api/v1 in the US region),
+  authenticated with an account access key sent in the X-API-KEY header. The API
+  covers clusters, workloads, vulnerabilities, posture and compliance, security
+  risks, runtime incidents, attack chains, network and runtime policies, registry
+  scanning, and integrations. API access is available to platform customers who
+  have generated an Agent Access Key; the endpoints below are documented but the
+  data returned requires a connected account and clusters.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Kubernetes Security
+- Cloud Native Security
+- CNAPP
+- DevSecOps
+- KSPM
+- Vulnerability Management
+- Compliance
+- Runtime Security
+- CADR
+- Kubescape
+- Container Security
+created: '2026-07-11'
+modified: '2026-07-11'
+specificationVersion: '0.19'
+apis:
+- aid: armosec:armosec-vulnerabilities-api
+  name: ARMO Vulnerabilities API
+  tags:
+  - Vulnerabilities
+  - CVE
+  - Image Scanning
+  - Kubernetes Security
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  properties:
+  - url: https://hub.armosec.io/docs/armo-swagger-api
+    type: Documentation
+  - url: https://api.armosec.io/openapi/v2/swaggerui
+    type: APIReference
+  - url: openapi/armosec-openapi.yml
+    type: OpenAPI
+  - url: collections/armosec.postman_collection.json
+    type: PostmanCollection
+  - url: collections/armosec.opencollection.json
+    type: OpenCollection
+  description: Query image and workload vulnerabilities discovered by ARMO. Issue
+    scans for a workload or context, retrieve scan result summaries and details,
+    severity roll-ups, top vulnerabilities, and vulnerability lists scoped by
+    component or image, and manage vulnerability exceptions.
+- aid: armosec:armosec-posture-compliance-api
+  name: ARMO Posture and Compliance API
+  tags:
+  - Compliance
+  - KSPM
+  - Posture
+  - Cloud Native Security
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  properties:
+  - url: https://hub.armosec.io/docs/armo-swagger-api
+    type: Documentation
+  - url: https://api.armosec.io/openapi/v2/swaggerui
+    type: APIReference
+  - url: openapi/armosec-openapi.yml
+    type: OpenAPI
+  - url: collections/armosec.postman_collection.json
+    type: PostmanCollection
+  - url: collections/armosec.opencollection.json
+    type: OpenCollection
+  description: Kubernetes Security Posture Management (KSPM) results across
+    compliance frameworks. Get per-framework scan summaries, control run results
+    and framework sections, affected resources, repository (IaC) posture reports,
+    and manage posture exceptions.
+- aid: armosec:armosec-clusters-workloads-api
+  name: ARMO Clusters and Workloads API
+  tags:
+  - Clusters
+  - Workloads
+  - Kubernetes Security
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  properties:
+  - url: https://hub.armosec.io/docs/workloads
+    type: Documentation
+  - url: https://api.armosec.io/openapi/v2/swaggerui
+    type: APIReference
+  - url: openapi/armosec-openapi.yml
+    type: OpenAPI
+  - url: collections/armosec.postman_collection.json
+    type: PostmanCollection
+  - url: collections/armosec.opencollection.json
+    type: OpenCollection
+  description: Inventory of connected Kubernetes clusters and workloads. Retrieve
+    the cluster list with history over time, list workloads with their
+    vulnerability and posture context, and check customer onboarding and scan
+    report state.
+- aid: armosec:armosec-runtime-incidents-api
+  name: ARMO Runtime Incidents API
+  tags:
+  - Runtime Security
+  - CADR
+  - Threat Detection
+  - Incidents
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  properties:
+  - url: https://hub.armosec.io/docs/armo-swagger-api
+    type: Documentation
+  - url: https://api.armosec.io/openapi/v2/swaggerui
+    type: APIReference
+  - url: openapi/armosec-openapi.yml
+    type: OpenAPI
+  - url: collections/armosec.postman_collection.json
+    type: PostmanCollection
+  - url: collections/armosec.opencollection.json
+    type: OpenCollection
+  description: Runtime Cloud Application Detection and Response (CADR). List runtime
+    incidents and their alerts, get an incident explanation, resolve or unresolve
+    incidents, and get incidents grouped by severity - built on ARMO's eBPF
+    runtime sensor.
+- aid: armosec:armosec-security-risks-api
+  name: ARMO Security Risks and Attack Chains API
+  tags:
+  - Security Risks
+  - Attack Path
+  - CNAPP
+  - Cloud Native Security
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  properties:
+  - url: https://hub.armosec.io/docs/armo-swagger-api
+    type: Documentation
+  - url: https://api.armosec.io/openapi/v2/swaggerui
+    type: APIReference
+  - url: openapi/armosec-openapi.yml
+    type: OpenAPI
+  - url: collections/armosec.postman_collection.json
+    type: PostmanCollection
+  - url: collections/armosec.opencollection.json
+    type: OpenCollection
+  description: Prioritized, correlated security risks and attack chains. List
+    security risks, the resources associated with them, and severity summaries,
+    and retrieve attack chains that combine posture, vulnerability, and runtime
+    signals into exploitable paths.
+- aid: armosec:armosec-network-runtime-policies-api
+  name: ARMO Network and Runtime Policies API
+  tags:
+  - Network Policies
+  - Seccomp
+  - Runtime Policies
+  - DevSecOps
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  properties:
+  - url: https://hub.armosec.io/docs/armo-swagger-api
+    type: Documentation
+  - url: https://api.armosec.io/openapi/v2/swaggerui
+    type: APIReference
+  - url: openapi/armosec-openapi.yml
+    type: OpenAPI
+  - url: collections/armosec.postman_collection.json
+    type: PostmanCollection
+  - url: collections/armosec.opencollection.json
+    type: OpenCollection
+  description: Generate and manage hardening policies from observed runtime
+    behavior. Retrieve and generate Kubernetes network policies, generate and list
+    seccomp profiles, and create runtime policies and their exceptions.
+- aid: armosec:armosec-registry-scanning-api
+  name: ARMO Registry Scanning API
+  tags:
+  - Registry
+  - Image Scanning
+  - Container Security
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  properties:
+  - url: https://hub.armosec.io/docs/armo-swagger-api
+    type: Documentation
+  - url: https://api.armosec.io/openapi/v2/swaggerui
+    type: APIReference
+  - url: openapi/armosec-openapi.yml
+    type: OpenAPI
+  - url: collections/armosec.postman_collection.json
+    type: PostmanCollection
+  - url: collections/armosec.opencollection.json
+    type: OpenCollection
+  description: Scan container image registries on demand or on a schedule. Issue a
+    registry scan or set a scan scheduler (cron), and update or delete the
+    registry scan cron job.
+- aid: armosec:armosec-integrations-api
+  name: ARMO Integrations API
+  tags:
+  - Integrations
+  - Jira
+  - Notifications
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://hub.armosec.io/reference/createjiraissue
+  baseURL: https://api.armosec.io/api/v1
+  properties:
+  - url: https://hub.armosec.io/docs/armo-swagger-api
+    type: Documentation
+  - url: https://api.armosec.io/openapi/v2/swaggerui
+    type: APIReference
+  - url: openapi/armosec-openapi.yml
+    type: OpenAPI
+  - url: collections/armosec.postman_collection.json
+    type: PostmanCollection
+  - url: collections/armosec.opencollection.json
+    type: OpenCollection
+  description: Push ARMO findings into ticketing and collaboration tools. Configure
+    Jira, look up projects, issue types, field schemas and values, create Jira
+    issues from findings, and manage collaboration/notification configurations and
+    sharing.
+- aid: armosec:armosec-access-keys-api
+  name: ARMO Access Keys API
+  tags:
+  - Authentication
+  - Access Keys
+  - Account
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  properties:
+  - url: https://hub.armosec.io/docs/armo-swagger-api
+    type: Documentation
+  - url: https://api.armosec.io/openapi/v2/swaggerui
+    type: APIReference
+  - url: openapi/armosec-openapi.yml
+    type: OpenAPI
+  - url: collections/armosec.postman_collection.json
+    type: PostmanCollection
+  - url: collections/armosec.opencollection.json
+    type: OpenCollection
+  description: Programmatically manage the Agent Access Keys used to authenticate
+    API calls. List, create, get by GUID, update, and delete access keys for your
+    account.
+common:
+- type: DomainSecurity
+  url: security/armosec-domain-security.yml
+- type: Authentication
+  url: authentication/armosec-authentication.yml
+- type: GitHubOrganization
+  url: https://github.com/armosec
+- type: LinkedIn
+  url: https://www.linkedin.com/company/armosec
+- type: Website
+  url: https://www.armosec.io/
+- type: Documentation
+  url: https://hub.armosec.io/docs/armo-platform
+- type: Plans
+  url: plans/armosec-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/armosec-rate-limits.yml
+- type: FinOps
+  url: finops/armosec-finops.yml
+- url: https://www.armosec.io/blog/
+  type: Blog
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

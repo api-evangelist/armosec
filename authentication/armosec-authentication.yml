@@ -1,0 +1,20 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/armosec-openapi.yml
+summary:
+  types:
+  - apiKey
+schemes:
+- name: apiKeyAuth
+  type: apiKey
+  in: header
+  parameterName: X-API-KEY
+  description: >-
+    ARMO Platform authenticates API calls with an account access key (Agent
+    Access Key) generated in the platform under Settings > Agent Access Keys.
+    The key is sent in the X-API-KEY request header. A session-cookie / OAuth2
+    (OpenID) login flow also exists for the web console, but access keys are the
+    preferred way to authenticate programmatic API calls.
+  sources:
+  - openapi/armosec-openapi.yml
+  - https://hub.armosec.io/docs/armo-swagger-api

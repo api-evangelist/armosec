@@ -1,0 +1,54 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: ARMO
+providerId: armosec
+created: '2026-07-11'
+modified: '2026-07-11'
+reconciled: false
+tags:
+- Kubernetes Security
+- Cloud Native Security
+- Rate Limiting
+- Quotas
+description: >-
+  ARMO does not publish fixed numeric rate limits for the ARMO Platform API.
+  Access is gated by an account access key (X-API-KEY), and practical throughput
+  is bounded by the size of your subscription (vCPU-based) and the scanning
+  cadence of your connected clusters, registries, and repositories rather than by
+  a documented per-minute request cap. Callers should implement retry with
+  exponential backoff and honor 429 responses if throttled.
+notes: >-
+  Numeric per-account or per-endpoint API limits are not documented as of the
+  review date. Verify any published limits in the ARMO API reference / Swagger
+  during reconciliation.
+sources:
+- https://hub.armosec.io/docs/armo-swagger-api
+- https://api.armosec.io/openapi/v2/swaggerui
+- https://hub.armosec.io/reference
+responseCodes:
+  throttled: 429
+limits:
+- name: Platform API Requests
+  scope: account
+  metric: requests
+  limit: not published
+  notes: No fixed numeric request-rate limit is documented for the ARMO Platform API.
+- name: Access Key Scope
+  scope: account
+  metric: keys
+  limit: per account
+  notes: API calls require an Agent Access Key; keys are managed under Settings and via the Access Keys API.
+- name: Scan Cadence
+  scope: cluster
+  metric: scans
+  limit: configurable
+  notes: Posture and image scans run on the operator's schedule; registry scans can be cron-scheduled via the API.
+policies:
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor Retry-After on 429 responses.
+- name: Regional Endpoints
+  description: Use the correct regional base URL (api.armosec.io for EU, api.us.armosec.io for US) for your tenant to avoid cross-region errors.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

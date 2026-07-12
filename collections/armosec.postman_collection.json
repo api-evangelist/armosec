@@ -1,0 +1,215 @@
+{
+  "info": {
+    "name": "ARMO Platform API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "ARMO Platform cloud-native / Kubernetes security API. Auth via the X-API-KEY header with an account access key. EU base https://api.armosec.io/api/v1; US base https://api.us.armosec.io/api/v1."
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      { "key": "in", "value": "header", "type": "string" },
+      { "key": "key", "value": "X-API-KEY", "type": "string" },
+      { "key": "value", "value": "{{apiKey}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.armosec.io/api/v1" },
+    { "key": "apiKey", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Vulnerabilities",
+      "item": [
+        {
+          "name": "Issue a vulnerability scan",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/vulnerability/scan", "host": [ "{{baseUrl}}" ], "path": [ "vulnerability", "scan" ] },
+            "description": "Issues a vulnerability scan for a specific context or workload."
+          }
+        },
+        {
+          "name": "List vulnerabilities",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/vulnerabilities/list", "host": [ "{{baseUrl}}" ], "path": [ "vulnerabilities", "list" ] },
+            "description": "Retrieves a filtered, paginated list of vulnerabilities (CVEs)."
+          }
+        },
+        {
+          "name": "List vulnerabilities by image",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/vulnerabilities/images/list", "host": [ "{{baseUrl}}" ], "path": [ "vulnerabilities", "images", "list" ] },
+            "description": "Retrieves vulnerabilities scoped to container images."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Posture and Compliance",
+      "item": [
+        {
+          "name": "Get posture frameworks summary",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/posture/frameworks", "host": [ "{{baseUrl}}" ], "path": [ "posture", "frameworks" ] },
+            "description": "Returns the scan summary for each compliance framework."
+          }
+        },
+        {
+          "name": "Get posture controls",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/posture/controls", "host": [ "{{baseUrl}}" ], "path": [ "posture", "controls" ] },
+            "description": "Returns the list of posture controls and their run results."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clusters and Workloads",
+      "item": [
+        {
+          "name": "Get clusters with history",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/clusters/overtime", "host": [ "{{baseUrl}}" ], "path": [ "clusters", "overtime" ] },
+            "description": "Returns the list of connected clusters with historical posture over time."
+          }
+        },
+        {
+          "name": "List workloads",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/workload/list", "host": [ "{{baseUrl}}" ], "path": [ "workload", "list" ] },
+            "description": "Retrieves workloads with their vulnerability and posture context."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Runtime Incidents (CADR)",
+      "item": [
+        {
+          "name": "List runtime incidents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/runtime/incidents", "host": [ "{{baseUrl}}" ], "path": [ "runtime", "incidents" ] },
+            "description": "Retrieves all runtime incidents detected by ARMO's runtime sensor."
+          }
+        },
+        {
+          "name": "Get incident alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/runtime/incidents/:incidentGUID/alerts", "host": [ "{{baseUrl}}" ], "path": [ "runtime", "incidents", ":incidentGUID", "alerts" ], "variable": [ { "key": "incidentGUID", "value": "" } ] },
+            "description": "Retrieves alerts for a specific incident."
+          }
+        },
+        {
+          "name": "Resolve an incident",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/runtime/incidents/:incidentGUID/resolve", "host": [ "{{baseUrl}}" ], "path": [ "runtime", "incidents", ":incidentGUID", "resolve" ], "variable": [ { "key": "incidentGUID", "value": "" } ] },
+            "description": "Marks a runtime incident as resolved."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Security Risks and Attack Chains",
+      "item": [
+        {
+          "name": "List security risks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/security/risks", "host": [ "{{baseUrl}}" ], "path": [ "security", "risks" ] },
+            "description": "Retrieves the list of correlated security risks."
+          }
+        },
+        {
+          "name": "Get attack chains",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/attack/chains", "host": [ "{{baseUrl}}" ], "path": [ "attack", "chains" ] },
+            "description": "Retrieves attack chains matching the provided filters."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Registry Scanning",
+      "item": [
+        {
+          "name": "Issue a registry scan",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/registry/scan", "host": [ "{{baseUrl}}" ], "path": [ "registry", "scan" ] },
+            "description": "Issues a container registry scan or sets a scan scheduler (cron)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Integrations",
+      "item": [
+        {
+          "name": "Create a Jira issue",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/integrations/jira/issueV2", "host": [ "{{baseUrl}}" ], "path": [ "integrations", "jira", "issueV2" ] },
+            "description": "Creates a Jira issue/ticket from an ARMO finding."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Access Keys",
+      "item": [
+        {
+          "name": "List access keys",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/authentication/accessKeys", "host": [ "{{baseUrl}}" ], "path": [ "authentication", "accessKeys" ] },
+            "description": "Retrieves all account access keys."
+          }
+        },
+        {
+          "name": "Create an access key",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/authentication/accessKeys", "host": [ "{{baseUrl}}" ], "path": [ "authentication", "accessKeys" ] },
+            "description": "Creates a new account access key."
+          }
+        }
+      ]
+    }
+  ]
+}

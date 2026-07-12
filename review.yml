@@ -1,0 +1,128 @@
+aid: armosec
+name: ARMO
+review:
+  question: Does ARMO expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-11'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. ARMO Platform's documented public API is
+    request/response REST over HTTPS (base https://api.armosec.io/api/v1 in the
+    EU region, https://api.us.armosec.io/api/v1 in the US region), authenticated
+    with an account access key in the X-API-KEY header. ARMO's real-time signal -
+    runtime detection - is produced inside the cluster by an eBPF-based node
+    sensor (the Kubescape/ARMO operator) that streams telemetry to the ARMO
+    backend; that in-cluster path is not a customer-facing WebSocket. Consumers
+    read runtime incidents and alerts by polling the REST endpoints
+    (GET /runtime/incidents and related), so there is no server-push transport
+    (WebSocket or SSE) on ARMO's own public API to model.
+findings:
+  summary: |
+    ARMO does not publish a documented public WebSocket API. ARMO is the
+    cloud-native / Kubernetes security company behind the open-source Kubescape
+    project; ARMO Platform is a runtime-driven CNAPP. Its documented public API
+    is REST over HTTPS with a regional base URL (api.armosec.io /
+    api.us.armosec.io, path prefix /api/v1) and an interactive Swagger/RapiDoc/
+    ReDoc UI at /openapi/v2. Authentication is an account access key (Agent
+    Access Key) sent in the X-API-KEY header; a session-cookie/OAuth2 login flow
+    also exists for the console. Every documented resource - vulnerabilities,
+    posture/compliance, clusters, workloads, security risks, attack chains,
+    runtime incidents, network/seccomp/runtime policies, registry scans, and
+    integrations - is accessed via REST GET/POST/PUT/DELETE. No realtime,
+    bidirectional, or streaming WebSocket (ws:// or wss://) endpoint is documented
+    anywhere in ARMO's public API reference as of the review date.
+  accessModel: |
+    The API surface and its OpenAPI/Swagger are publicly documented, but the API
+    is operationally account-gated: calls require an account access key generated
+    in ARMO Platform, and meaningful data requires a connected account with
+    reporting Kubernetes clusters (via the Kubescape/ARMO Helm-deployed operator)
+    or connected registries/repositories. There is no anonymous public data
+    endpoint.
+  openSource: |
+    ARMO's core scanning engine is the open-source Kubescape project
+    (github.com/kubescape/kubescape, a CNCF sandbox project) plus supporting
+    open-source components (node-agent eBPF sensor, storage, operator). ARMO
+    Platform is the managed/enterprise SaaS built on top, and is what the
+    documented REST API belongs to.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.armosec.io/api/v1
+      documented: true
+      note: EU region. US region base is https://api.us.armosec.io/api/v1. Auth via X-API-KEY header.
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.armosec.io/openapi/v2
+      documented: true
+      note: Interactive API docs - /swaggerui (Swagger UI), /rapi (RapiDoc), /docs (ReDoc).
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented anywhere in ARMO's public API reference as of the review date.
+  endpointsConfirmedRest:
+    - POST   https://api.armosec.io/api/v1/vulnerability/scan
+    - POST   https://api.armosec.io/api/v1/vulnerability/scanResults/summary
+    - POST   https://api.armosec.io/api/v1/vulnerability/scanResults/details
+    - POST   https://api.armosec.io/api/v1/vulnerability/severity
+    - POST   https://api.armosec.io/api/v1/vulnerability/topVulnerabilities
+    - POST   https://api.armosec.io/api/v1/vulnerabilities/list
+    - POST   https://api.armosec.io/api/v1/vulnerabilities/components/list
+    - POST   https://api.armosec.io/api/v1/vulnerabilities/images/list
+    - POST   https://api.armosec.io/api/v1/workload/list
+    - POST   https://api.armosec.io/api/v1/posture/frameworks
+    - POST   https://api.armosec.io/api/v1/posture/controls
+    - POST   https://api.armosec.io/api/v1/posture/controls/sections
+    - POST   https://api.armosec.io/api/v1/posture/resources
+    - GET    https://api.armosec.io/api/v1/posture/exception
+    - POST   https://api.armosec.io/api/v1/posture/exception
+    - POST   https://api.armosec.io/api/v1/repositoryPosture/repositories
+    - POST   https://api.armosec.io/api/v1/repositoryPosture/failedControls
+    - POST   https://api.armosec.io/api/v1/clusters/overtime
+    - GET    https://api.armosec.io/api/v1/security/risks
+    - GET    https://api.armosec.io/api/v1/security/risks/resources
+    - GET    https://api.armosec.io/api/v1/security/risks/severities
+    - GET    https://api.armosec.io/api/v1/attack/chains
+    - GET    https://api.armosec.io/api/v1/runtime/incidents
+    - GET    https://api.armosec.io/api/v1/runtime/incidents/severity
+    - GET    https://api.armosec.io/api/v1/runtime/incidents/{incidentGUID}/alerts
+    - POST   https://api.armosec.io/api/v1/runtime/incidents/{incidentGUID}/explain
+    - POST   https://api.armosec.io/api/v1/runtime/incidents/{incidentGUID}/resolve
+    - POST   https://api.armosec.io/api/v1/runtime/incidents/{incidentGUID}/unresolve
+    - GET    https://api.armosec.io/api/v1/network/policies
+    - POST   https://api.armosec.io/api/v1/network/policies/generate
+    - GET    https://api.armosec.io/api/v1/runtime/seccomp/list
+    - POST   https://api.armosec.io/api/v1/runtime/seccomp/generate
+    - POST   https://api.armosec.io/api/v1/runtime/policy/create
+    - POST   https://api.armosec.io/api/v1/runtime/policy/exception/create
+    - POST   https://api.armosec.io/api/v1/registry/scan
+    - POST   https://api.armosec.io/api/v1/integrations/jira/issueV2
+    - GET    https://api.armosec.io/api/v1/authentication/accessKeys
+    - POST   https://api.armosec.io/api/v1/authentication/accessKeys
+sources:
+  - url: https://hub.armosec.io/docs/armo-swagger-api
+    type: Documentation
+    note: API overview - X-API-KEY auth, regional base URLs, Swagger/RapiDoc/ReDoc UIs at /openapi/v2.
+  - url: https://api.armosec.io/openapi/v2/swaggerui
+    type: APIReference
+    note: Interactive Swagger UI for the ARMO Platform API (EU). US at api.us.armosec.io.
+  - url: https://hub.armosec.io/reference
+    type: APIReference
+    note: API reference index - all documented REST resources and methods.
+  - url: https://hub.armosec.io/reference/createjiraissue
+    type: APIReference
+    note: Confirms base path /api/v1; example POST /api/v1/integrations/jira/issueV2.
+  - url: https://hub.armosec.io/reference/customer-api
+    type: Documentation
+    note: Customer API entry point and llms.txt index for AI agents.
+  - url: https://github.com/armosec
+    type: SourceCode
+    note: ARMO GitHub org; core engine is the open-source Kubescape project (github.com/kubescape).
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. ARMO Platform's documented public API is
+    request/response REST (base /api/v1, X-API-KEY auth). Runtime detection is
+    produced by an in-cluster eBPF sensor and read back over REST polling, not a
+    customer-facing WebSocket, so no AsyncAPI document was created.

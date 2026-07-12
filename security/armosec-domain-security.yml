@@ -1,0 +1,27 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + API hosts
+hosts:
+- host: www.armosec.io
+  https: true
+  hsts: false
+- host: armosec.io
+  https: true
+  hsts: false
+- host: api.armosec.io
+  https: true
+  hsts: true
+  hsts_max_age: 31536000
+  hsts_include_subdomains: true
+- host: hub.armosec.io
+  https: true
+  hsts: true
+  hsts_max_age: 31536000
+domains:
+- domain: armosec.io
+  dnssec: false
+  caa: []
+  spf: true
+  spf_record: 'v=spf1 include:spf.protection.outlook.com include:_spf.google.com include:5882526.spf04.hubspotemail.net ~all'
+  dmarc: true
+  dmarc_policy: quarantine
