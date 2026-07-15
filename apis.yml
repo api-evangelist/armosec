@@ -252,6 +252,8 @@ apis:
     API calls. List, create, get by GUID, update, and delete access keys for your
     account.
 common:
+- type: AgenticAccess
+  url: agentic-access/armosec-agentic-access.yml
 - type: DomainSecurity
   url: security/armosec-domain-security.yml
 - type: Authentication
