@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: ARMO Platform Access Keys API
+  description: 'The ARMO Platform API exposes ARMO''s cloud-native and Kubernetes security data over REST. ARMO is the company behind the open-source Kubescape project; ARMO Platform is a runtime-driven CNAPP covering Kubernetes Security Posture Management (KSPM), vulnerability and image scanning, compliance frameworks, network and seccomp policy generation, security-risk correlation, attack chains, and runtime Cloud Application Detection and Response (CADR).
+
+    Authentication uses an account access key (Agent Access Key) generated in the ARMO Platform under Settings, sent in the `X-API-KEY` request header. Requests are made against the regional base URL - `https://api.armosec.io/api/v1` for the EU region or `https://api.us.armosec.io/api/v1` for the US region.
+
+    This description is honestly modeled from ARMO''s public API reference and OpenAPI/Swagger documentation. Paths and methods reflect the documented reference; request and response schemas are simplified and returned data requires a connected ARMO account with reporting clusters. Verify exact payloads against the live Swagger UI at https://api.armosec.io/openapi/v2/swaggerui.'
+  version: '1.0'
+  contact:
+    name: ARMO
+    url: https://www.armosec.io
+  license:
+    name: ARMO Platform Terms
+    url: https://www.armosec.io/terms-of-service/
+servers:
+- url: https://api.armosec.io/api/v1
+  description: EU region
+- url: https://api.us.armosec.io/api/v1
+  description: US region
+security:
+- apiKeyAuth: []
+tags:
+- name: Access Keys
+  description: Account API access key management.
+paths:
+  /authentication/accessKeys:
+    get:
+      operationId: listAccessKeys
+      tags:
+      - Access Keys
+      summary: List access keys
+      responses:
+        '200':
+          description: A list of access keys.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createAccessKey
+      tags:
+      - Access Keys
+      summary: Create an access key
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Created access key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: updateAccessKey
+      tags:
+      - Access Keys
+      summary: Update an access key
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /authentication/accessKeys/{guid}:
+    parameters:
+    - name: guid
+      in: path
+      required: true
+      description: The GUID of the access key.
+      schema:
+        type: string
+    get:
+      operationId: getAccessKey
+      tags:
+      - Access Keys
+      summary: Get an access key by GUID
+      responses:
+        '200':
+          description: The access key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteAccessKey
+      tags:
+      - Access Keys
+      summary: Delete an access key
+      responses:
+        '200':
+          description: Deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    GenericResponse:
+      type: object
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    ListResponse:
+      type: object
+      properties:
+        total:
+          type: object
+          properties:
+            value:
+              type: integer
+        response:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+  responses:
+    Unauthorized:
+      description: Missing or invalid X-API-KEY.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  requestBodies:
+    GenericBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: Account access key (Agent Access Key) generated in ARMO Platform under Settings, sent in the X-API-KEY header.

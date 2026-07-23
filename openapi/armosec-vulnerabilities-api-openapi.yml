@@ -1,0 +1,308 @@
+openapi: 3.0.3
+info:
+  title: ARMO Platform Access Keys Vulnerabilities API
+  description: 'The ARMO Platform API exposes ARMO''s cloud-native and Kubernetes security data over REST. ARMO is the company behind the open-source Kubescape project; ARMO Platform is a runtime-driven CNAPP covering Kubernetes Security Posture Management (KSPM), vulnerability and image scanning, compliance frameworks, network and seccomp policy generation, security-risk correlation, attack chains, and runtime Cloud Application Detection and Response (CADR).
+
+    Authentication uses an account access key (Agent Access Key) generated in the ARMO Platform under Settings, sent in the `X-API-KEY` request header. Requests are made against the regional base URL - `https://api.armosec.io/api/v1` for the EU region or `https://api.us.armosec.io/api/v1` for the US region.
+
+    This description is honestly modeled from ARMO''s public API reference and OpenAPI/Swagger documentation. Paths and methods reflect the documented reference; request and response schemas are simplified and returned data requires a connected ARMO account with reporting clusters. Verify exact payloads against the live Swagger UI at https://api.armosec.io/openapi/v2/swaggerui.'
+  version: '1.0'
+  contact:
+    name: ARMO
+    url: https://www.armosec.io
+  license:
+    name: ARMO Platform Terms
+    url: https://www.armosec.io/terms-of-service/
+servers:
+- url: https://api.armosec.io/api/v1
+  description: EU region
+- url: https://api.us.armosec.io/api/v1
+  description: US region
+security:
+- apiKeyAuth: []
+tags:
+- name: Vulnerabilities
+  description: Image and workload vulnerability scanning and results.
+paths:
+  /vulnerability/scan:
+    post:
+      operationId: issueVulnerabilityScan
+      tags:
+      - Vulnerabilities
+      summary: Issue a vulnerability scan
+      description: Issues a vulnerability scan for a specific context or workload.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanRequest'
+      responses:
+        '200':
+          description: Scan accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /vulnerability/scanResults/summary:
+    post:
+      operationId: getVulnerabilityScanSummary
+      tags:
+      - Vulnerabilities
+      summary: Get vulnerability scan summary
+      description: Returns a summary of a vulnerability scan.
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: Scan summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /vulnerability/scanResults/details:
+    post:
+      operationId: getVulnerabilityScanDetails
+      tags:
+      - Vulnerabilities
+      summary: Get vulnerability scan details
+      description: Returns a detailed list of vulnerabilities from a scan.
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: Detailed vulnerability list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /vulnerability/severity:
+    post:
+      operationId: getVulnerabilitySeverity
+      tags:
+      - Vulnerabilities
+      summary: Get vulnerability severity roll-up
+      description: Returns severity "big numbers" from the latest scan.
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: Severity roll-up.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /vulnerability/topVulnerabilities:
+    post:
+      operationId: getTopVulnerabilities
+      tags:
+      - Vulnerabilities
+      summary: Get top vulnerabilities
+      description: Returns the list of top vulnerabilities.
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: Top vulnerabilities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /vulnerabilities/list:
+    post:
+      operationId: listVulnerabilities
+      tags:
+      - Vulnerabilities
+      summary: List vulnerabilities
+      description: Retrieves a filtered, paginated list of vulnerabilities (CVEs).
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: A list of vulnerabilities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /vulnerabilities/components/list:
+    post:
+      operationId: listVulnerabilitiesByComponent
+      tags:
+      - Vulnerabilities
+      summary: List vulnerabilities by component
+      description: Retrieves vulnerabilities scoped to software components/packages.
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: A list of vulnerabilities by component.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /vulnerabilities/images/list:
+    post:
+      operationId: listVulnerabilitiesByImage
+      tags:
+      - Vulnerabilities
+      summary: List vulnerabilities by image
+      description: Retrieves vulnerabilities scoped to container images.
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: A list of vulnerabilities by image.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /vulnerability/exception:
+    get:
+      operationId: listVulnerabilityExceptions
+      tags:
+      - Vulnerabilities
+      summary: List vulnerability exceptions
+      responses:
+        '200':
+          description: Vulnerability exceptions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createVulnerabilityException
+      tags:
+      - Vulnerabilities
+      summary: Create a vulnerability exception
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: updateVulnerabilityException
+      tags:
+      - Vulnerabilities
+      summary: Update a vulnerability exception
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      operationId: deleteVulnerabilityException
+      tags:
+      - Vulnerabilities
+      summary: Delete a vulnerability exception
+      responses:
+        '200':
+          description: Deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    GenericResponse:
+      type: object
+      additionalProperties: true
+    ListQuery:
+      type: object
+      description: ARMO's list endpoints accept a common query body with pagination, sorting, and field filters. Exact filter keys vary per resource.
+      properties:
+        pageSize:
+          type: integer
+          default: 50
+        pageNum:
+          type: integer
+          default: 1
+        orderBy:
+          type: string
+        innerFilters:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        since:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    ListResponse:
+      type: object
+      properties:
+        total:
+          type: object
+          properties:
+            value:
+              type: integer
+        response:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+  responses:
+    Unauthorized:
+      description: Missing or invalid X-API-KEY.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  requestBodies:
+    ListQuery:
+      required: false
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListQuery'
+    GenericBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: Account access key (Agent Access Key) generated in ARMO Platform under Settings, sent in the X-API-KEY header.

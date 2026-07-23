@@ -1,0 +1,264 @@
+openapi: 3.0.3
+info:
+  title: ARMO Platform Access Keys Posture API
+  description: 'The ARMO Platform API exposes ARMO''s cloud-native and Kubernetes security data over REST. ARMO is the company behind the open-source Kubescape project; ARMO Platform is a runtime-driven CNAPP covering Kubernetes Security Posture Management (KSPM), vulnerability and image scanning, compliance frameworks, network and seccomp policy generation, security-risk correlation, attack chains, and runtime Cloud Application Detection and Response (CADR).
+
+    Authentication uses an account access key (Agent Access Key) generated in the ARMO Platform under Settings, sent in the `X-API-KEY` request header. Requests are made against the regional base URL - `https://api.armosec.io/api/v1` for the EU region or `https://api.us.armosec.io/api/v1` for the US region.
+
+    This description is honestly modeled from ARMO''s public API reference and OpenAPI/Swagger documentation. Paths and methods reflect the documented reference; request and response schemas are simplified and returned data requires a connected ARMO account with reporting clusters. Verify exact payloads against the live Swagger UI at https://api.armosec.io/openapi/v2/swaggerui.'
+  version: '1.0'
+  contact:
+    name: ARMO
+    url: https://www.armosec.io
+  license:
+    name: ARMO Platform Terms
+    url: https://www.armosec.io/terms-of-service/
+servers:
+- url: https://api.armosec.io/api/v1
+  description: EU region
+- url: https://api.us.armosec.io/api/v1
+  description: US region
+security:
+- apiKeyAuth: []
+tags:
+- name: Posture
+  description: KSPM posture and compliance framework results.
+paths:
+  /posture/frameworks:
+    post:
+      operationId: getPostureFrameworks
+      tags:
+      - Posture
+      summary: Get posture scan summary per framework
+      description: Returns the scan summary for each compliance framework.
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: Per-framework summaries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /posture/controls:
+    post:
+      operationId: getPostureControls
+      tags:
+      - Posture
+      summary: Get posture control results
+      description: Returns the list of posture controls and their run results.
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: Control results.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /posture/controls/sections:
+    post:
+      operationId: getPostureControlSections
+      tags:
+      - Posture
+      summary: Get framework sections
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: Framework sections.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /posture/resources:
+    post:
+      operationId: getPostureResources
+      tags:
+      - Posture
+      summary: Get resources affected by posture issues
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: Affected resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /posture/exception:
+    get:
+      operationId: listPostureExceptions
+      tags:
+      - Posture
+      summary: List posture exceptions
+      responses:
+        '200':
+          description: Posture exceptions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createPostureException
+      tags:
+      - Posture
+      summary: Create a posture exception
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: updatePostureException
+      tags:
+      - Posture
+      summary: Update a posture exception
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      operationId: deletePostureException
+      tags:
+      - Posture
+      summary: Delete a posture exception
+      responses:
+        '200':
+          description: Deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /repositoryPosture/repositories:
+    post:
+      operationId: getRepositoryPostureRepositories
+      tags:
+      - Posture
+      summary: Get repository (IaC) posture summary by repository
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: Repository posture summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /repositoryPosture/failedControls:
+    post:
+      operationId: getRepositoryPostureFailedControls
+      tags:
+      - Posture
+      summary: Get failed controls summary for repository posture
+      requestBody:
+        $ref: '#/components/requestBodies/ListQuery'
+      responses:
+        '200':
+          description: Failed controls summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    GenericResponse:
+      type: object
+      additionalProperties: true
+    ListQuery:
+      type: object
+      description: ARMO's list endpoints accept a common query body with pagination, sorting, and field filters. Exact filter keys vary per resource.
+      properties:
+        pageSize:
+          type: integer
+          default: 50
+        pageNum:
+          type: integer
+          default: 1
+        orderBy:
+          type: string
+        innerFilters:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        since:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    ListResponse:
+      type: object
+      properties:
+        total:
+          type: object
+          properties:
+            value:
+              type: integer
+        response:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+  responses:
+    Unauthorized:
+      description: Missing or invalid X-API-KEY.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  requestBodies:
+    ListQuery:
+      required: false
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListQuery'
+    GenericBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: Account access key (Agent Access Key) generated in ARMO Platform under Settings, sent in the X-API-KEY header.

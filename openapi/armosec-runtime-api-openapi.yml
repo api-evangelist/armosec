@@ -1,0 +1,295 @@
+openapi: 3.0.3
+info:
+  title: ARMO Platform Access Keys Runtime API
+  description: 'The ARMO Platform API exposes ARMO''s cloud-native and Kubernetes security data over REST. ARMO is the company behind the open-source Kubescape project; ARMO Platform is a runtime-driven CNAPP covering Kubernetes Security Posture Management (KSPM), vulnerability and image scanning, compliance frameworks, network and seccomp policy generation, security-risk correlation, attack chains, and runtime Cloud Application Detection and Response (CADR).
+
+    Authentication uses an account access key (Agent Access Key) generated in the ARMO Platform under Settings, sent in the `X-API-KEY` request header. Requests are made against the regional base URL - `https://api.armosec.io/api/v1` for the EU region or `https://api.us.armosec.io/api/v1` for the US region.
+
+    This description is honestly modeled from ARMO''s public API reference and OpenAPI/Swagger documentation. Paths and methods reflect the documented reference; request and response schemas are simplified and returned data requires a connected ARMO account with reporting clusters. Verify exact payloads against the live Swagger UI at https://api.armosec.io/openapi/v2/swaggerui.'
+  version: '1.0'
+  contact:
+    name: ARMO
+    url: https://www.armosec.io
+  license:
+    name: ARMO Platform Terms
+    url: https://www.armosec.io/terms-of-service/
+servers:
+- url: https://api.armosec.io/api/v1
+  description: EU region
+- url: https://api.us.armosec.io/api/v1
+  description: US region
+security:
+- apiKeyAuth: []
+tags:
+- name: Runtime
+  description: Runtime incidents (CADR), network and runtime policies.
+paths:
+  /runtime/incidents:
+    get:
+      operationId: listRuntimeIncidents
+      tags:
+      - Runtime
+      summary: List runtime incidents
+      description: Retrieves all runtime incidents detected by ARMO's runtime sensor.
+      responses:
+        '200':
+          description: A list of runtime incidents.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /runtime/incidents/severity:
+    get:
+      operationId: getRuntimeIncidentsSeverity
+      tags:
+      - Runtime
+      summary: Get runtime incidents grouped by severity
+      responses:
+        '200':
+          description: Incidents grouped by severity.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /runtime/incidents/{incidentGUID}/alerts:
+    parameters:
+    - $ref: '#/components/parameters/IncidentGUID'
+    get:
+      operationId: getRuntimeIncidentAlerts
+      tags:
+      - Runtime
+      summary: Get alerts for an incident
+      responses:
+        '200':
+          description: Incident alerts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /runtime/incidents/{incidentGUID}/explain:
+    parameters:
+    - $ref: '#/components/parameters/IncidentGUID'
+    post:
+      operationId: explainRuntimeIncident
+      tags:
+      - Runtime
+      summary: Explain a runtime incident
+      description: Returns a detailed explanation for the specified incident.
+      responses:
+        '200':
+          description: Incident explanation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /runtime/incidents/{incidentGUID}/resolve:
+    parameters:
+    - $ref: '#/components/parameters/IncidentGUID'
+    post:
+      operationId: resolveRuntimeIncident
+      tags:
+      - Runtime
+      summary: Resolve a runtime incident
+      responses:
+        '200':
+          description: Resolved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /runtime/incidents/{incidentGUID}/unresolve:
+    parameters:
+    - $ref: '#/components/parameters/IncidentGUID'
+    post:
+      operationId: unresolveRuntimeIncident
+      tags:
+      - Runtime
+      summary: Unresolve a runtime incident
+      responses:
+        '200':
+          description: Unresolved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /network/policies:
+    get:
+      operationId: listNetworkPolicies
+      tags:
+      - Runtime
+      summary: List network policies
+      description: Retrieves generated Kubernetes network policies.
+      responses:
+        '200':
+          description: Network policies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /network/policies/generate:
+    post:
+      operationId: generateNetworkPolicies
+      tags:
+      - Runtime
+      summary: Generate network policies
+      description: Generates Kubernetes network policies for the specified workloads from observed traffic.
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Generated network policies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /runtime/seccomp/list:
+    get:
+      operationId: listSeccompProfiles
+      tags:
+      - Runtime
+      summary: List seccomp resources
+      responses:
+        '200':
+          description: Seccomp resources.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /runtime/seccomp/generate:
+    post:
+      operationId: generateSeccompProfiles
+      tags:
+      - Runtime
+      summary: Generate seccomp profiles
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Generated seccomp profiles.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /runtime/policy/create:
+    post:
+      operationId: createRuntimePolicy
+      tags:
+      - Runtime
+      summary: Create a runtime policy
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /runtime/policy/exception/create:
+    post:
+      operationId: createRuntimePolicyException
+      tags:
+      - Runtime
+      summary: Create a runtime policy exception
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    GenericResponse:
+      type: object
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    ListResponse:
+      type: object
+      properties:
+        total:
+          type: object
+          properties:
+            value:
+              type: integer
+        response:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+  responses:
+    Unauthorized:
+      description: Missing or invalid X-API-KEY.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    IncidentGUID:
+      name: incidentGUID
+      in: path
+      required: true
+      description: The GUID of the runtime incident.
+      schema:
+        type: string
+  requestBodies:
+    GenericBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: Account access key (Agent Access Key) generated in ARMO Platform under Settings, sent in the X-API-KEY header.

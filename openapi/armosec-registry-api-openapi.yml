@@ -1,0 +1,107 @@
+openapi: 3.0.3
+info:
+  title: ARMO Platform Access Keys Registry API
+  description: 'The ARMO Platform API exposes ARMO''s cloud-native and Kubernetes security data over REST. ARMO is the company behind the open-source Kubescape project; ARMO Platform is a runtime-driven CNAPP covering Kubernetes Security Posture Management (KSPM), vulnerability and image scanning, compliance frameworks, network and seccomp policy generation, security-risk correlation, attack chains, and runtime Cloud Application Detection and Response (CADR).
+
+    Authentication uses an account access key (Agent Access Key) generated in the ARMO Platform under Settings, sent in the `X-API-KEY` request header. Requests are made against the regional base URL - `https://api.armosec.io/api/v1` for the EU region or `https://api.us.armosec.io/api/v1` for the US region.
+
+    This description is honestly modeled from ARMO''s public API reference and OpenAPI/Swagger documentation. Paths and methods reflect the documented reference; request and response schemas are simplified and returned data requires a connected ARMO account with reporting clusters. Verify exact payloads against the live Swagger UI at https://api.armosec.io/openapi/v2/swaggerui.'
+  version: '1.0'
+  contact:
+    name: ARMO
+    url: https://www.armosec.io
+  license:
+    name: ARMO Platform Terms
+    url: https://www.armosec.io/terms-of-service/
+servers:
+- url: https://api.armosec.io/api/v1
+  description: EU region
+- url: https://api.us.armosec.io/api/v1
+  description: US region
+security:
+- apiKeyAuth: []
+tags:
+- name: Registry
+  description: Container registry scanning.
+paths:
+  /registry/scan:
+    post:
+      operationId: issueRegistryScan
+      tags:
+      - Registry
+      summary: Issue a registry scan or set scheduler
+      description: Issues a container registry scan or sets a scan scheduler (cron).
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Scan accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      operationId: updateRegistryScan
+      tags:
+      - Registry
+      summary: Update the registry scan cron job
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      operationId: deleteRegistryScan
+      tags:
+      - Registry
+      summary: Delete the registry scan cron job
+      responses:
+        '200':
+          description: Deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    GenericResponse:
+      type: object
+      additionalProperties: true
+  requestBodies:
+    GenericBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+  responses:
+    Unauthorized:
+      description: Missing or invalid X-API-KEY.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: Account access key (Agent Access Key) generated in ARMO Platform under Settings, sent in the X-API-KEY header.
