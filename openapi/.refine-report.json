@@ -1,0 +1,30 @@
+{
+  "provider": "armosec",
+  "sources": [
+    "armosec-access-keys-api-openapi.yml",
+    "armosec-clusters-api-openapi.yml",
+    "armosec-integrations-api-openapi.yml",
+    "armosec-posture-api-openapi.yml",
+    "armosec-registry-api-openapi.yml",
+    "armosec-runtime-api-openapi.yml",
+    "armosec-security-risks-api-openapi.yml",
+    "armosec-vulnerabilities-api-openapi.yml"
+  ],
+  "outputs": [
+    "armosec-access-keys-api-openapi.yml",
+    "armosec-clusters-api-openapi.yml",
+    "armosec-integrations-api-openapi.yml",
+    "armosec-posture-api-openapi.yml",
+    "armosec-registry-api-openapi.yml",
+    "armosec-runtime-api-openapi.yml",
+    "armosec-security-risks-api-openapi.yml",
+    "armosec-vulnerabilities-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [
+    "armosec-vulnerabilities-api-openapi.yml: dangling $ref: #/components/schemas/ScanRequest"
+  ],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
