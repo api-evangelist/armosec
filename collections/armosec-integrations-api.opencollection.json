@@ -1,0 +1,97 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ARMO Platform Access Keys Integrations API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Integrations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Jira configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/integrations/jira/config"
+          },
+          "docs": "Get Jira configuration"
+        },
+        {
+          "info": {
+            "name": "Save Jira configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/integrations/jira/config",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Save Jira configuration"
+        },
+        {
+          "info": {
+            "name": "Create a Jira issue (ticket)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/integrations/jira/issueV2",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a Jira issue/ticket from an ARMO finding."
+        },
+        {
+          "info": {
+            "name": "Create a collaboration configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/collaboration/config",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a collaboration configuration"
+        },
+        {
+          "info": {
+            "name": "Share data using a collaboration config",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/collaboration/share",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Share data using a collaboration config"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

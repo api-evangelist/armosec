@@ -1,0 +1,323 @@
+{
+  "item": [
+    {
+      "id": "1fbe2403-d0cd-4f95-af1b-47eaba860d16",
+      "name": "Clusters",
+      "description": {
+        "content": "Connected clusters and workloads.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2c76b702-f27e-443d-ae80-1b0fbddde32f",
+          "name": "Get clusters list with history",
+          "request": {
+            "name": "Get clusters list with history",
+            "description": {
+              "content": "Returns the list of connected clusters with historical posture over time.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "clusters",
+                "overtime"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pageSize\": 50,\n  \"pageNum\": 1,\n  \"orderBy\": \"<string>\",\n  \"innerFilters\": [\n    {\n      \"key_0\": \"string\"\n    },\n    {\n      \"key_0\": false,\n      \"key_1\": 644\n    }\n  ],\n  \"since\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3653598e-b4bc-43a2-bd3d-4d4ae13c3c92",
+              "name": "Clusters with history.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clusters",
+                    "overtime"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"total\": {\n    \"value\": 732\n  },\n  \"response\": [\n    {\n      \"key_0\": false\n    },\n    {\n      \"key_0\": 2883.9562123117157\n    }\n  ],\n  \"key_0\": \"string\",\n  \"key_1\": 907\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "52800481-477e-45a4-a9ad-5eaf262b20dc",
+              "name": "Missing or invalid X-API-KEY.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "clusters",
+                    "overtime"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e2c7c604-512c-496e-8565-8e490df2eb4c",
+          "name": "List workloads",
+          "request": {
+            "name": "List workloads",
+            "description": {
+              "content": "Retrieves workloads with their vulnerability and posture context.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "workload",
+                "list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pageSize\": 50,\n  \"pageNum\": 1,\n  \"orderBy\": \"<string>\",\n  \"innerFilters\": [\n    {\n      \"key_0\": 4415.826579934437,\n      \"key_1\": 7873\n    },\n    {\n      \"key_0\": \"string\"\n    }\n  ],\n  \"since\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3178aa02-49e0-414d-a5dc-5fba09734c65",
+              "name": "A list of workloads.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "workload",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"total\": {\n    \"value\": 6208\n  },\n  \"response\": [\n    {\n      \"key_0\": \"string\"\n    },\n    {\n      \"key_0\": 3830.289064364141,\n      \"key_1\": false,\n      \"key_2\": 2797,\n      \"key_3\": 8907\n    }\n  ],\n  \"key_0\": 7864,\n  \"key_1\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3dd42172-56b2-4c1b-8b15-ae20bf981f88",
+              "name": "Missing or invalid X-API-KEY.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "workload",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.armosec.io/api/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-KEY"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "512590da-75d0-44d3-8f53-4ec78a2f3a9d",
+    "name": "ARMO Platform Access Keys Clusters API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The ARMO Platform API exposes ARMO's cloud-native and Kubernetes security data over REST. ARMO is the company behind the open-source Kubescape project; ARMO Platform is a runtime-driven CNAPP covering Kubernetes Security Posture Management (KSPM), vulnerability and image scanning, compliance frameworks, network and seccomp policy generation, security-risk correlation, attack chains, and runtime Cloud Application Detection and Response (CADR).\nAuthentication uses an account access key (Agent Access Key) generated in the ARMO Platform under Settings, sent in the `X-API-KEY` request header. Requests are made against the regional base URL - `https://api.armosec.io/api/v1` for the EU region or `https://api.us.armosec.io/api/v1` for the US region.\nThis description is honestly modeled from ARMO's public API reference and OpenAPI/Swagger documentation. Paths and methods reflect the documented reference; request and response schemas are simplified and returned data requires a connected ARMO account with reporting clusters. Verify exact payloads against the live Swagger UI at https://api.armosec.io/openapi/v2/swaggerui.\n\nContact Support:\n Name: ARMO",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ARMO Platform Access Keys Security Risks API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Security Risks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List security risks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/security/risks"
+          },
+          "docs": "Retrieves the list of correlated security risks."
+        },
+        {
+          "info": {
+            "name": "List security-risk resources",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/security/risks/resources"
+          },
+          "docs": "Retrieves resources associated with security risks."
+        },
+        {
+          "info": {
+            "name": "Get security-risk severity summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/security/risks/severities"
+          },
+          "docs": "Get security-risk severity summary"
+        },
+        {
+          "info": {
+            "name": "Get attack chains",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/attack/chains"
+          },
+          "docs": "Retrieves attack chains matching the provided filters."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

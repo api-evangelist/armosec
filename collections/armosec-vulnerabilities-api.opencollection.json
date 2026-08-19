@@ -1,0 +1,198 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ARMO Platform Access Keys Vulnerabilities API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Vulnerabilities",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Issue a vulnerability scan",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/vulnerability/scan",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Issues a vulnerability scan for a specific context or workload."
+        },
+        {
+          "info": {
+            "name": "Get vulnerability scan summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/vulnerability/scanResults/summary",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns a summary of a vulnerability scan."
+        },
+        {
+          "info": {
+            "name": "Get vulnerability scan details",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/vulnerability/scanResults/details",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns a detailed list of vulnerabilities from a scan."
+        },
+        {
+          "info": {
+            "name": "Get vulnerability severity roll-up",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/vulnerability/severity",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns severity \"big numbers\" from the latest scan."
+        },
+        {
+          "info": {
+            "name": "Get top vulnerabilities",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/vulnerability/topVulnerabilities",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns the list of top vulnerabilities."
+        },
+        {
+          "info": {
+            "name": "List vulnerabilities",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/vulnerabilities/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves a filtered, paginated list of vulnerabilities (CVEs)."
+        },
+        {
+          "info": {
+            "name": "List vulnerabilities by component",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/vulnerabilities/components/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves vulnerabilities scoped to software components/packages."
+        },
+        {
+          "info": {
+            "name": "List vulnerabilities by image",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/vulnerabilities/images/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves vulnerabilities scoped to container images."
+        },
+        {
+          "info": {
+            "name": "List vulnerability exceptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/vulnerability/exception"
+          },
+          "docs": "List vulnerability exceptions"
+        },
+        {
+          "info": {
+            "name": "Create a vulnerability exception",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/vulnerability/exception",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a vulnerability exception"
+        },
+        {
+          "info": {
+            "name": "Update a vulnerability exception",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.armosec.io/api/v1/vulnerability/exception",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a vulnerability exception"
+        },
+        {
+          "info": {
+            "name": "Delete a vulnerability exception",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.armosec.io/api/v1/vulnerability/exception"
+          },
+          "docs": "Delete a vulnerability exception"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

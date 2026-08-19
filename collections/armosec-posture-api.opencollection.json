@@ -1,0 +1,168 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ARMO Platform Access Keys Posture API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Posture",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get posture scan summary per framework",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/posture/frameworks",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns the scan summary for each compliance framework."
+        },
+        {
+          "info": {
+            "name": "Get posture control results",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/posture/controls",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns the list of posture controls and their run results."
+        },
+        {
+          "info": {
+            "name": "Get framework sections",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/posture/controls/sections",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get framework sections"
+        },
+        {
+          "info": {
+            "name": "Get resources affected by posture issues",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/posture/resources",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get resources affected by posture issues"
+        },
+        {
+          "info": {
+            "name": "List posture exceptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/posture/exception"
+          },
+          "docs": "List posture exceptions"
+        },
+        {
+          "info": {
+            "name": "Create a posture exception",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/posture/exception",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a posture exception"
+        },
+        {
+          "info": {
+            "name": "Update a posture exception",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.armosec.io/api/v1/posture/exception",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a posture exception"
+        },
+        {
+          "info": {
+            "name": "Delete a posture exception",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.armosec.io/api/v1/posture/exception"
+          },
+          "docs": "Delete a posture exception"
+        },
+        {
+          "info": {
+            "name": "Get repository (IaC) posture summary by repository",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/repositoryPosture/repositories",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get repository (IaC) posture summary by repository"
+        },
+        {
+          "info": {
+            "name": "Get failed controls summary for repository posture",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/repositoryPosture/failedControls",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get failed controls summary for repository posture"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

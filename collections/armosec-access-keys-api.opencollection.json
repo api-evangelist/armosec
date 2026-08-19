@@ -1,0 +1,105 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ARMO Platform Access Keys API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Access Keys",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List access keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/authentication/accessKeys"
+          },
+          "docs": "List access keys"
+        },
+        {
+          "info": {
+            "name": "Create an access key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/authentication/accessKeys",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create an access key"
+        },
+        {
+          "info": {
+            "name": "Update an access key",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.armosec.io/api/v1/authentication/accessKeys",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an access key"
+        },
+        {
+          "info": {
+            "name": "Get an access key by GUID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/authentication/accessKeys/:guid",
+            "params": [
+              {
+                "name": "guid",
+                "value": "",
+                "type": "path",
+                "description": "The GUID of the access key."
+              }
+            ]
+          },
+          "docs": "Get an access key by GUID"
+        },
+        {
+          "info": {
+            "name": "Delete an access key",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.armosec.io/api/v1/authentication/accessKeys/:guid",
+            "params": [
+              {
+                "name": "guid",
+                "value": "",
+                "type": "path",
+                "description": "The GUID of the access key."
+              }
+            ]
+          },
+          "docs": "Delete an access key"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

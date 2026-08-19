@@ -1,0 +1,206 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ARMO Platform Access Keys Runtime API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Runtime",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List runtime incidents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/runtime/incidents"
+          },
+          "docs": "Retrieves all runtime incidents detected by ARMO's runtime sensor."
+        },
+        {
+          "info": {
+            "name": "Get runtime incidents grouped by severity",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/runtime/incidents/severity"
+          },
+          "docs": "Get runtime incidents grouped by severity"
+        },
+        {
+          "info": {
+            "name": "Get alerts for an incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/runtime/incidents/:incidentGUID/alerts",
+            "params": [
+              {
+                "name": "incidentGUID",
+                "value": "",
+                "type": "path",
+                "description": "The GUID of the runtime incident."
+              }
+            ]
+          },
+          "docs": "Get alerts for an incident"
+        },
+        {
+          "info": {
+            "name": "Explain a runtime incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/runtime/incidents/:incidentGUID/explain",
+            "params": [
+              {
+                "name": "incidentGUID",
+                "value": "",
+                "type": "path",
+                "description": "The GUID of the runtime incident."
+              }
+            ]
+          },
+          "docs": "Returns a detailed explanation for the specified incident."
+        },
+        {
+          "info": {
+            "name": "Resolve a runtime incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/runtime/incidents/:incidentGUID/resolve",
+            "params": [
+              {
+                "name": "incidentGUID",
+                "value": "",
+                "type": "path",
+                "description": "The GUID of the runtime incident."
+              }
+            ]
+          },
+          "docs": "Resolve a runtime incident"
+        },
+        {
+          "info": {
+            "name": "Unresolve a runtime incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/runtime/incidents/:incidentGUID/unresolve",
+            "params": [
+              {
+                "name": "incidentGUID",
+                "value": "",
+                "type": "path",
+                "description": "The GUID of the runtime incident."
+              }
+            ]
+          },
+          "docs": "Unresolve a runtime incident"
+        },
+        {
+          "info": {
+            "name": "List network policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/network/policies"
+          },
+          "docs": "Retrieves generated Kubernetes network policies."
+        },
+        {
+          "info": {
+            "name": "Generate network policies",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/network/policies/generate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generates Kubernetes network policies for the specified workloads from observed traffic."
+        },
+        {
+          "info": {
+            "name": "List seccomp resources",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.armosec.io/api/v1/runtime/seccomp/list"
+          },
+          "docs": "List seccomp resources"
+        },
+        {
+          "info": {
+            "name": "Generate seccomp profiles",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/runtime/seccomp/generate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generate seccomp profiles"
+        },
+        {
+          "info": {
+            "name": "Create a runtime policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/runtime/policy/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a runtime policy"
+        },
+        {
+          "info": {
+            "name": "Create a runtime policy exception",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/runtime/policy/exception/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a runtime policy exception"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

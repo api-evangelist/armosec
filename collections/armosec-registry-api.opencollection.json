@@ -1,0 +1,67 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ARMO Platform Access Keys Registry API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-API-KEY",
+      "value": "{{X-API-KEY}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Registry",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Issue a registry scan or set scheduler",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.armosec.io/api/v1/registry/scan",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Issues a container registry scan or sets a scan scheduler (cron)."
+        },
+        {
+          "info": {
+            "name": "Update the registry scan cron job",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.armosec.io/api/v1/registry/scan",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the registry scan cron job"
+        },
+        {
+          "info": {
+            "name": "Delete the registry scan cron job",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.armosec.io/api/v1/registry/scan"
+          },
+          "docs": "Delete the registry scan cron job"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
