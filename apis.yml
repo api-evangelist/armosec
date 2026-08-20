@@ -72,6 +72,8 @@ apis:
   humanURL: https://hub.armosec.io/reference
   baseURL: https://api.armosec.io/api/v1
   tags:
+  - Cluster
+  tags_raw:
   - Clusters
   properties:
   - type: OpenAPI
@@ -92,6 +94,8 @@ apis:
   humanURL: https://hub.armosec.io/reference
   baseURL: https://api.armosec.io/api/v1
   tags:
+  - Integration
+  tags_raw:
   - Integrations
   properties:
   - type: OpenAPI
