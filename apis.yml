@@ -16,6 +16,18 @@ description: ARMO is the cloud-native and Kubernetes security company behind the
   scanning, and integrations. API access is available to platform customers who
   have generated an Agent Access Key; the endpoints below are documented but the
   data returned requires a connected account and clusters.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: self-serve
