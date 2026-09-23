@@ -1,14 +1,7 @@
 {
   "provider": "armosec",
   "sources": [
-    "armosec-access-keys-api-openapi.yml",
-    "armosec-clusters-api-openapi.yml",
-    "armosec-integrations-api-openapi.yml",
-    "armosec-posture-api-openapi.yml",
-    "armosec-registry-api-openapi.yml",
-    "armosec-runtime-api-openapi.yml",
-    "armosec-security-risks-api-openapi.yml",
-    "armosec-vulnerabilities-api-openapi.yml"
+    "_original/armosec-openapi.yml"
   ],
   "outputs": [
     "armosec-access-keys-api-openapi.yml",
@@ -22,9 +15,22 @@
   ],
   "archived": [],
   "errors": [
-    "armosec-vulnerabilities-api-openapi.yml: dangling $ref: #/components/schemas/ScanRequest"
+    "armosec-openapi.yml: dangling $ref: #/components/schemas/ScanRequest"
   ],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "armosec-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "armosec-access-keys-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "armosec-clusters-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "armosec-integrations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "armosec-posture-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "armosec-registry-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "armosec-runtime-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "armosec-security-risks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "armosec-vulnerabilities-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
