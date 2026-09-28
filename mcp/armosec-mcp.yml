@@ -16,26 +16,39 @@ deployment:
 tools_count: 11
 tools:
 - name: list_cloud_accounts
-  description: ''
+  description: List the caller's connected cloud accounts (CSPM) with posture rollups. Read-only. Supports
+    provider filter, paging, field selection.
 - name: list_inventory
-  description: ''
+  description: List the caller's ARMO asset inventory (workloads and cloud resources). Read-only. Supports
+    paging and field selection.
 - name: list_repositories
-  description: ''
+  description: List the caller's ARMO-connected source repositories with IaC/repository posture. Read-only.
+    Supports paging and field selection.
 - name: query_attack_chains
-  description: ''
+  description: Query the caller's ARMO attack chains (attack paths toward sensitive assets). Read-only.
+    Supports paging and field selection.
 - name: query_cloud_compliance
-  description: ''
+  description: Query the caller's cloud compliance framework scores (CSPM). Read-only. Supports paging
+    and field selection.
 - name: query_cloud_posture
-  description: ''
+  description: Query the caller's cloud misconfiguration controls (CSPM). Read-only. Supports severity
+    + framework filters, paging, field selection.
 - name: query_images
-  description: ''
+  description: Query the caller's ARMO container image inventory with vulnerability rollups. Read-only.
+    Supports paging and field selection.
 - name: query_incidents
-  description: ''
+  description: Query the caller's ARMO runtime incidents. Read-only. Supports severity filter, paging,
+    and field selection.
 - name: query_posture
-  description: ''
+  description: Query the caller's ARMO Kubernetes posture controls. Read-only. Supports framework filter,
+    paging, and field selection.
 - name: query_risks
-  description: ''
+  description: Query the caller's ARMO security risks. Read-only. Supports severity filter, paging, and
+    field selection.
 - name: query_vulnerabilities
-  description: ''
+  description: Query the caller's ARMO CVE findings. Read-only. Supports severity filter, paging, and
+    field selection.
 tools_source: live tools/list via initialize handshake, 2026-09-11 (signals/audit_mcp_authorship.py --probe)
 authorship: provider
+descriptions_source: live tools/list (authorship probe or saved capture); filled by backfill-tools-from-authorship.py
+  --descriptions, 2026-09-28
