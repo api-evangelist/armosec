@@ -99,13 +99,6 @@ components:
           type: string
         message:
           type: string
-  responses:
-    Unauthorized:
-      description: Missing or invalid X-API-KEY.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   requestBodies:
     ListQuery:
       required: false
@@ -113,6 +106,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ListQuery'
+  responses:
+    Unauthorized:
+      description: Missing or invalid X-API-KEY.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     apiKeyAuth:
       type: apiKey

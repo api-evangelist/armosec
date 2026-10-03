@@ -265,6 +265,9 @@ components:
         since:
           type: string
           format: date-time
+    GenericResponse:
+      type: object
+      additionalProperties: true
     Error:
       type: object
       properties:
@@ -272,10 +275,13 @@ components:
           type: string
         message:
           type: string
-    GenericResponse:
-      type: object
-      additionalProperties: true
   requestBodies:
+    ListQuery:
+      required: false
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListQuery'
     GenericBody:
       required: true
       content:
@@ -283,12 +289,6 @@ components:
           schema:
             type: object
             additionalProperties: true
-    ListQuery:
-      required: false
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ListQuery'
   responses:
     Unauthorized:
       description: Missing or invalid X-API-KEY.

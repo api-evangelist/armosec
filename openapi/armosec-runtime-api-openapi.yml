@@ -229,19 +229,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid X-API-KEY.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     ListResponse:
       type: object
@@ -257,6 +244,9 @@ components:
             type: object
             additionalProperties: true
       additionalProperties: true
+    GenericResponse:
+      type: object
+      additionalProperties: true
     Error:
       type: object
       properties:
@@ -264,17 +254,19 @@ components:
           type: string
         message:
           type: string
-    GenericResponse:
-      type: object
-      additionalProperties: true
-  parameters:
-    IncidentGUID:
-      name: incidentGUID
-      in: path
-      required: true
-      description: The GUID of the runtime incident.
-      schema:
-        type: string
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid X-API-KEY.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   requestBodies:
     GenericBody:
       required: true
@@ -283,6 +275,14 @@ components:
           schema:
             type: object
             additionalProperties: true
+  parameters:
+    IncidentGUID:
+      name: incidentGUID
+      in: path
+      required: true
+      description: The GUID of the runtime incident.
+      schema:
+        type: string
   securitySchemes:
     apiKeyAuth:
       type: apiKey
