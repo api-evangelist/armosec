@@ -226,6 +226,9 @@ apis:
   - type: Documentation
     url: https://hub.armosec.io/docs/workloads
 common:
+- type: CapabilityMap
+  url: capabilities/armosec-capability-edges.yml
+  name: ARMO Business Capability Map
 - type: AgenticAccess
   url: agentic-access/armosec-agentic-access.yml
 - type: DomainSecurity
