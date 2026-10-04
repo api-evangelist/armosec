@@ -57,21 +57,21 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  requestBodies:
+    ListQuery:
+      required: false
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListQuery'
   schemas:
-    ListResponse:
+    Error:
       type: object
       properties:
-        total:
-          type: object
-          properties:
-            value:
-              type: integer
-        response:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-      additionalProperties: true
+        error:
+          type: string
+        message:
+          type: string
     ListQuery:
       type: object
       description: ARMO's list endpoints accept a common query body with pagination, sorting, and field filters. Exact filter keys vary per resource.
@@ -92,20 +92,20 @@ components:
         since:
           type: string
           format: date-time
-    Error:
+    ListResponse:
       type: object
       properties:
-        error:
-          type: string
-        message:
-          type: string
-  requestBodies:
-    ListQuery:
-      required: false
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ListQuery'
+        total:
+          type: object
+          properties:
+            value:
+              type: integer
+        response:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
   responses:
     Unauthorized:
       description: Missing or invalid X-API-KEY.

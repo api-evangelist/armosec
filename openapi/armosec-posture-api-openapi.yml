@@ -186,21 +186,28 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  schemas:
-    ListResponse:
-      type: object
-      properties:
-        total:
-          type: object
-          properties:
-            value:
-              type: integer
-        response:
-          type: array
-          items:
+  requestBodies:
+    GenericBody:
+      required: true
+      content:
+        application/json:
+          schema:
             type: object
             additionalProperties: true
-      additionalProperties: true
+    ListQuery:
+      required: false
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListQuery'
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
     ListQuery:
       type: object
       description: ARMO's list endpoints accept a common query body with pagination, sorting, and field filters. Exact filter keys vary per resource.
@@ -221,30 +228,23 @@ components:
         since:
           type: string
           format: date-time
+    ListResponse:
+      type: object
+      properties:
+        total:
+          type: object
+          properties:
+            value:
+              type: integer
+        response:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
     GenericResponse:
       type: object
       additionalProperties: true
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-  requestBodies:
-    ListQuery:
-      required: false
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ListQuery'
-    GenericBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            additionalProperties: true
   responses:
     Unauthorized:
       description: Missing or invalid X-API-KEY.

@@ -229,31 +229,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  schemas:
-    ListResponse:
-      type: object
-      properties:
-        total:
-          type: object
-          properties:
-            value:
-              type: integer
-        response:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-      additionalProperties: true
-    GenericResponse:
-      type: object
-      additionalProperties: true
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
   responses:
     NotFound:
       description: The requested resource was not found.
@@ -283,6 +258,31 @@ components:
       description: The GUID of the runtime incident.
       schema:
         type: string
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    ListResponse:
+      type: object
+      properties:
+        total:
+          type: object
+          properties:
+            value:
+              type: integer
+        response:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    GenericResponse:
+      type: object
+      additionalProperties: true
   securitySchemes:
     apiKeyAuth:
       type: apiKey
