@@ -1,151 +1,25 @@
-generated: '2026-07-15'
+generated: '2026-09-23'
 method: generated
-source: openapi/armosec-openapi.yml
+source: openapi/armosec-access-keys-api-openapi.yml, openapi/armosec-clusters-api-openapi.yml,
+  openapi/armosec-integrations-api-openapi.yml, openapi/armosec-posture-api-openapi.yml, openapi/armosec-registry-api-openapi.yml,
+  openapi/armosec-runtime-api-openapi.yml, openapi/armosec-security-risks-api-openapi.yml, openapi/armosec-vulnerabilities-api-openapi.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.
 summary:
   operations: 53
   by_action_class:
-    acting: 39
-    connected: 14
+    connected: 28
+    acting: 25
   by_consequence:
-    write: 36
-    read: 14
-    safety-critical: 3
-  human_in_the_loop_required: 3
+    read: 28
+    write: 24
+    safety-critical: 1
+  human_in_the_loop_required: 1
 operations:
-- path: /vulnerability/scan
-  method: post
-  operationId: issueVulnerabilityScan
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /vulnerability/scanResults/summary
-  method: post
-  operationId: getVulnerabilityScanSummary
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /vulnerability/scanResults/details
-  method: post
-  operationId: getVulnerabilityScanDetails
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /vulnerability/severity
-  method: post
-  operationId: getVulnerabilitySeverity
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /vulnerability/topVulnerabilities
-  method: post
-  operationId: getTopVulnerabilities
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /vulnerabilities/list
-  method: post
-  operationId: listVulnerabilities
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /vulnerabilities/components/list
-  method: post
-  operationId: listVulnerabilitiesByComponent
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /vulnerabilities/images/list
-  method: post
-  operationId: listVulnerabilitiesByImage
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /vulnerability/exception
+- path: /authentication/accessKeys
   method: get
-  operationId: listVulnerabilityExceptions
+  operationId: listAccessKeys
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -153,9 +27,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /vulnerability/exception
+- path: /authentication/accessKeys
   method: post
-  operationId: createVulnerabilityException
+  operationId: createAccessKey
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -169,9 +43,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /vulnerability/exception
+- path: /authentication/accessKeys
   method: put
-  operationId: updateVulnerabilityException
+  operationId: updateAccessKey
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -185,9 +59,113 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /vulnerability/exception
+- path: /authentication/accessKeys/{guid}
+  method: get
+  operationId: getAccessKey
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /authentication/accessKeys/{guid}
   method: delete
-  operationId: deleteVulnerabilityException
+  operationId: deleteAccessKey
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /clusters/overtime
+  method: post
+  operationId: getClustersOvertime
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /workload/list
+  method: post
+  operationId: listWorkloads
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /integrations/jira/config
+  method: get
+  operationId: getJiraConfig
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /integrations/jira/config
+  method: post
+  operationId: saveJiraConfig
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /integrations/jira/issueV2
+  method: post
+  operationId: createJiraIssue
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /collaboration/config
+  method: post
+  operationId: createCollaborationConfig
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /collaboration/share
+  method: post
+  operationId: shareCollaboration
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -205,34 +183,22 @@ operations:
   method: post
   operationId: getPostureFrameworks
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
 - path: /posture/controls
   method: post
   operationId: getPostureControls
   x-agentic-access:
-    action-class: acting
-    consequence: safety-critical
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 120
-      exchange: true
-      purpose-required: true
-      proof-of-possession: true
-    escalation:
-      human-in-the-loop: required
-    audit: required
+      max-ttl: 3600
+    audit: none
 - path: /posture/controls/sections
   method: post
   operationId: getPostureControlSections
@@ -253,18 +219,12 @@ operations:
   method: post
   operationId: getPostureResources
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
 - path: /posture/exception
   method: get
   operationId: listPostureExceptions
@@ -327,37 +287,25 @@ operations:
   method: post
   operationId: getRepositoryPostureRepositories
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
 - path: /repositoryPosture/failedControls
   method: post
   operationId: getRepositoryPostureFailedControls
   x-agentic-access:
-    action-class: acting
-    consequence: safety-critical
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 120
-      exchange: true
-      purpose-required: true
-      proof-of-possession: true
-    escalation:
-      human-in-the-loop: required
-    audit: required
-- path: /clusters/overtime
+      max-ttl: 3600
+    audit: none
+- path: /registry/scan
   method: post
-  operationId: getClustersOvertime
+  operationId: issueRegistryScan
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -371,9 +319,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /workload/list
-  method: post
-  operationId: listWorkloads
+- path: /registry/scan
+  method: put
+  operationId: updateRegistryScan
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -387,46 +335,22 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /security/risks
-  method: get
-  operationId: listSecurityRisks
+- path: /registry/scan
+  method: delete
+  operationId: deleteRegistryScan
   x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
     token:
-      max-ttl: 3600
-    audit: none
-- path: /security/risks/resources
-  method: get
-  operationId: listSecurityRiskResources
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /security/risks/severities
-  method: get
-  operationId: getSecurityRiskSeverities
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /attack/chains
-  method: get
-  operationId: getAttackChains
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /runtime/incidents
   method: get
   operationId: listRuntimeIncidents
@@ -589,9 +513,49 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /registry/scan
+- path: /security/risks
+  method: get
+  operationId: listSecurityRisks
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /security/risks/resources
+  method: get
+  operationId: listSecurityRiskResources
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /security/risks/severities
+  method: get
+  operationId: getSecurityRiskSeverities
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /attack/chains
+  method: get
+  operationId: getAttackChains
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /vulnerability/scan
   method: post
-  operationId: issueRegistryScan
+  operationId: issueVulnerabilityScan
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -605,9 +569,105 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /registry/scan
+- path: /vulnerability/scanResults/summary
+  method: post
+  operationId: getVulnerabilityScanSummary
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /vulnerability/scanResults/details
+  method: post
+  operationId: getVulnerabilityScanDetails
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /vulnerability/severity
+  method: post
+  operationId: getVulnerabilitySeverity
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /vulnerability/topVulnerabilities
+  method: post
+  operationId: getTopVulnerabilities
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /vulnerabilities/list
+  method: post
+  operationId: listVulnerabilities
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /vulnerabilities/components/list
+  method: post
+  operationId: listVulnerabilitiesByComponent
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /vulnerabilities/images/list
+  method: post
+  operationId: listVulnerabilitiesByImage
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /vulnerability/exception
+  method: get
+  operationId: listVulnerabilityExceptions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /vulnerability/exception
+  method: post
+  operationId: createVulnerabilityException
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /vulnerability/exception
   method: put
-  operationId: updateRegistryScan
+  operationId: updateVulnerabilityException
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -621,151 +681,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /registry/scan
+- path: /vulnerability/exception
   method: delete
-  operationId: deleteRegistryScan
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /integrations/jira/config
-  method: get
-  operationId: getJiraConfig
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /integrations/jira/config
-  method: post
-  operationId: saveJiraConfig
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /integrations/jira/issueV2
-  method: post
-  operationId: createJiraIssue
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /collaboration/config
-  method: post
-  operationId: createCollaborationConfig
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /collaboration/share
-  method: post
-  operationId: shareCollaboration
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /authentication/accessKeys
-  method: get
-  operationId: listAccessKeys
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /authentication/accessKeys
-  method: post
-  operationId: createAccessKey
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /authentication/accessKeys
-  method: put
-  operationId: updateAccessKey
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /authentication/accessKeys/{guid}
-  method: get
-  operationId: getAccessKey
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /authentication/accessKeys/{guid}
-  method: delete
-  operationId: deleteAccessKey
+  operationId: deleteVulnerabilityException
   x-agentic-access:
     action-class: acting
     consequence: write
