@@ -1,0 +1,22 @@
+generated: '2026-10-13'
+method: searched
+checked:
+- https://aws.amazon.com/marketplace/
+marketplace_apps: []
+edges:
+- partner_name: AWS Marketplace
+  partner: amazon-web-services
+  partner_match: aggregator
+  type: marketplace
+  marketplace: aws-marketplace
+  channel: distribution
+  relationship: platform-app
+  direction: provider-built
+  evidence: https://aws.amazon.com/marketplace/seller-profile?id=5293e34c-3c95-442c-bca9-aad0289a5c06
+  listing_count: 2
+  apps:
+  - ARMO Platform
+  - ARMO Cloud Security Platform
+  seller_name: ARMO
+  detected_by: sweep-cloud-marketplaces.py
+  detected: '2026-10-13'
