@@ -231,6 +231,12 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   requestBodies:
+    ListQuery:
+      required: false
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListQuery'
     GenericBody:
       required: true
       content:
@@ -238,13 +244,21 @@ components:
           schema:
             type: object
             additionalProperties: true
-    ListQuery:
-      required: false
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ListQuery'
   schemas:
+    ListResponse:
+      type: object
+      properties:
+        total:
+          type: object
+          properties:
+            value:
+              type: integer
+        response:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
     Error:
       type: object
       properties:
@@ -272,20 +286,6 @@ components:
         since:
           type: string
           format: date-time
-    ListResponse:
-      type: object
-      properties:
-        total:
-          type: object
-          properties:
-            value:
-              type: integer
-        response:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-      additionalProperties: true
     GenericResponse:
       type: object
       additionalProperties: true

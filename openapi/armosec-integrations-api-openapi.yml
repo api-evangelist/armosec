@@ -104,17 +104,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  schemas:
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-    GenericResponse:
-      type: object
-      additionalProperties: true
   responses:
     Unauthorized:
       description: Missing or invalid X-API-KEY.
@@ -130,6 +119,17 @@ components:
           schema:
             type: object
             additionalProperties: true
+  schemas:
+    GenericResponse:
+      type: object
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
   securitySchemes:
     apiKeyAuth:
       type: apiKey

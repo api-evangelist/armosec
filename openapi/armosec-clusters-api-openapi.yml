@@ -65,6 +65,20 @@ components:
           schema:
             $ref: '#/components/schemas/ListQuery'
   schemas:
+    ListResponse:
+      type: object
+      properties:
+        total:
+          type: object
+          properties:
+            value:
+              type: integer
+        response:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
     Error:
       type: object
       properties:
@@ -92,20 +106,6 @@ components:
         since:
           type: string
           format: date-time
-    ListResponse:
-      type: object
-      properties:
-        total:
-          type: object
-          properties:
-            value:
-              type: integer
-        response:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-      additionalProperties: true
   responses:
     Unauthorized:
       description: Missing or invalid X-API-KEY.
