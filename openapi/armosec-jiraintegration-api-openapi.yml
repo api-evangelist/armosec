@@ -1,0 +1,765 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Jira Integration API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: JiraIntegration
+paths:
+  /integrations/jira/configV2:
+    post:
+      description: Save new Jira integration configuration
+      tags:
+      - JiraIntegration
+      operationId: saveJiraConfig
+      responses:
+        '200':
+          description: ''
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JiraConfig'
+      summary: Save jira config
+      x-summary-source: derived
+  /integrations/jira/issueTypesV2/fields/search:
+    post:
+      tags:
+      - JiraIntegration
+      summary: Get a filtered Jira field values list
+      operationId: getJiraFieldValues
+      responses:
+        '200':
+          $ref: '#/components/responses/JiraEntitiesResp'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  fieldId:
+                    type: string
+                    x-go-name: FieldId
+                  issueTypeId:
+                    type: string
+                    x-go-name: IssueTypeId
+                  projectId:
+                    type: string
+                    x-go-name: ProjectId
+                  query:
+                    type: string
+                    x-go-name: Query
+                  siteId:
+                    type: string
+                    x-go-name: SiteId
+  /integrations/jira/issueTypesV2/schema/search:
+    post:
+      description: 'Note: Only required fields (that do not have a default value) are retrieved.'
+      tags:
+      - JiraIntegration
+      summary: Get Jira fields schemas list for an issue type
+      operationId: getJiraFieldsSchemas
+      responses:
+        '200':
+          $ref: '#/components/responses/JiraFieldsSchemasResp'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  includeFields:
+                    type: string
+                    x-go-name: IncludeFields
+                  issueTypeId:
+                    type: string
+                    x-go-name: IssueTypeId
+                  projectId:
+                    type: string
+                    x-go-name: ProjectId
+                  siteId:
+                    type: string
+                    x-go-name: SiteId
+  /integrations/jira/issueTypesV2/search:
+    post:
+      description: 'Note: Issue types are filtered to action types (exclude epics and subtasks).'
+      tags:
+      - JiraIntegration
+      summary: Get Jira issue types list
+      operationId: getJiraIssueTypes
+      responses:
+        '200':
+          $ref: '#/components/responses/JiraEntitiesResp'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginationRequest'
+  /integrations/jira/issueV2:
+    post:
+      description: '### Incident tickets (new)
+
+
+        You can create a Jira ticket for a **runtime incident** by setting `issueType` to `"incident"` and
+
+        passing exactly **one** subject with `incidentGUID`.
+
+
+        Example:
+
+
+        ```json
+
+        {
+
+        "collaborationGUID": "collab-guid",
+
+        "issueType": "incident",
+
+        "subjects": [
+
+        {
+
+        "incidentGUID": "11111111-2222-3333-4444-555555555555",
+
+        "cluster": "my-cluster",
+
+        "namespace": "my-namespace",
+
+        "kind": "Deployment",
+
+        "name": "my-workload"
+
+        }
+
+        ],
+
+        "jiraCreateIssueFields": {
+
+        "siteId": "site1",
+
+        "projectId": "project1",
+
+        "issueTypeId": "issuetype1"
+
+        },
+
+        "fields": {}
+
+        }
+
+        ```'
+      tags:
+      - JiraIntegration
+      summary: Create a Jira issue (ticket)
+      operationId: createJiraIssue
+      responses:
+        '201':
+          $ref: '#/components/responses/createJiraIssueResp'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JiraCreateIssueRequest'
+  /integrations/jira/projectsV2/search:
+    post:
+      description: Get Jira projects list
+      tags:
+      - JiraIntegration
+      operationId: getJiraProjects
+      responses:
+        '200':
+          $ref: '#/components/responses/JiraProjectsResp'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginationRequest'
+      summary: Get jira projects
+      x-summary-source: derived
+components:
+  schemas:
+    Duration:
+      type: integer
+    CreatedBy:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    TicketManager:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    AuthConfig:
+      type: object
+      properties:
+        authType:
+          $ref: '#/components/schemas/AuthenticationType'
+        token:
+          type: string
+          x-go-name: Token
+      x-go-package: github.com/armosec/cadashboardbe/integrations/tickets/jira
+    JiraConfig:
+      type: object
+      properties:
+        authConfig:
+          $ref: '#/components/schemas/AuthConfig'
+        connectionError:
+          description: Connection error fields
+          type: string
+          x-go-name: ConnectionError
+        connectionErrorStatus:
+          type: integer
+          format: int64
+          x-go-name: ConnectionErrorStatus
+        isSelfHosted:
+          type: boolean
+          x-go-name: IsSelfHosted
+        jiraCollabGUID:
+          type: string
+          x-go-name: JiraCollabGUID
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/JiraProjectConfig'
+          x-go-name: Projects
+        selectedSite:
+          $ref: '#/components/schemas/JiraEntity'
+      x-go-package: github.com/armosec/cadashboardbe/integrations/tickets/jira
+    IntOrString:
+      description: '+protobuf=true
+
+        +protobuf.options.(gogoproto.goproto_stringer)=false
+
+        +k8s:openapi-gen=true
+
+        +k8s:openapi-model-package=io.k8s.apimachinery.pkg.util.intstr'
+      type: object
+      title: 'IntOrString is a type that can hold an int32 or a string.  When used in
+
+        JSON or YAML marshalling and unmarshalling, it produces or consumes the
+
+        inner type.  This allows you to have, for example, a JSON field that can
+
+        accept a name or number.
+
+        TODO: Rename to Int32OrString'
+      properties:
+        IntVal:
+          type: integer
+          format: int32
+        StrVal:
+          type: string
+        Type:
+          $ref: '#/components/schemas/Type'
+      x-go-package: k8s.io/apimachinery/pkg/util/intstr
+    Type:
+      type: integer
+      format: int64
+      title: Type represents the stored type of IntOrString.
+      x-go-package: k8s.io/apimachinery/pkg/util/intstr
+    SearchAfterResp:
+      type: object
+      properties:
+        sort:
+          x-go-name: Sort
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    Cursor:
+      type: object
+      properties:
+        id:
+          type: string
+          x-go-name: Id
+        keepAlive:
+          $ref: '#/components/schemas/Duration'
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    EntityIdentifiers:
+      type: object
+      properties:
+        baseScore:
+          type: number
+          format: float
+          x-go-name: BaseScore
+        cloudAccountGUID:
+          type: string
+          x-go-name: CloudAccountGUID
+        cloudControlHash:
+          type: string
+          x-go-name: CloudControlHash
+        cluster:
+          type: string
+          x-go-name: Cluster
+        component:
+          type: string
+          x-go-name: Component
+        componentVersion:
+          type: string
+          x-go-name: ComponentVersion
+        controlID:
+          type: string
+          x-go-name: ControlID
+        createdBy:
+          $ref: '#/components/schemas/CreatedBy'
+        cveID:
+          type: string
+          x-go-name: CVEID
+        cveName:
+          type: string
+          x-go-name: CVEName
+        filePath:
+          type: string
+          x-go-name: FilePath
+        imageRepository:
+          type: string
+          x-go-name: ImageReposiotry
+        incidentGUID:
+          type: string
+          x-go-name: IncidentGUID
+        kind:
+          type: string
+          x-go-name: Kind
+        layerHash:
+          type: string
+          x-go-name: LayerHash
+        name:
+          type: string
+          x-go-name: Name
+        namespace:
+          type: string
+          x-go-name: Namespace
+        repoHash:
+          type: string
+          x-go-name: RepoHash
+        resourceHash:
+          type: string
+          x-go-name: ResourceHash
+        resourceID:
+          type: string
+          x-go-name: ResourceID
+        ruleHash:
+          type: string
+          x-go-name: RuleHash
+        securityRiskCategory:
+          type: string
+          x-go-name: SecurityRiskCategory
+        securityRiskID:
+          type: string
+          x-go-name: SecurityRiskID
+        securityRiskName:
+          type: string
+          x-go-name: SecurityRiskName
+        severity:
+          type: string
+          x-go-name: Severity
+        severityScore:
+          type: integer
+          format: int64
+          x-go-name: SeverityScore
+        smartRemediation:
+          type: boolean
+          x-go-name: SmartRemediation
+        type:
+          $ref: '#/components/schemas/EntityType'
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    IssueType:
+      description: Generic ticketing types used across providers
+      type: string
+      x-go-package: github.com/armosec/armosec-infra/tickets
+    PaginationRequest:
+      description: 'TODO use armotypes.V2ListRequest
+
+        V2ListRequest descripts what portion of the list the client is requesting'
+      type: object
+      properties:
+        cursor:
+          type: string
+          x-go-name: CursorDepracated
+        cursorV1:
+          $ref: '#/components/schemas/Cursor'
+        fieldsToUpdate:
+          description: 'For PUT request, can be used to update only specific fields with specific values
+
+            map of field name to new value'
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: FieldsToUpdate
+        ignoreDefaultOrderBy:
+          description: 'When true, the default sort order is ignored
+
+            TODO: take it off, and use the default sort order when OrderBy is empty'
+          type: boolean
+          x-go-name: IgnoreDefaultSort
+        innerFilters:
+          description: 'Which elements of the list to return, each field can hold multiple values separated by comma
+
+            An empty map means "return the complete list"'
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+          x-go-name: InnerFilters
+          example:
+          - severity: High,Medium
+            type: 61539,30303
+        orderBy:
+          description: 'How to order (sort) the list, field name + sort order (asc/desc), like https://www.w3schools.com/sql/sql_orderby.asp
+
+            When empty, the default sort order is used. To disable the default sort order, set IgnoreDefaultSort to true'
+          type: string
+          x-go-name: OrderBy
+          example: timestamp:asc,severity:desc
+        pageNum:
+          description: One can leave it empty for 0, then call ValidatePageProperties
+          type: integer
+          format: int64
+          x-go-name: PageNum
+        pageSize:
+          description: 'properties of the requested next page
+
+            Use ValidatePageProperties to set PageSize field'
+          type: integer
+          format: int64
+          x-go-name: PageSize
+        searchAfter:
+          $ref: '#/components/schemas/SearchAfterResp'
+        since:
+          type: string
+          format: date-time
+          default: since - begining og the time, until - now.
+          x-go-name: Since
+        ticketManager:
+          $ref: '#/components/schemas/TicketManager'
+        until:
+          type: string
+          format: date-time
+          x-go-name: Until
+      x-go-name: V2ListRequest
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    JiraAutoClosureSettings:
+      type: object
+      properties:
+        isEnabled:
+          type: boolean
+          x-go-name: IsEnabled
+        issueTypeIdToResolvedStatusId:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: IssueTypeIdToResolvedStatusId
+      x-go-package: github.com/armosec/armosec-infra/jira
+    JiraProjectConfig:
+      type: object
+      properties:
+        autoClosureSettings:
+          $ref: '#/components/schemas/JiraAutoClosureSettings'
+        defaultIssueType:
+          type: string
+          x-go-name: DefaultIssueType
+        id:
+          $ref: '#/components/schemas/IntOrString'
+        isDefault:
+          type: boolean
+          x-go-name: IsDefault
+        name:
+          type: string
+          x-go-name: Name
+      x-go-package: github.com/armosec/armosec-infra/jira
+    SearchProjectsResponse:
+      type: object
+      properties:
+        availableSites:
+          type: array
+          items:
+            $ref: '#/components/schemas/JiraEntity'
+          x-go-name: AvailableSites
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/JiraEntity'
+          x-go-name: Projects
+        selectedSite:
+          $ref: '#/components/schemas/JiraEntity'
+        total:
+          $ref: '#/components/schemas/RespTotal'
+      x-go-package: github.com/armosec/cadashboardbe/integrations/tickets/jira
+    Ticket:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          x-go-name: CreatedBy
+        customerGUID:
+          description: metadata for the ticket
+          type: string
+          x-go-name: CustomerGUID
+        error:
+          type: string
+          x-go-name: Error
+        errorCode:
+          type: integer
+          format: int64
+          x-go-name: ErrorCode
+        guid:
+          type: string
+          x-go-name: GUID
+        jiraCollabGUID:
+          type: string
+          x-go-name: JiraCollabGUID
+        link:
+          type: string
+          x-go-name: Link
+        linkTitle:
+          type: string
+          x-go-name: LinkTitle
+        owner:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: Owner
+        providerData:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: ProviderData
+        severity:
+          type: string
+          x-go-name: Severity
+        status:
+          type: string
+          x-go-name: Status
+        subjects:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+          x-go-name: Subjects
+        ticketManager:
+          $ref: '#/components/schemas/TicketManager'
+        timestamp:
+          type: string
+          format: date-time
+          x-go-name: Timestamp
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    AuthenticationType:
+      type: string
+      x-go-package: github.com/armosec/cadashboardbe/integrations/tickets/jira
+    EntityType:
+      description: EntityIdentifiers is a struct that holds the identifiers of an entity (hard typed designators)
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    JiraCreateIssueRequest:
+      type: object
+      properties:
+        collaborationGUID:
+          type: string
+          x-go-name: CollaborationGUID
+        createdBy:
+          $ref: '#/components/schemas/CreatedBy'
+        fields:
+          type: object
+          additionalProperties: {}
+          x-go-name: Fields
+        issueType:
+          $ref: '#/components/schemas/IssueType'
+        issueTypeId:
+          type: string
+          x-go-name: IssueTypeID
+        owner:
+          $ref: '#/components/schemas/EntityIdentifiers'
+        projectId:
+          type: string
+          x-go-name: ProjectID
+        siteId:
+          type: string
+          x-go-name: SiteID
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntityIdentifiers'
+          x-go-name: Subjects
+      x-go-package: github.com/armosec/armosec-infra/jira
+    RespTotal:
+      type: object
+      properties:
+        relation:
+          type: string
+          x-go-name: Relation
+        value:
+          type: integer
+          format: int64
+          x-go-name: Value
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    JiraEntity:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/IntOrString'
+        name:
+          type: string
+          x-go-name: Name
+      x-go-package: github.com/armosec/armosec-infra/jira
+    JiraFieldMetadata:
+      type: object
+      properties:
+        allowedValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/JiraEntity'
+          x-go-name: AllowedValues
+        fieldId:
+          type: string
+          x-go-name: FieldId
+        items:
+          type: string
+          x-go-name: Items
+        name:
+          type: string
+          x-go-name: Name
+        required:
+          type: boolean
+          x-go-name: Required
+        searchable:
+          type: boolean
+          x-go-name: Searchable
+        topValues:
+          type: array
+          items:
+            $ref: '#/components/schemas/JiraEntity'
+          x-go-name: TopValues
+        type:
+          type: string
+          x-go-name: Type
+      x-go-package: github.com/armosec/cadashboardbe/integrations/tickets/jira
+  responses:
+    JiraEntitiesResp:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cursor:
+                type: string
+                x-go-name: Cursor
+              response:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JiraEntity'
+                x-go-name: Response
+              total:
+                $ref: '#/components/schemas/RespTotal'
+    JiraProjectsResp:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SearchProjectsResponse'
+    JiraFieldsSchemasResp:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cursor:
+                type: string
+                x-go-name: Cursor
+              response:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JiraFieldMetadata'
+                x-go-name: Response
+              total:
+                $ref: '#/components/schemas/RespTotal'
+    BadRequestResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                detail:
+                  description: Error detail (Optional)
+                  type: string
+                  x-go-name: Detail
+                  example: '"invalid set crone job request"'
+                message:
+                  description: User-Friendly Error Messages (Optional)
+                  type: string
+                  x-go-name: Message
+                  example: '"You are running an old version of Kubescape Helm chart"'
+                url:
+                  description: URL to documentation / future investigation (Optional)
+                  type: string
+                  x-go-name: URL
+                  example: '"https://docs.armo.cloud"'
+    createJiraIssueResp:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Ticket'
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

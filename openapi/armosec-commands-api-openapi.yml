@@ -1,0 +1,88 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Commands API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Commands
+paths:
+  /commands/hostagent:
+    get:
+      description: 'Returns the installation commands for the host agent sensor, including
+
+        the automatic script and package-based installs (RPM/DEB).'
+      tags:
+      - Commands
+      summary: Get Host Agent commands
+      operationId: getHostAgentCommand
+      responses:
+        '200':
+          $ref: '#/components/responses/HostAgentCommandsResponse'
+components:
+  schemas:
+    HostAgentCommand:
+      type: object
+      properties:
+        automaticCommand:
+          type: string
+          x-go-name: AutomaticCommand
+        debCommand:
+          type: string
+          x-go-name: DebCommand
+        rpmCommand:
+          type: string
+          x-go-name: RpmCommand
+      x-go-package: github.com/armosec/cadashboardbe/commandgenerator
+  responses:
+    HostAgentCommandsResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HostAgentCommand'
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

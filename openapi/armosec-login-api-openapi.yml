@@ -1,0 +1,1375 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Login API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Login
+paths:
+  /login:
+    post:
+      description: Get session cookie for specific user + customer
+      tags:
+      - Login
+      operationId: postLogin
+      responses:
+        '200':
+          $ref: '#/components/responses/LoginResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              - password
+              properties:
+                customer:
+                  description: Customer name to log the user into.
+                  type: string
+                  x-go-name: CustomerName
+                  example: test-customer
+                customerGuid:
+                  description: Customer GUID to log the user into.
+                  type: string
+                  x-go-name: CustomerGUID
+                  example: 0f42fbe3-d81e-444d-8cc7-bc892c7623e9
+                email:
+                  description: The user Email as provided to CyberArmor identities system
+                  type: string
+                  x-go-name: Email
+                  example: xyz@test.otg
+                password:
+                  description: The user password as provided to CyberArmor identities system
+                  type: string
+                  x-go-name: Password
+                  example: '*********'
+        required: true
+      summary: Post login
+      x-summary-source: derived
+  /logout:
+    delete:
+      description: Logout specific oauth2 session and revoke the access token.
+      tags:
+      - Login
+      summary: Logout
+      operationId: deleteLogout
+      responses:
+        '200':
+          description: ''
+  /oauth2/login:
+    get:
+      description: 'Redirect to oauth2 login page of a given provider.
+
+        After the authentication process finished, redirect back to `callback`, with `status` URL parameter, which can be either, `success` or `error`'
+      tags:
+      - Login
+      summary: Redirect to oauth2 login page
+      operationId: getOauth2Login
+      parameters:
+      - x-go-name: Provider
+        name: provider
+        in: query
+        required: true
+        schema:
+          type: string
+      - x-go-name: Redirect
+        name: callback
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+  /open_id_callback:
+    get:
+      description: 'All the query params provided by CyberArmor identities system and need to be passed to this API
+
+        state
+
+        code'
+      tags:
+      - Login
+      summary: Returns URL to for login with callback
+      operationId: getOpenIdCallback
+      responses:
+        '200':
+          $ref: '#/components/responses/OpenIdCallbackResponse'
+  /open_id_url:
+    get:
+      description: Returns URL to CyberArmor identities system so the user can log in with username / Email + password and starting Oauth2 login flow
+      tags:
+      - Login
+      summary: Returns URL to for login
+      operationId: getOpenIdUrl
+      responses:
+        '200':
+          $ref: '#/components/responses/OpenIdUrlResponse'
+  /openid_customers:
+    get:
+      tags:
+      - Login
+      summary: Get the list of customers this user allowed to
+      operationId: getOpenidCustomers
+      responses:
+        '200':
+          $ref: '#/components/responses/OpenidCustomersResponse'
+    post:
+      tags:
+      - Login
+      operationId: postOpenidCustomers
+      responses:
+        '200':
+          $ref: '#/components/responses/LoginResponse'
+      summary: Post openid customers
+      x-summary-source: derived
+  /v1/customerAttributes:
+    get:
+      tags:
+      - Login
+      summary: Get various information on this user + customer
+      operationId: getCustomerAttributes
+      responses:
+        '200':
+          $ref: '#/components/responses/CustomerAttributesRespose'
+components:
+  schemas:
+    TopVulItem:
+      type: object
+      properties:
+        categories:
+          $ref: '#/components/schemas/VulnerabilityCategory'
+        coordinates:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coordinates'
+          x-go-name: Coordinates
+        description:
+          type: string
+          x-go-name: Description
+        exceptionApplied:
+          type: array
+          items:
+            $ref: '#/components/schemas/VulnerabilityExceptionPolicy'
+          x-go-name: ExceptionApplied
+        fixedIn:
+          $ref: '#/components/schemas/VulFixes'
+        healthStatus:
+          type: string
+          x-go-name: HealthStatus
+        imageHash:
+          type: string
+          x-go-name: ImageID
+        imageTag:
+          type: string
+          x-go-name: ImageTag
+        isRelevant:
+          type: boolean
+          x-go-name: IsRelevant
+        link:
+          type: string
+          x-go-name: Link
+        name:
+          type: string
+          x-go-name: Name
+        neglected:
+          type: integer
+          format: int64
+          x-go-name: NeglectedCount
+        packageName:
+          type: string
+          x-go-name: RelatedPackageName
+        packageType:
+          type: string
+          x-go-name: PackageType
+        packageVersion:
+          type: string
+          x-go-name: PackageVersion
+        severity:
+          type: string
+          x-go-name: Severity
+        severityOverall:
+          type: integer
+          format: int64
+          x-go-name: SeverityOverall
+        severityScore:
+          type: integer
+          format: int64
+          x-go-name: SeverityScore
+        urgent:
+          type: integer
+          format: int64
+          x-go-name: UrgentCount
+        workloadsCount:
+          type: integer
+          format: int64
+          x-go-name: WorkloadsCount
+      x-go-package: github.com/armosec/cadashboardbe/datastructures
+    WeeklyReport:
+      type: object
+      properties:
+        clustersScanned:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterResourceScanned'
+          x-go-name: ClustersScanned
+        clustersScannedPrevWeek:
+          type: integer
+          format: int64
+          x-go-name: ClustersScannedPrevWeek
+        clustersScannedThisWeek:
+          type: integer
+          format: int64
+          x-go-name: ClustersScannedThisWeek
+        linkToConfigurationScanningFiltered:
+          type: string
+          x-go-name: LinkToConfigurationScanningFiltered
+        linkToRegistriesScanningFiltered:
+          type: string
+          x-go-name: LinkToRegistriesScanningFiltered
+        linkToRepositoriesScanningFiltered:
+          type: string
+          x-go-name: LinkToRepositoriesScanningFiltered
+        registriesScanned:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistryScanned'
+          x-go-name: RegistriesScanned
+        registriesScannedPrevWeek:
+          type: integer
+          format: int64
+          x-go-name: RegistriesScannedPrevWeek
+        registriesScannedThisWeek:
+          type: integer
+          format: int64
+          x-go-name: RegistriesScannedThisWeek
+        repositoriesScanned:
+          type: array
+          items:
+            $ref: '#/components/schemas/RepositoryScanned'
+          x-go-name: RepositoriesScanned
+        repositoriesScannedPrevWeek:
+          type: integer
+          format: int64
+          x-go-name: RepositoriesScannedPrevWeek
+        repositoriesScannedThisWeek:
+          type: integer
+          format: int64
+          x-go-name: RepositoriesScannedThisWeek
+        top5FailedCVEs:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopVulItem'
+          x-go-name: Top5FailedCVEs
+        top5FailedControls:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopCtrlItem'
+          x-go-name: Top5FailedControls
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    RepositoryScanned:
+      type: object
+      properties:
+        reportGUID:
+          type: string
+          x-go-name: ReportGUID
+        repository:
+          $ref: '#/components/schemas/ResourceScanned'
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    GettingStartedChecklist:
+      type: object
+      properties:
+        everCollaborated:
+          type: boolean
+          x-go-name: EverCollaborated
+        everConnectedAlerting:
+          type: boolean
+          x-go-name: EverConnectedAlerting
+        everConnectedCluster:
+          description: checklist items
+          type: boolean
+          x-go-name: EverConnectedCluster
+        everConnectedTicketing:
+          type: boolean
+          x-go-name: EverConnectedTicketing
+        everInvitedTeammate:
+          type: boolean
+          x-go-name: EverInvitedTeammate
+        everScannedRegistry:
+          type: boolean
+          x-go-name: EverScannedRegistry
+        everScannedRepository:
+          type: boolean
+          x-go-name: EverScannedRepository
+        everUsedRbacVisualizer:
+          type: boolean
+          x-go-name: EverUsedRbacVisualizer
+        gettingStartedDismissed:
+          description: indicates if the user has dismissed the checklist
+          type: boolean
+          x-go-name: GettingStartedDismissed
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    Workflow:
+      type: object
+      properties:
+        attributes:
+          type: object
+          additionalProperties: {}
+          x-go-name: Attributes
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowCondition'
+          x-go-name: Conditions
+        enabled:
+          type: boolean
+          x-go-name: Enabled
+        guid:
+          type: string
+          x-go-name: GUID
+        name:
+          type: string
+          x-go-name: Name
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowNotification'
+          x-go-name: Notifications
+        scope:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowScope'
+          x-go-name: Scope
+        updatedBy:
+          type: string
+          x-go-name: UpdatedBy
+        updatedTime:
+          type: string
+          x-go-name: UpdatedTime
+      x-go-package: github.com/armosec/armosec-infra/workflows
+    ClusterResourceScanned:
+      type: object
+      properties:
+        cluster:
+          $ref: '#/components/schemas/ResourceScanned'
+        failedResources:
+          type: integer
+          format: uint64
+          x-go-name: FailedResources
+        reportGUID:
+          type: string
+          x-go-name: ReportGUID
+        shortName:
+          type: string
+          x-go-name: ShortName
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    NotificationType:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    CustomerOnboarding:
+      type: object
+      properties:
+        companySize:
+          type: string
+          x-go-name: CompanySize
+        completed:
+          type: boolean
+          x-go-name: Completed
+        interests:
+          type: array
+          items:
+            type: string
+          x-go-name: Interests
+        orgName:
+          type: string
+          x-go-name: OrgName
+        role:
+          type: string
+          x-go-name: Role
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    ClusterStatusNotificationWarpper:
+      type: object
+      properties:
+        affectedNodes:
+          type: array
+          items:
+            type: string
+          x-go-name: AffectedNodes
+        affectedPods:
+          description: for degrated
+          type: array
+          items:
+            type: string
+          x-go-name: AffectedPods
+        armoAccountName:
+          description: this is populated only if we have cloud metadata and armo account name associated with it.
+          type: string
+          x-go-name: ArmoAccountName
+        cloudMetadata:
+          $ref: '#/components/schemas/CloudMetadata'
+        cluster:
+          type: string
+          x-go-name: Cluster
+        connectionTime:
+          type: string
+          format: date-time
+          x-go-name: ConnectionTime
+        customerGUID:
+          type: string
+          x-go-name: CustomerGUID
+        lastKeepAlive:
+          type: string
+          format: date-time
+          x-go-name: LastKeepAlive
+        link:
+          type: string
+          x-go-name: Link
+        provider:
+          type: string
+          x-go-name: Provider
+        status:
+          type: string
+          x-go-name: Status
+        updateTime:
+          type: string
+          x-go-name: UpdateTime
+      x-go-package: github.com/armosec/armosec-infra/notifications
+    JiraTicketIdentifiers:
+      type: object
+      properties:
+        collaborationGUID:
+          type: string
+          x-go-name: CollaborationGUID
+        fields:
+          type: object
+          additionalProperties: {}
+          x-go-name: Fields
+        issueTypeId:
+          type: string
+          x-go-name: IssueTypeID
+        projectId:
+          type: string
+          x-go-name: ProjectID
+        siteId:
+          type: string
+          x-go-name: SiteID
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    NotificationConfigIdentifier:
+      type: object
+      properties:
+        notificationType:
+          $ref: '#/components/schemas/NotificationType'
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    Coordinates:
+      type: object
+      properties:
+        layerID:
+          type: string
+          x-go-name: FileSystemID
+        path:
+          type: string
+          x-go-name: RealPath
+      x-go-package: github.com/armosec/armoapi-go/containerscan
+    VulnerabilityCategory:
+      type: object
+      properties:
+        isRce:
+          type: boolean
+          x-go-name: IsRCE
+      x-go-package: github.com/armosec/armoapi-go/containerscan
+    AlertChannel:
+      type: object
+      properties:
+        channelType:
+          $ref: '#/components/schemas/ChannelProvider'
+        collaborationConfigId:
+          type: string
+          x-go-name: CollaborationConfigGUID
+        jiraTicketIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/JiraTicketIdentifiers'
+          x-go-name: JiraTicketIdentifiers
+        linearTicketIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinearTicketIdentifiers'
+          x-go-name: LinearTicketIdentifiers
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertConfig'
+          x-go-name: Alerts
+        scope:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertScope'
+          x-go-name: Scope
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    CustomerState:
+      description: CustomerState holds the state of the customer, used for UI purposes
+      type: object
+      properties:
+        attackChainsLastScan:
+          type: string
+          x-go-name: AttackChainsLastScan
+        enabledFeatureFlags:
+          type: object
+          additionalProperties:
+            type: boolean
+          x-go-name: FeatureFlags
+        gettingStarted:
+          $ref: '#/components/schemas/GettingStartedChecklist'
+        nodeUsage:
+          $ref: '#/components/schemas/NodeUsage'
+        onboarding:
+          $ref: '#/components/schemas/CustomerOnboarding'
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    SingleCustomer:
+      type: object
+      properties:
+        customerGUID:
+          type: string
+          x-go-name: CustomerGUID
+          example: 0f42fbe3-d81e-444d-8cc7-bc892c7623e9"
+        customerName:
+          type: string
+          x-go-name: CustomerName
+          example: test1
+      x-go-name: Oauth2Customer
+      x-go-package: github.com/armosec/cadashboardbe/datastructures
+    RegistryScanned:
+      type: object
+      properties:
+        registry:
+          $ref: '#/components/schemas/ResourceScanned'
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    PushReport:
+      type: object
+      properties:
+        custer:
+          type: string
+          x-go-name: Cluster
+        failedResources:
+          type: integer
+          format: uint64
+          x-go-name: FailedResources
+        frameworksComplianceScore:
+          type: object
+          additionalProperties:
+            type: number
+            format: float
+          x-go-name: FrameworksComplianceScore
+        reportGUID:
+          type: string
+          x-go-name: ReportGUID
+        scanType:
+          $ref: '#/components/schemas/ScanType'
+        timestamp:
+          type: string
+          format: date-time
+          x-go-name: Timestamp
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    WorkflowCondition:
+      type: object
+      properties:
+        category:
+          $ref: '#/components/schemas/WorkflowCategory'
+        parameters:
+          $ref: '#/components/schemas/NotificationParams'
+      x-go-package: github.com/armosec/armosec-infra/workflows
+    AlertConfig:
+      type: object
+      properties:
+        disabled:
+          type: boolean
+          x-go-name: Disabled
+        notificationType:
+          $ref: '#/components/schemas/NotificationType'
+        parameters:
+          $ref: '#/components/schemas/NotificationParams'
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    TeamsChannel:
+      type: object
+      properties:
+        guid:
+          type: string
+          x-go-name: GUID
+        lastTimeFailure:
+          type: string
+          x-go-name: LastTimeFailure
+        lastTimeSuccess:
+          type: string
+          x-go-name: LastTimeSuccess
+        name:
+          type: string
+          x-go-name: Name
+        testMessageStatus:
+          $ref: '#/components/schemas/TestMessageStatus'
+        webhookURL:
+          type: string
+          x-go-name: WebhookURL
+      x-go-package: github.com/armosec/armosec-infra/workflows
+    WorkflowScope:
+      type: object
+      properties:
+        cluster:
+          type: string
+          x-go-name: Cluster
+        labels:
+          type: string
+          x-go-name: Labels
+        namespace:
+          type: string
+          x-go-name: Namespace
+        workload:
+          type: string
+          x-go-name: Workload
+      x-go-package: github.com/armosec/armosec-infra/workflows
+    ResourceScanned:
+      type: object
+      properties:
+        kind:
+          type: string
+          x-go-name: Kind
+        mapSeverityToSeverityDetails:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/SeverityDetails'
+          x-go-name: MapSeverityToSeverityDetails
+        name:
+          type: string
+          x-go-name: Name
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    ChannelProvider:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    SeverityDetails:
+      type: object
+      properties:
+        failedResourcesNumber:
+          type: integer
+          format: int64
+          x-go-name: FailedResourcesNumber
+        severity:
+          type: string
+          x-go-name: Severity
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    VulnerabilityPolicy:
+      type: object
+      properties:
+        name:
+          description: The name of the vulnerability
+          type: string
+          x-go-name: Name
+          example: CVE-2022-28128
+        severityScore:
+          type: integer
+          format: int64
+          x-go-name: SeverityScore
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    LicenseType:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    SlackChannel:
+      type: object
+      properties:
+        id:
+          type: string
+          x-go-name: ChannelID
+        name:
+          type: string
+          x-go-name: ChannelName
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    ScanType:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    VulnerabilityExceptionPolicyActions:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    HostType:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    CloudMetadata:
+      type: object
+      properties:
+        account_id:
+          type: string
+          x-go-name: AccountID
+        cluster_name:
+          type: string
+          x-go-name: ClusterName
+        host_type:
+          $ref: '#/components/schemas/HostType'
+        hostname:
+          type: string
+          x-go-name: Hostname
+        instance_id:
+          type: string
+          x-go-name: InstanceID
+        instance_type:
+          type: string
+          x-go-name: InstanceType
+        machine_id:
+          type: string
+          x-go-name: MachineID
+        org_id:
+          type: string
+          x-go-name: OrgID
+        private_ip:
+          type: string
+          x-go-name: PrivateIP
+        private_ips:
+          type: array
+          items:
+            type: string
+          x-go-name: PrivateIPs
+        provider:
+          $ref: '#/components/schemas/Provider'
+        public_ip:
+          type: string
+          x-go-name: PublicIP
+        public_ips:
+          type: array
+          items:
+            type: string
+          x-go-name: PublicIPs
+        region:
+          type: string
+          x-go-name: Region
+        resource_group:
+          type: string
+          x-go-name: ResourceGroup
+        services:
+          type: array
+          items:
+            type: string
+          x-go-name: Services
+        zone:
+          type: string
+          x-go-name: Zone
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    TopCtrlCluster:
+      type: object
+      properties:
+        name:
+          type: string
+          x-go-name: Name
+        reportGUID:
+          type: string
+          x-go-name: ReportGUID
+        resourcesCount:
+          type: integer
+          format: int64
+          x-go-name: ResourcesCount
+        topFailedFramework:
+          type: string
+          x-go-name: TopFailedFramework
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    PortalDesignator:
+      description: PortalDesignator represents a single designation option
+      type: object
+      properties:
+        attributes:
+          description: Attributes that describe the targets
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: Attributes
+        designatorType:
+          type: string
+          enum:
+          - Attributes
+          - Attribute
+          - Wlid
+          - WildWlid
+          - WlidContainer
+          - WlidProcess
+          - Sid
+          x-go-enum-desc: 'Attributes DesignatorAttributes
+
+            Attribute DesignatorAttribute
+
+            Wlid DesignatorWlid  WorkloadID format.   Has two formats:   1. Kubernetes format: wlid://cluster-<cluster>/namespace-<namespace>/<kind>-<name>   2. Native format: wlid://datacenter-<datacenter>/project-<project>/native-<name>
+
+            WildWlid DesignatorWildWlid  A WorkloadID wildcard expression.   A wildcard expression that includes a cluster:    wlid://cluster-<cluster>/   An expression that includes a cluster and namespace (filters out all other namespaces):    wlid://cluster-<cluster>/namespace-<namespace>/
+
+            WlidContainer DesignatorWlidContainer
+
+            WlidProcess DesignatorWlidProcess
+
+            Sid DesignatorSid'
+          x-go-name: DesignatorType
+        sid:
+          description: A specific Secret ID
+          type: string
+          x-go-name: SID
+        wildwlid:
+          description: An expression that describes applicable workload IDs
+          type: string
+          x-go-name: WildWLID
+        wlid:
+          description: A specific Workload ID
+          type: string
+          x-go-name: WLID
+      x-go-package: github.com/armosec/armoapi-go/identifiers
+    LinearTicketIdentifiers:
+      type: object
+      properties:
+        assigneeId:
+          type: string
+          x-go-name: AssigneeID
+        fields:
+          type: object
+          additionalProperties: {}
+          x-go-name: Fields
+        teamId:
+          type: string
+          x-go-name: TeamID
+        workspaceId:
+          type: string
+          x-go-name: WorkspaceID
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    WorkflowNotification:
+      type: object
+      properties:
+        jiraTicketIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/JiraTicketIdentifiers'
+          x-go-name: JiraTicketIdentifiers
+        linearTicketIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinearTicketIdentifiers'
+          x-go-name: LinearTicketIdentifiers
+        provider:
+          $ref: '#/components/schemas/ChannelProvider'
+        slackChannels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlackChannel'
+          x-go-name: SlackChannels
+        teamsChannels:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamsChannel'
+          x-go-name: TeamsChannels
+      x-go-package: github.com/armosec/armosec-infra/workflows
+    VulFixes:
+      description: VulFixes - information bout when/how this vul was fixed
+      type: array
+      items:
+        $ref: '#/components/schemas/FixedIn'
+      x-go-package: github.com/armosec/armoapi-go/containerscan
+    TestMessageStatus:
+      type: string
+      x-go-package: github.com/armosec/armosec-infra/workflows
+    NotificationsConfig:
+      type: object
+      properties:
+        alertChannels:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/AlertChannel'
+          x-go-name: AlertChannels
+        latestClusterStatusNotification:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ClusterStatusNotificationWarpper'
+          x-go-name: LatestClusterStatusNotification
+        latestPushReports:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PushReport'
+          x-go-name: LatestPushReports
+        latestWeeklyReport:
+          $ref: '#/components/schemas/WeeklyReport'
+        teamsChannels:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamsChannel'
+          x-go-name: TeamsChannels
+        unsubscribedUsers:
+          description: Map of unsubscribed user id to notification config identifier
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/NotificationConfigIdentifier'
+          x-go-name: UnsubscribedUsers
+        webhookChannels:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookChannel'
+          x-go-name: WebhookChannels
+        workflows:
+          type: array
+          items:
+            $ref: '#/components/schemas/Workflow'
+          x-go-name: Workflows
+        workflowsConverted:
+          description: workflowsConverted is enabled only once, when user is identified as true for workflows feature flag and conversion from alert channels to workflows is done successfully.
+          type: boolean
+          x-go-name: WorkflowsConverted
+        workflowsEnabled:
+          description: workflows is enabled only once, when user is identified as true for workflows feature flag.
+          type: boolean
+          x-go-name: WorkflowsEnabled
+      x-go-package: github.com/armosec/armosec-infra/notifications
+    Subscription:
+      type: object
+      title: hold information of a single subscription.
+      properties:
+        cancelAtPeriodEnd:
+          description: determine whether a subscription that has a status of active is scheduled to be canceled at the end of the current period.
+          type: boolean
+          x-go-name: CancelAtPeriodEnd
+        currentPeriodEnd:
+          description: End of the current period that the subscription has been invoiced for. At the end of this period, a new invoice will be created.
+          type: integer
+          format: int64
+          x-go-name: CurrentPeriodEnd
+        currentPeriodStart:
+          description: End of the current period that the subscription has been invoiced for. At the end of this period, a new invoice will be created.
+          type: integer
+          format: int64
+          x-go-name: CurrentPeriodStart
+        latestInvoice:
+          description: Stripe The most recent invoice this subscription has generated.
+          type: string
+          x-go-name: LatestInvoice
+        licenseType:
+          $ref: '#/components/schemas/LicenseType'
+        numNodes:
+          description: monthly average of daily sum of max scanned Worker Nodes per cluster per day
+          type: integer
+          format: int64
+          x-go-name: NumNodes
+        startDate:
+          description: Date when the subscription was first created. The date might differ from the created date due to backdating
+          type: integer
+          format: int64
+          x-go-name: StartDate
+        stripeCustomerID:
+          description: Stripe internal customer ID, usually generated on subscription creation.
+          type: string
+          x-go-name: StripeCustomerID
+        stripeSubscriptionID:
+          description: Stripe subscription id.
+          type: string
+          x-go-name: StripeSubscriptionID
+        subscriptionStatus:
+          description: 'Stripe subscription status, optional values: incomplete, incomplete_expired, trialing, active, past_due, canceled, or unpaid.'
+          type: string
+          x-go-name: SubscriptionStatus
+        trialEnd:
+          description: If the subscription has a trial, the end of that trial.
+          type: integer
+          format: int64
+          x-go-name: TrialEnd
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    WorkflowCategory:
+      type: string
+      x-go-package: github.com/armosec/armosec-infra/workflows
+    FixedIn:
+      description: FixedIn when and which pkg was fixed (which version as well)
+      type: object
+      properties:
+        imageTag:
+          type: string
+          x-go-name: ImgTag
+        name:
+          type: string
+          x-go-name: Name
+        version:
+          type: string
+          x-go-name: Version
+      x-go-package: github.com/armosec/armoapi-go/containerscan
+    NotificationParams:
+      type: object
+      properties:
+        clusterStatus:
+          description: cluster status params
+          type: array
+          items:
+            type: string
+          x-go-name: ClusterStatus
+        cvss:
+          type: number
+          format: float
+          x-go-name: CVSS
+        cvssMax:
+          type: number
+          format: float
+          x-go-name: CVSSMax
+        driftPercentage:
+          type: integer
+          format: int64
+          x-go-name: DriftPercentage
+        fixable:
+          type: boolean
+          x-go-name: Fixable
+        highLikelihood:
+          type: boolean
+          x-go-name: HighLikelihood
+        hotCVE:
+          description: hot CVE notification
+          type: boolean
+          x-go-name: HotCVE
+        inUse:
+          type: boolean
+          x-go-name: InUse
+        incidentPolicyGUIDs:
+          type: array
+          items:
+            type: string
+          x-go-name: IncidentPolicyGUIDs
+        knownExploited:
+          description: vulnerability params
+          type: boolean
+          x-go-name: KnownExploited
+        minSeverity:
+          type: integer
+          format: int64
+          x-go-name: MinSeverity
+        noExploitability:
+          type: boolean
+          x-go-name: NoExploitability
+        riskFactors:
+          type: array
+          items:
+            type: string
+          x-go-name: RiskFactors
+        scanFailure:
+          description: system health — scan failure
+          type: boolean
+          x-go-name: ScanFailure
+        securityRiskIDs:
+          description: security risks params
+          type: array
+          items:
+            type: string
+          x-go-name: SecurityRiskIDs
+        severities:
+          description: params for workflows
+          type: array
+          items:
+            type: string
+          x-go-name: Severities
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    VulnerabilityExceptionPolicy:
+      type: object
+      required:
+      - policyType
+      - actions
+      - designators
+      - vulnerabilities
+      properties:
+        actions:
+          description: Actions to apply (currently only 'ignore' is available)
+          type: array
+          minimum: 1
+          items:
+            $ref: '#/components/schemas/VulnerabilityExceptionPolicyActions'
+          x-go-name: Actions
+          example:
+          - ignore
+        attributes:
+          type: object
+          additionalProperties: {}
+          x-go-name: Attributes
+        createdBy:
+          type: string
+          x-go-name: CreatedBy
+        creationTime:
+          description: Creation time of the policy
+          type: string
+          x-go-name: CreationTime
+          example: '2022-03-31T08:57:58.048014'
+        designators:
+          description: Items to apply the actions on
+          type: array
+          minimum: 1
+          items:
+            $ref: '#/components/schemas/PortalDesignator'
+          x-go-name: Designatores
+        expirationDate:
+          type: string
+          format: date-time
+          x-go-name: ExpirationDate
+        expiredOnFix:
+          type: boolean
+          x-go-name: ExpiredOnFix
+        guid:
+          type: string
+          x-go-name: GUID
+        name:
+          type: string
+          x-go-name: Name
+        policyType:
+          description: Policy type. Must be 'vulnerabilityExceptionPolicy'
+          type: string
+          x-go-name: PolicyType
+          example: vulnerabilityExceptionPolicy
+        reason:
+          type: string
+          x-go-name: Reason
+        updatedTime:
+          type: string
+          x-go-name: UpdatedTime
+        vulnerabilities:
+          description: Vulnerabilities to take the actions on
+          type: array
+          minimum: 1
+          items:
+            $ref: '#/components/schemas/VulnerabilityPolicy'
+          x-go-name: VulnerabilityPolicies
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    CustomerInfo:
+      description: PortalCustomer holds basic customer data from portal BE
+      type: object
+      properties:
+        activeSubscription:
+          $ref: '#/components/schemas/Subscription'
+        attributes:
+          type: object
+          additionalProperties: {}
+          x-go-name: Attributes
+        description:
+          type: string
+          x-go-name: Description
+        email:
+          type: string
+          x-go-name: Email
+        guid:
+          type: string
+          x-go-name: GUID
+        historicalSubscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+          x-go-name: HistoricalSubscriptions
+        initial_license_type:
+          description: DEPRECATED
+          type: string
+          x-go-name: InitialLicenseType
+        last_login_date:
+          type: string
+          x-go-name: LastLoginDate
+        license_type:
+          description: DEPRECATED - moved to subscription
+          type: string
+          x-go-name: LicenseType
+        maxFreeNodes:
+          description: customizable field that overrides the default max
+          type: integer
+          format: int64
+          x-go-name: MaxFreeNodes
+        name:
+          type: string
+          x-go-name: Name
+        notifications_config:
+          $ref: '#/components/schemas/NotificationsConfig'
+        open_ai_request_count:
+          type: integer
+          format: int64
+          x-go-name: OpenAiRequestCount
+        retentionDisabled:
+          type: boolean
+          x-go-name: RetentionDisabled
+        state:
+          $ref: '#/components/schemas/CustomerState'
+        subscription_date:
+          type: string
+          x-go-name: SubscriptionDate
+        subscription_expiration:
+          description: DEPRECATED - moved to subscription
+          type: string
+          x-go-name: SubscriptionExpiration
+        updatedTime:
+          type: string
+          x-go-name: UpdatedTime
+      x-go-name: PortalCustomer
+      x-go-package: github.com/armosec/cadashboardbe/k8srestapi/backendconnector
+    AlertScope:
+      type: object
+      properties:
+        cluster:
+          type: string
+          x-go-name: Cluster
+        namespaces:
+          type: array
+          items:
+            type: string
+          x-go-name: Namespaces
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    Provider:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    WebhookChannel:
+      type: object
+      properties:
+        guid:
+          type: string
+          x-go-name: GUID
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: Headers
+        lastTimeFailure:
+          type: string
+          x-go-name: LastTimeFailure
+        lastTimeSuccess:
+          type: string
+          x-go-name: LastTimeSuccess
+        name:
+          type: string
+          x-go-name: Name
+        testMessageStatus:
+          $ref: '#/components/schemas/TestMessageStatus'
+        webhookURL:
+          type: string
+          x-go-name: WebhookURL
+      x-go-package: github.com/armosec/armosec-infra/workflows
+    TopCtrlItem:
+      type: object
+      properties:
+        baseScore:
+          type: integer
+          format: int64
+          x-go-name: BaseScore
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopCtrlCluster'
+          x-go-name: Clusters
+        clustersCount:
+          type: integer
+          format: int64
+          x-go-name: ClustersCount
+        description:
+          type: string
+          x-go-name: Description
+        guid:
+          type: string
+          x-go-name: ControlGUID
+        id:
+          type: string
+          x-go-name: ControlID
+        name:
+          type: string
+          x-go-name: Name
+        remediation:
+          type: string
+          x-go-name: Remediation
+        severityOverall:
+          type: integer
+          format: int64
+          x-go-name: SeverityOverall
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    NodeUsage:
+      type: object
+      properties:
+        maxNodesSumDate:
+          description: date of MaxNodesSumEver
+          type: string
+          x-go-name: MaxNodesSumDate
+        maxNodesSumEver:
+          description: max sum of nodes across all clusters ever scanned on one day
+          type: integer
+          format: int64
+          x-go-name: MaxNodesSumEver
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+  responses:
+    OpenIdUrlResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: string
+    LoginResponse:
+      description: ''
+    OpenidCustomersResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/SingleCustomer'
+    OpenIdCallbackResponse:
+      description: ''
+      headers:
+        bearer:
+          description: 'String of Oauth2-JWT access token in base64 to send back to CyberArmor backend inside "Authorization" header. Authorization type: bearer
+
+            User must use this bearer to /openid_customers API to get valid cookie for specific customer.
+
+            Caller can use this decoded JWT to get some information about the user.'
+          schema:
+            type: string
+    CustomerAttributesRespose:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              customerInfo:
+                $ref: '#/components/schemas/CustomerInfo'
+              unreadIncidents:
+                type: integer
+                format: int64
+                x-go-name: UnreadIncidents
+                example: 44
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

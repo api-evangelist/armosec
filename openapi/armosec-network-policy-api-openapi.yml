@@ -1,0 +1,162 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Network Policy API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Network Policy
+paths:
+  /networkpolicies:
+    post:
+      description: This endpoint retrieves all network policies for the provided customer GUID, allowing optional filters to narrow down results.
+      tags:
+      - Network Policy
+      summary: Retrieve all network policies for a customer
+      operationId: listNetworkPolicies
+      parameters:
+      - x-go-name: CustomerGUID
+        description: The customer GUID for identifying the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                innerFilters:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      clusterShortName:
+                        description: Specify the cluster's short name.
+                        type: string
+                        x-go-name: ClusterShortName
+                      kind:
+                        description: Filter by Kubernetes object kind (e.g., Deployment, Pod, etc.).
+                        type: string
+                        x-go-name: Kind
+                      label:
+                        description: Filter by specific labels.
+                        type: string
+                        x-go-name: Label
+                      namespace:
+                        description: Filter by namespace.
+                        type: string
+                        x-go-name: Namespace
+                      status:
+                        description: Filter by network policy status.
+                        type: string
+                        x-go-name: Status
+                      type:
+                        description: Filter by network policy type.
+                        type: string
+                        x-go-name: Type
+                      workload:
+                        description: Filter by workload name.
+                        type: string
+                        x-go-name: Workload
+                  x-go-name: InnerFilters
+        description: Optional filters for narrowing down the network policies.
+  /networkpolicies/generate:
+    post:
+      description: This endpoint generates network policies for the specified workload by providing the required filters.
+      tags:
+      - Network Policy
+      summary: Generate network policies for specific workloads
+      operationId: generateNetworkPolicy
+      parameters:
+      - x-go-name: CustomerGUID
+        description: The customer GUID for identifying the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                innerFilters:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      cluster:
+                        description: The ARN of the cluster.
+                        type: string
+                        x-go-name: Cluster
+                      name:
+                        description: The name of the workload.
+                        type: string
+                        x-go-name: Name
+                      namespace:
+                        description: The namespace where the workload resides.
+                        type: string
+                        x-go-name: Namespace
+                  x-go-name: InnerFilters
+        description: Required filters for generating network policies.
+        required: true
+components:
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

@@ -1,0 +1,87 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Features API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Features
+paths:
+  /features:
+    get:
+      description: Get Features
+      tags:
+      - Features
+      operationId: getFeatures
+      responses:
+        '200':
+          $ref: '#/components/responses/FeaturesListResponse'
+      summary: Get features
+      x-summary-source: derived
+components:
+  schemas:
+    FeaturesResponse:
+      type: object
+      properties:
+        features:
+          description: Features List
+          type: array
+          items:
+            type: string
+          x-go-name: Features
+          example:
+          - feature1
+          - feature2
+      x-go-package: github.com/armosec/cadashboardbe/httphandlerv2
+  responses:
+    FeaturesListResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FeaturesResponse'
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

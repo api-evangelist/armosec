@@ -1,260 +1,1480 @@
 openapi: 3.2.0
 info:
-  title: ARMO Platform Posture API
-  description: The ARMO Platform API exposes ARMO's cloud-native and Kubernetes security data over REST.
-  version: '1.0'
-  contact:
-    name: ARMO
-    url: https://www.armosec.io
-  license:
-    name: ARMO Platform Terms
-    url: https://www.armosec.io/terms-of-service/
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Posture API
+  version: 1.0.0
 servers:
 - url: https://api.armosec.io/api/v1
-  description: EU region
-- url: https://api.us.armosec.io/api/v1
-  description: US region
+- url: http://api.armosec.io/api/v1
 security:
-- apiKeyAuth: []
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
 tags:
 - name: Posture
-  description: KSPM posture and compliance framework results.
 paths:
-  /posture/frameworks:
+  /posture/clustersOvertime:
     post:
-      operationId: getPostureFrameworks
+      description: 'Returns list of clusters, each with summary for each framework along with history of previous scans over time per framwork.
+
+        This is a combination of `/posture/frameworks` along with `/api/v1/posture/overtime`.
+
+
+        #### Request object examples
+
+        Get the result for all clusters of scans between 2020-11-24 09:37:45 AM and 2020-11-28 05:37:45 AM.
+
+        ```javascript
+
+        {
+
+        "since": "2020-11-24T09:37:45.633230367-05:00", // optional
+
+        "until": "2020-11-28T05:37:45.633230937-05:00" // optional
+
+        }
+
+        ```
+
+        Get the result of the runs for clusters contains ''cluster-001'' in the cluster name
+
+        ```json
+
+        {
+
+        "innerFilters": [
+
+        {
+
+        "clusterName": "cluster 001|like"
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+        Get the result of the runs for clusters contains ''cluster-test-1'' in the cluster name
+
+        ```json
+
+        {
+
+        "innerFilters": [
+
+        {
+
+        "clusterName": "cluster-test-1"
+
+        }
+
+        ]
+
+        }
+
+        ```'
       tags:
       - Posture
-      summary: Get posture scan summary per framework
-      description: Returns the scan summary for each compliance framework.
-      requestBody:
-        $ref: '#/components/requestBodies/ListQuery'
+      summary: Get clusters list with history
+      operationId: postClustersOvertime
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid4
       responses:
         '200':
-          description: Per-framework summaries.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/PostureClustersOvertimeResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaginationRequest'
+        description: Generic pagination request body parameters
   /posture/controls:
     post:
-      operationId: getPostureControls
+      description: '### Query params
+
+        `customerGUID` - required.
+
+        Gloabl filters (cluster, namespace)
+
+
+        ### Request object
+
+        Standart request body for pagination APIs
+
+
+        #### Request object examples
+
+        Get top 5 controls with the highest number of affected resources from all frameworks:
+
+        ```json
+
+        {
+
+        "pageSize": 5,
+
+        "orderBy": "affectedResourcesCount:desc"
+
+        }
+
+        ```
+
+        Get all failed controls for "MITRE" framework:
+
+        ```json
+
+        {
+
+        "pageSize": 50,
+
+        "innerFilters": [
+
+        {
+
+        "frameworkName": "MITRE",
+
+        "statusText": "failed"
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+        Get next page of previous request:
+
+        ```json
+
+        {
+
+        "pageSize": 50,
+
+        "pageNum": 2,
+
+        "innerFilters": [
+
+        {
+
+        "frameworkName": "MITRE",
+
+        "statusText": "failed"
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+        Discussion: The following request (control for resource) needs new API?
+
+        Get all failed controls for resource "wlid://cluster-cluster1/namespace-namespace2/pod-my-pod" for "MITRE" framework in specific report:
+
+        ```json
+
+        {
+
+        "innerFilters":[
+
+        {
+
+        "frameworkName":"MITRE",
+
+        "statusText":"failed",
+
+        "resource.name":"wlid://cluster-cluster1/namespace-namespace2/pod-my-pod",
+
+        "reportGUID":"adsdsad-fdsfdsf-fdsfdsf-fdsfdf-fdsf"
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        ### Response object
+
+        Standart response body for pagination APIs
+
+        There is no gurentee there will be any control in the "response" list or to the numbers of the elements in it.
+
+
+        #### Response object example
+
+        ```json
+
+        {
+
+        "total": {
+
+        "value": 186,
+
+        "relation": "eq"
+
+        },
+
+        "response": [
+
+        {
+
+        "designators": {
+
+        "designatorType": "",
+
+        "attributes": {
+
+        "cluster": "minikube1",
+
+        "customerGUID": "1e3a88bf-92ce-44f8-914e-cbe71830d566",
+
+        "rbacQuery": "Show who can access secrets"
+
+        }
+
+        },
+
+        "id": "C-0001",
+
+        "guid":"111111111-aaaaaaaaaaaaa-bbbbbbbbb-aaaaaaaaaa",
+
+        "name": "Privilege escalation",
+
+        "affectedResourcesCount": 10,
+
+        "previousAffectedResourcesCount": 5,
+
+        "frameworkName": "MITRE",
+
+        "remediation": "don''t give high privileges to container",
+
+        "status": 3,
+
+        "statusText": "failed",
+
+        "description": "lorem ipsum ...",
+
+        "section": "Initial access",
+
+        "relevantCloudProvides": null,
+
+        "controlInputs": null
+
+        },
+
+        {
+
+        "designators": {
+
+        "designatorType": "",
+
+        "attributes": {
+
+        "cluster": "minikube1",
+
+        "customerGUID": "1e3a88bf-92ce-44f8-914e-cbe71830d566",
+
+        "hostSensor": "true"
+
+        }
+
+        },
+
+        "id": "C-0021",
+
+        "guid":"111111111-aaaaaaaaaaaaa-bbbbbbbbb-cccccc",
+
+        "name": "Untrusted image registry",
+
+        "affectedResourcesCount": 45,
+
+        "previousAffectedResourcesCount": 15,
+
+        "frameworkName": "MITRE",
+
+        "remediation": "don''t give high privileges to container",
+
+        "status": 2,
+
+        "statusText": "warning",
+
+        "description": "lorem ipsum ...",
+
+        "section": "Initial access",
+
+        "relevantCloudProvides": ["EKS", "GKE"],
+
+        "controlInputs": [
+
+        {
+
+        "Rulename": "rule-credentials-configmap",
+
+        "Inputs": [
+
+        {
+
+        "attributeName": "sensitiveValues",
+
+        "values": [ "PRIVATE KEY", "eyJhbGciO"]
+
+        }
+
+        ]
+
+        }
+
+        ]
+
+        }
+
+        ],
+
+        "cursor": ""
+
+        }
+
+        ```
+
+        ### Special fields explanation
+
+        `complianceScore` - how compliant this control is (returns -1 for old versions that don''t have this information)
+
+        `relevantCloudProvides` - this control is relevant for clusters managed by one of these cloud providers.
+
+        `controlInputs` - name of configurable list and it''s values that were used in this scan, per rule.
+
+        `designators.attributes.rbacQuery` - if appears = name of query in rbac visualizer that''s related to this control.
+
+        `designators.attributes.hostSensor` - if appears and value is "true" = indication of host sensor control.'
       tags:
       - Posture
-      summary: Get posture control results
-      description: Returns the list of posture controls and their run results.
-      requestBody:
-        $ref: '#/components/requestBodies/ListQuery'
+      summary: Returns list of posture controls run results
+      operationId: postPostureControls
       responses:
         '200':
-          description: Control results.
+          description: PaginationResponseBase
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: '#/components/schemas/PaginationResponseBase'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaginationRequest'
+        description: Generic pagination request body parameters
   /posture/controls/sections:
     post:
-      operationId: getPostureControlSections
+      description: 'Returns a list of framework sub-section summaries based on the parent parameter.
+
+        In the case of no parent, or multiple parents, return the ''root'' sections.
+
+        There is no pagination for this endpoint. The maximum amount of sections is `1000`.
+
+
+        ### Request Object
+
+        Regular pagination request filters. The pagination attributes will be ignored.
+
+        All the filters for `/posture/controls` are available here as well.
+
+
+        ### Example filters
+
+        Get the subsection of section `"4"` in CIS framework:
+
+
+        `POST /posture/controls/sections?parent=4`
+
+        ```json
+
+        {
+
+        "innerFilters": [
+
+        {
+
+        "frameworkName": "CIS"
+
+        }
+
+        ]
+
+        }
+
+        ```'
       tags:
       - Posture
       summary: Get framework sections
-      requestBody:
-        $ref: '#/components/requestBodies/ListQuery'
+      operationId: postControlsSections
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid4
+      - x-go-name: Parent
+        name: parent
+        in: query
+        schema:
+          type: string
       responses:
         '200':
-          description: Framework sections.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/PostureFrameworkSubsectionsResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaginationRequest'
+        description: Generic pagination request body parameters
+  /posture/frameworks:
+    post:
+      description: 'Returns list of summaries of the latest posture runs per framework
+
+
+        #### Request object example
+
+        Get the latest result of the runs (per framework) which ran between `2020-11-24 09:37:45 AM` and `2020-11-28 05:37:45 AM`.
+
+        ```javascript
+
+        {
+
+        "since": "2020-11-24T09:37:45.633230367-05:00", // optional
+
+        "until": "2020-11-28T05:37:45.633230937-05:00" // optional
+
+        }
+
+        ```
+
+        Get the result of the runs for cluster ''cluster-001''
+
+        ```javascript
+
+        {
+
+        "since": "2020-11-24T09:37:45.633230367-05:00", // optional
+
+        "until": "2020-11-28T05:37:45.633230937-05:00", // optional
+
+        "innerFilters": [
+
+        {
+
+        "designators.attributes.cluster": "cluster 001"
+
+        }
+
+        ]
+
+        }
+
+        ```'
+      tags:
+      - Posture
+      summary: Get scan summary per framework
+      operationId: postPostureFrameworks
+      responses:
+        '200':
+          $ref: '#/components/responses/PostureFrameworksResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaginationRequest'
+        description: Generic pagination request body parameters
   /posture/resources:
     post:
-      operationId: getPostureResources
+      description: '### Query params
+
+        `customerGUID` - required
+
+        Gloabl filters (cluster, namespace)
+
+        `relatedExceptions` - optional. Possible values: true/false. Default - "false". Whether to fill the relatedExceptions list. `recommendations` - optional. Possible values: true/false. Default - "false". Whether to fill the recommendations list. `controlName` - optional. The name of the control to fill the exceptions for (overrides the controlID in the "failedControls" inner filter)
+
+
+        ### Request object
+
+        Standart request body for pagination APIs
+
+
+        #### Request object examples
+
+        Get top 5 resources with the highest number of failed controls from all frameworks:
+
+        ```json
+
+        {
+
+        "pageSize": 5,
+
+        "orderBy": "failedControlsCount:desc"
+
+        }
+
+        ```
+
+        Get all failed Pods resources for "MITRE" framework:
+
+        ```json
+
+        {
+
+        "innerFilters": [
+
+        {
+
+        "frameworkName": "MITRE",
+
+        "resourceKind": "Pod"
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+        Get all resources for a given failed control in a given framework in specific report:
+
+        ```json
+
+        {
+
+        "innerFilters": [
+
+        {
+
+        "frameworkName": "MITRE",
+
+        "statusText": "failed",
+
+        "failedControls": "C0002",
+
+        "reportGUID": "adsdsad-fdsfdsf-fdsfdsf-fdsfdf-fdsf"
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        ### Response object
+
+        Standart response body for pagination APIs
+
+        There is no gurentee there will be any resource in the "response" list or to the numbers of the elements in it. "failedControls" field is combined from all the failed controls + the warning controls, while the "warningControls" holds just the list of warning controls. #### Response object example
+
+        ```json
+
+        {
+
+        "total": {
+
+        "value": 186,
+
+        "relation": "eq"
+
+        },
+
+        "response": [
+
+        {
+
+        "designators": {
+
+        "attributes": {
+
+        "cluster": "cluster1",
+
+        "namespace": "namespace2",
+
+        "kind": "pod",
+
+        "name": "my-pod"
+
+        }
+
+        },
+
+        "name": "wlid://cluster-cluster1/namespace-namespace2/pod-my-pod",
+
+        "failedControls": [
+
+        "C0023",
+
+        "C0329",
+
+        "C0720"
+
+        ],
+
+        "failedControlsCount": 8,
+
+        "warningControls": [
+
+        "C0027",
+
+        "C0322",
+
+        "C0721"
+
+        ],
+
+        "warningControlsCount": 34,
+
+        "statusText": "warning",
+
+        "status": 2,
+
+        "remediation": [
+
+        "C0027: remove privilege",
+
+        "C0721: use another image"
+
+        ],
+
+        "resourceKind": "Pod",
+
+        "frameworkName": "MITRE",
+
+        "exceptionRecommendaion": "e.g.'
       tags:
       - Posture
-      summary: Get resources affected by posture issues
+      summary: Returns list of resources which reported by posture report as affected resource
+      operationId: postPostureResources
+      responses:
+        '200':
+          description: PaginationResponseBase
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginationResponseBase'
       requestBody:
-        $ref: '#/components/requestBodies/ListQuery'
-      responses:
-        '200':
-          description: Affected resources.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /posture/exception:
-    get:
-      operationId: listPostureExceptions
-      tags:
-      - Posture
-      summary: List posture exceptions
-      responses:
-        '200':
-          description: Posture exceptions.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaginationRequest'
+        description: Generic pagination request body parameters
+  /posture/resources/highlights:
     post:
-      operationId: createPostureException
+      description: '### Query params
+
+        customerGUID - required
+
+
+        ### Request object
+
+        Standart request body for pagination APIs
+
+
+        ### Request object examples
+
+        Get specific resource for a given control in a specific report:
+
+        ```javascript
+
+        {
+
+        "innerFilters":[
+
+        {
+
+        "name":"spiffe://cluster-a/namespace-b/deployment-c", // either this or resourceID
+
+        "controlID":"C-0002",
+
+        "reportGUID":"adsdsad-fdsfdsf-fdsfdsf-fdsfdf-fdsf", // mandatory
+
+        "frameworkName":"MITRE"
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        #### Response object
+
+        Standart response body for pagination APIs
+
+        There is no gurentee there will be any resource in the "response" list or to the numbers of the elements in it.
+
+        "failedControls" field is combined from all the failed controls + the warning controls, while the "warningControls" holds just the list of warning controls.
+
+        usually u''re expected to request a SINGLE object and thus get a single object,
+
+        for the sake of API unification we still return it the same way
+
+
+        ### Response object example
+
+        ```json
+
+        {
+
+        "total":{
+
+        "value":1,
+
+        "relation":"eq"
+
+        },
+
+        "response":[
+
+        {
+
+        "rawObject":"",
+
+        "highlights":[
+
+        "spec.template.spec.containers[0].image"
+
+        ],
+
+        "fixPaths":[
+
+        {
+
+        "spec.containers[0].securityContext.runAsNonRoot":"true"
+
+        },
+
+        {
+
+        "spec.containers[1].securityContext.runAsNonRoot":"true"
+
+        }
+
+        ]
+
+        }
+
+        ],
+
+        "cursor":""
+
+        }
+
+        ```'
       tags:
       - Posture
-      summary: Create a posture exception
+      summary: Returns list of resources which reported by posture report as affected resource
+      operationId: postPostureResourcesHighlights
+      responses:
+        '200':
+          description: PaginationResponseBase
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginationResponseBase'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
       requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
-      responses:
-        '200':
-          description: Created.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-    put:
-      operationId: updatePostureException
-      tags:
-      - Posture
-      summary: Update a posture exception
-      requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
-      responses:
-        '200':
-          description: Updated.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-    delete:
-      operationId: deletePostureException
-      tags:
-      - Posture
-      summary: Delete a posture exception
-      responses:
-        '200':
-          description: Deleted.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /repositoryPosture/repositories:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaginationRequest'
+        description: Generic pagination request body parameters
+  /uniqueValues/posture/framework:
     post:
-      operationId: getRepositoryPostureRepositories
+      description: '### Query params
+
+        customerGUID - required
+
+        Gloabl filters (cluster, namespace)
+
+
+        ### Request object
+
+        Standart request body for unique values APIs
+
+
+        ### Request object example
+
+        Get all available framework names
+
+        ```json
+
+        {
+
+        "fields": {
+
+        "name": ""
+
+        }
+
+        }
+
+        ```
+
+
+        ### Response object
+
+        Standart response body for unique values APIs
+
+        There is no gurentee there will be any value in the "fields" or in "fieldsCount"
+
+
+        ### Response object example
+
+        ```json
+
+        {
+
+        "fields": {
+
+        "name": [
+
+        "MITRE",
+
+        "ARMO BEST"
+
+        ]
+
+        },
+
+        "fieldsCount": {
+
+        "name": [
+
+        {
+
+        "key": "MITRE",
+
+        "count": 144
+
+        },
+
+        {
+
+        "key": "ARMO BEST",
+
+        "count": 55
+
+        }
+
+        ]
+
+        }
+
+        }'
       tags:
       - Posture
-      summary: Get repository (IaC) posture summary by repository
-      requestBody:
-        $ref: '#/components/requestBodies/ListQuery'
+      summary: Get values for inner filter of /posture/frameworks POST requests
+      operationId: postUniqueValuesPostureFramework
       responses:
         '200':
-          description: Repository posture summary.
+          description: PaginationResponseBase
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /repositoryPosture/failedControls:
+                $ref: '#/components/schemas/PaginationResponseBase'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaginationRequest'
+        description: Generic pagination request body parameters
+  /uniqueValues/posture/resources:
     post:
-      operationId: getRepositoryPostureFailedControls
+      description: '### Query params
+
+        customerGUID - required
+
+        Gloabl filters (cluster, namespace)
+
+
+        ### Request object
+
+        Standart request body for unique values APIs
+
+
+        ### Request object example
+
+        Get all available resourceKind values
+
+        ```json
+
+        {
+
+        "fields": {
+
+        "resourceKind": ""
+
+        }
+
+        }
+
+        ```
+
+
+        ### Response object
+
+        Standart response body for unique values APIs.
+
+        There is no gurentee there will be any value in the "fields" or in "fieldsCount"
+
+
+        #### Response object example
+
+        ```json
+
+        {
+
+        "fields": {
+
+        "resourceKind": [
+
+        "Pod",
+
+        "Deployment"
+
+        ]
+
+        },
+
+        "fieldsCount": {
+
+        "resourceKind": [
+
+        {
+
+        "key": "Pod",
+
+        "count": 144
+
+        },
+
+        {
+
+        "key": "Deployment",
+
+        "count": 55
+
+        }
+
+        ]
+
+        }
+
+        }
+
+        ```
+
+
+        ### Status enumuration
+
+        ```json
+
+        {
+
+        "unknown":0,
+
+        "passed":1,
+
+        "warning":2,
+
+        "failed":3,
+
+        "skipped":4
+
+        }'
       tags:
       - Posture
-      summary: Get failed controls summary for repository posture
-      requestBody:
-        $ref: '#/components/requestBodies/ListQuery'
+      summary: Get values for inner filter of /posture/resources POST requests
+      operationId: postUniqueValuesPostureResources
       responses:
         '200':
-          description: Failed controls summary.
+          description: PaginationResponseBase
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: '#/components/schemas/PaginationResponseBase'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaginationRequest'
+        description: Generic pagination request body parameters
 components:
-  requestBodies:
-    ListQuery:
-      required: false
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ListQuery'
-    GenericBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            additionalProperties: true
   schemas:
-    ListResponse:
+    Duration:
+      type: integer
+    TicketManager:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PostureFrameworkOverTimeCoord:
       type: object
       properties:
-        total:
+        complianceScore:
+          type: number
+          format: float
+          x-go-name: ComplianceScore
+        reportGUID:
+          type: string
+          x-go-name: ReportID
+        timestamp:
+          type: string
+          format: date-time
+          x-go-name: Timestamp
+        value:
+          type: number
+          format: float
+          x-go-name: ScoreValue
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    SearchAfterResp:
+      type: object
+      properties:
+        sort:
+          x-go-name: Sort
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    Cursor:
+      type: object
+      properties:
+        id:
+          type: string
+          x-go-name: Id
+        keepAlive:
+          $ref: '#/components/schemas/Duration'
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PaginationRequest:
+      description: 'TODO use armotypes.V2ListRequest
+
+        V2ListRequest descripts what portion of the list the client is requesting'
+      type: object
+      properties:
+        cursor:
+          type: string
+          x-go-name: CursorDepracated
+        cursorV1:
+          $ref: '#/components/schemas/Cursor'
+        fieldsToUpdate:
+          description: 'For PUT request, can be used to update only specific fields with specific values
+
+            map of field name to new value'
           type: object
-          properties:
-            value:
-              type: integer
-        response:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-      additionalProperties: true
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-    ListQuery:
-      type: object
-      description: ARMO's list endpoints accept a common query body with pagination, sorting, and field filters. Exact filter keys vary per resource.
-      properties:
-        pageSize:
-          type: integer
-          default: 50
-        pageNum:
-          type: integer
-          default: 1
-        orderBy:
-          type: string
+          additionalProperties:
+            type: string
+          x-go-name: FieldsToUpdate
+        ignoreDefaultOrderBy:
+          description: 'When true, the default sort order is ignored
+
+            TODO: take it off, and use the default sort order when OrderBy is empty'
+          type: boolean
+          x-go-name: IgnoreDefaultSort
         innerFilters:
+          description: 'Which elements of the list to return, each field can hold multiple values separated by comma
+
+            An empty map means "return the complete list"'
           type: array
           items:
             type: object
-            additionalProperties: true
+            additionalProperties:
+              type: string
+          x-go-name: InnerFilters
+          example:
+          - severity: High,Medium
+            type: 61539,30303
+        orderBy:
+          description: 'How to order (sort) the list, field name + sort order (asc/desc), like https://www.w3schools.com/sql/sql_orderby.asp
+
+            When empty, the default sort order is used. To disable the default sort order, set IgnoreDefaultSort to true'
+          type: string
+          x-go-name: OrderBy
+          example: timestamp:asc,severity:desc
+        pageNum:
+          description: One can leave it empty for 0, then call ValidatePageProperties
+          type: integer
+          format: int64
+          x-go-name: PageNum
+        pageSize:
+          description: 'properties of the requested next page
+
+            Use ValidatePageProperties to set PageSize field'
+          type: integer
+          format: int64
+          x-go-name: PageSize
+        searchAfter:
+          $ref: '#/components/schemas/SearchAfterResp'
         since:
           type: string
           format: date-time
-    GenericResponse:
+          default: since - begining og the time, until - now.
+          x-go-name: Since
+        ticketManager:
+          $ref: '#/components/schemas/TicketManager'
+        until:
+          type: string
+          format: date-time
+          x-go-name: Until
+      x-go-name: V2ListRequest
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RecordStatus:
+      type: integer
+      format: int64
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RespTotal:
       type: object
-      additionalProperties: true
+      properties:
+        relation:
+          type: string
+          x-go-name: Relation
+        value:
+          type: integer
+          format: int64
+          x-go-name: Value
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PostureFrameworkSummary:
+      type: object
+      properties:
+        complianceScorev1:
+          type: number
+          format: float
+          x-go-name: ComplianceScore
+        deletionStatus:
+          $ref: '#/components/schemas/RecordStatus'
+        designators:
+          $ref: '#/components/schemas/PortalDesignator'
+        failedControls:
+          type: integer
+          format: int64
+          x-go-name: FailedControls
+        improvementScore:
+          type: number
+          format: float
+          x-go-name: ImprovementScore
+        name:
+          type: string
+          x-go-name: Name
+        reportGUID:
+          type: string
+          x-go-name: ReportID
+        skippedControls:
+          type: integer
+          format: int64
+          x-go-name: SkippedControls
+        timestamp:
+          type: string
+          format: date-time
+          x-go-name: Timestamp
+        totalControls:
+          type: integer
+          format: int64
+          x-go-name: TotalControls
+        typeTags:
+          type: array
+          items:
+            type: string
+          x-go-name: TypeTags
+        value:
+          type: number
+          format: float
+          x-go-name: Score
+        warningControls:
+          type: integer
+          format: int64
+          x-go-name: WarningControls
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PostureClusterOverTime:
+      description: api/v1/posture/clustersOvertime response datastructures
+      type: object
+      properties:
+        clusterName:
+          type: string
+          x-go-name: ClusterName
+        deletionStatus:
+          $ref: '#/components/schemas/RecordStatus'
+        designators:
+          $ref: '#/components/schemas/PortalDesignator'
+        frameworks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostureFrameworkOverTime'
+          x-go-name: Frameworks
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PortalDesignator:
+      description: PortalDesignator represents a single designation option
+      type: object
+      properties:
+        attributes:
+          description: Attributes that describe the targets
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: Attributes
+        designatorType:
+          type: string
+          enum:
+          - Attributes
+          - Attribute
+          - Wlid
+          - WildWlid
+          - WlidContainer
+          - WlidProcess
+          - Sid
+          x-go-enum-desc: 'Attributes DesignatorAttributes
+
+            Attribute DesignatorAttribute
+
+            Wlid DesignatorWlid  WorkloadID format.   Has two formats:   1. Kubernetes format: wlid://cluster-<cluster>/namespace-<namespace>/<kind>-<name>   2. Native format: wlid://datacenter-<datacenter>/project-<project>/native-<name>
+
+            WildWlid DesignatorWildWlid  A WorkloadID wildcard expression.   A wildcard expression that includes a cluster:    wlid://cluster-<cluster>/   An expression that includes a cluster and namespace (filters out all other namespaces):    wlid://cluster-<cluster>/namespace-<namespace>/
+
+            WlidContainer DesignatorWlidContainer
+
+            WlidProcess DesignatorWlidProcess
+
+            Sid DesignatorSid'
+          x-go-name: DesignatorType
+        sid:
+          description: A specific Secret ID
+          type: string
+          x-go-name: SID
+        wildwlid:
+          description: An expression that describes applicable workload IDs
+          type: string
+          x-go-name: WildWLID
+        wlid:
+          description: A specific Workload ID
+          type: string
+          x-go-name: WLID
+      x-go-package: github.com/armosec/armoapi-go/identifiers
+    PostureFrameworkSubsectionSummary:
+      type: object
+      properties:
+        controlsStats:
+          description: 'Statistics about the controls that were run
+
+            The key is the status of the control (`failed`, `passed`, etc).
+
+            The value is the number of controls'
+          type: object
+          additionalProperties:
+            type: integer
+            format: uint64
+          x-go-name: ControlsStats
+          example:
+            failed: 3
+            passed: 4
+        framework:
+          description: The name of the framework this subsection belongs to
+          type: string
+          x-go-name: Framework
+          example: CIS
+        id:
+          description: Unique id of the subsection inside its framework
+          type: string
+          x-go-name: ID
+          example: '5.7'
+        name:
+          description: The name (title) of the subsection
+          type: string
+          x-go-name: Name
+          example: General Policies
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PaginationResponseBase:
+      type: object
+      properties:
+        cursor:
+          description: Cursor for quick access to the next page. Not supported yet
+          type: string
+          x-go-name: Cursor
+        total:
+          $ref: '#/components/schemas/RespTotal'
+      x-go-package: github.com/armosec/cadashboardbe/docs
+    PostureFrameworkOverTime:
+      description: PostureFrameworkOverTime - the response structure
+      type: object
+      properties:
+        complianceScore:
+          type: number
+          format: float
+          x-go-name: ComplianceScore
+        cords:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostureFrameworkOverTimeCoord'
+          x-go-name: Coords
+        frameworkName:
+          type: string
+          x-go-name: Framework
+        riskScore:
+          description: '"frameworkName": "MITRE",
+
+            "riskScore": 54,'
+          type: number
+          format: float
+          x-go-name: RiskScore
+      x-go-package: github.com/armosec/armoapi-go/armotypes
   responses:
-    Unauthorized:
-      description: Missing or invalid X-API-KEY.
+    SysterErrorResponse:
+      description: ''
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            type: array
+            items:
+              type: object
+              properties:
+                detail:
+                  description: Error detail (Optional)
+                  type: string
+                  x-go-name: Detail
+                  example: '"invalid set crone job request"'
+                message:
+                  description: User-Friendly Error Messages (Optional)
+                  type: string
+                  x-go-name: Message
+                  example: '"You are running an old version of Kubescape Helm chart"'
+                url:
+                  description: URL to documentation / future investigation (Optional)
+                  type: string
+                  x-go-name: URL
+                  example: '"https://docs.armo.cloud"'
+    PostureClustersOvertimeResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/PaginationResponseBase'
+            - type: object
+              properties:
+                response:
+                  description: '`complianceScore` - represents the latest (in that list) score for that specific framework- THIS IS UNFILTERED FIELD'
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PostureClusterOverTime'
+                  x-go-name: Response
+    PostureFrameworkSubsectionsResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/PaginationResponseBase'
+            - type: object
+              properties:
+                response:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PostureFrameworkSubsectionSummary'
+                  x-go-name: Response
+    BadRequestResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                detail:
+                  description: Error detail (Optional)
+                  type: string
+                  x-go-name: Detail
+                  example: '"invalid set crone job request"'
+                message:
+                  description: User-Friendly Error Messages (Optional)
+                  type: string
+                  x-go-name: Message
+                  example: '"You are running an old version of Kubescape Helm chart"'
+                url:
+                  description: URL to documentation / future investigation (Optional)
+                  type: string
+                  x-go-name: URL
+                  example: '"https://docs.armo.cloud"'
+    PostureFrameworksResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cursor:
+                description: Cursor for quick access to the next page. Not supported yet
+                type: string
+                x-go-name: Cursor
+              response:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostureFrameworkSummary'
+                x-go-name: Response
+              total:
+                $ref: '#/components/schemas/RespTotal'
   securitySchemes:
-    apiKeyAuth:
+    accessKey:
       type: apiKey
+      name: x-api-key
       in: header
-      name: X-API-KEY
-      description: Account access key (Agent Access Key) generated in ARMO Platform under Settings, sent in the X-API-KEY header.
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

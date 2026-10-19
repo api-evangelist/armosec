@@ -1,0 +1,138 @@
+openapi: 3.2.0
+info:
+  title: ARMO Platform Integrations API
+  description: The ARMO Platform API exposes ARMO's cloud-native and Kubernetes security data over REST.
+  version: '1.0'
+  contact:
+    name: ARMO
+    url: https://www.armosec.io
+  license:
+    name: ARMO Platform Terms
+    url: https://www.armosec.io/terms-of-service/
+servers:
+- url: https://api.armosec.io/api/v1
+  description: EU region
+- url: https://api.us.armosec.io/api/v1
+  description: US region
+security:
+- apiKeyAuth: []
+tags:
+- name: Integrations
+  description: Jira and collaboration/notification integrations.
+paths:
+  /integrations/jira/config:
+    get:
+      operationId: getJiraConfig
+      tags:
+      - Integrations
+      summary: Get Jira configuration
+      responses:
+        '200':
+          description: Jira configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: saveJiraConfig
+      tags:
+      - Integrations
+      summary: Save Jira configuration
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Saved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /integrations/jira/issueV2:
+    post:
+      operationId: createJiraIssue
+      tags:
+      - Integrations
+      summary: Create a Jira issue (ticket)
+      description: Creates a Jira issue/ticket from an ARMO finding.
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /collaboration/config:
+    post:
+      operationId: createCollaborationConfig
+      tags:
+      - Integrations
+      summary: Create a collaboration configuration
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /collaboration/share:
+    post:
+      operationId: shareCollaboration
+      tags:
+      - Integrations
+      summary: Share data using a collaboration config
+      requestBody:
+        $ref: '#/components/requestBodies/GenericBody'
+      responses:
+        '200':
+          description: Shared.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid X-API-KEY.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  requestBodies:
+    GenericBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+  schemas:
+    GenericResponse:
+      type: object
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: Account access key (Agent Access Key) generated in ARMO Platform under Settings, sent in the X-API-KEY header.

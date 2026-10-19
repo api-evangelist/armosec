@@ -1,0 +1,12 @@
+{
+ "url": "https://api.armosec.io/openapi/v2/swagger.json",
+ "final": "https://api.armosec.io/openapi/v2/swagger.json",
+ "status": 200,
+ "content_type": "text/plain; charset=utf-8",
+ "bytes": 462717,
+ "sha256": "e189de28afc7505480df7debc3ebf7ba0549e582cffa2716d9f7d4fd9c209216",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "re-archived: the provider's current document replaced a stale archive (roadmap#793); the old files are in openapi/_superseded/2026-10-19-stale"
+}

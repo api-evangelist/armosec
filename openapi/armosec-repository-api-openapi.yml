@@ -1,0 +1,1233 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Repository API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Repository
+paths:
+  /repositoryPosture/failedControls:
+    post:
+      description: Get failed controls summary for a specific repository or file
+      tags:
+      - Repository
+      operationId: failedControlsRepositoryPosture
+      responses:
+        '200':
+          $ref: '#/components/responses/RepoScanningFailedControlSummaryResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filePath:
+                  description: In case kind is "file", FilePath should be provided
+                  type: string
+                  x-go-name: FilePath
+                  example: '"path/to/file"'
+                kind:
+                  $ref: '#/components/schemas/RepoEntityKind'
+                reportGUID:
+                  description: Report GUID
+                  type: string
+                  x-go-name: ReportGUID
+                  example: d415eb5b-0902-45cd-b6df-9a2e1ff4348b
+      summary: Failed controls repository posture
+      x-summary-source: derived
+  /repositoryPosture/files:
+    post:
+      description: 'Returns list of file summaries of repository posture report
+
+
+        When ''Name'' query param is used, any files which contain the value in their name will be filtered out (supports partial match)
+
+
+        Request object example
+
+        Get file summary of report with GUID "f1580557-5faf-417d-85c7-c6cc7fb5cb57"
+
+        {
+
+        "pageSize": 100,
+
+        "pageNum": 1,
+
+        "orderBy": "",
+
+        "innerFilters": [
+
+        {
+
+        "reportGUID": "f1580557-5faf-417d-85c7-c6cc7fb5cb57"
+
+        }
+
+        ]
+
+        }'
+      tags:
+      - Repository
+      summary: Get file summary of repository posture report
+      operationId: repositoryPostureFiles
+      parameters:
+      - x-go-name: Name
+        description: Used to filter out repositories or files by name (partial match). Any repositories containing the value in their name, OR repositories with files containing the value in their name, will be filtered out.
+        name: name
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/RepoPostureEntitySummaryResponse'
+  /repositoryPosture/repositories:
+    post:
+      description: 'Returns list of repo summaries of the latest posture report
+
+
+        When ''Name'' query param is used, any *repositories* OR *files* in the repository which contain the value in their name will be filtered out (supports partial match)
+
+
+        Request object example
+
+        Get repository summaries with failed control IDs "C-0016" or "C-0001"
+
+        {
+
+        "pageSize": 100,
+
+        "pageNum": 1,
+
+        "orderBy": "",
+
+        "innerFilters": [
+
+        {
+
+        "controlsInfo.failed.id": "C-0016,C-0001"
+
+        }
+
+        ]
+
+        }'
+      tags:
+      - Repository
+      summary: Get repository summary of repository posture report
+      operationId: repositoryPostureRepositories
+      parameters:
+      - x-go-name: Name
+        description: Used to filter out repositories or files by name (partial match). Any repositories containing the value in their name, OR repositories with files containing the value in their name, will be filtered out.
+        name: name
+        in: query
+        schema:
+          type: string
+      - x-go-name: OnlyLastScans
+        description: Optional param - return only last posture report for each repository. "true" by default.
+        name: onlyLastScans
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/RepoPostureEntitySummaryResponse'
+  /repositoryPosture/resources:
+    post:
+      description: Returns list of resources summaries of a file in a repository posture report
+      tags:
+      - Repository
+      summary: Get resource summary of repository posture report
+      operationId: repositoryPostureResources
+      responses:
+        '200':
+          $ref: '#/components/responses/RepoPostureResourceSummary'
+  /uniqueValues/repositoryPosture/files:
+    post:
+      description: 'Request object example
+
+        Get the following unique fields for repository files summary of report:
+
+        Folder
+
+        File Name
+
+        File Type
+
+        Failed Control IDs
+
+        Failed Control Severities
+
+        File Committer Names
+
+        File Commit Hashes
+
+
+        {
+
+        "fields": {
+
+        "designators.attributes.fileDirectory": "",
+
+        "name": "",
+
+        "designators.attributes.fileType": "",
+
+        "controlsInfo.failed.id": "",
+
+        "controlsInfo.failed.baseScore": "",
+
+        "designators.attributes.lastFileCommitterName": "",
+
+        "designators.attributes.lastFileCommitHash": ""
+
+        },
+
+        "innerFilters": [
+
+        {
+
+        "reportGUID": "f1580557-5faf-417d-85c7-c6cc7fb5cb57"
+
+        }
+
+        ]
+
+        }
+
+
+        Inner filters examples:
+
+
+        Filter files named "adservice.yaml" OR "cartservice.yaml"
+
+        "name": "adservice.yaml,cartservice.yaml"
+
+
+        Filter by two failed controls (C-0016 and C-0001):
+
+        "controlsInfo.failed.id": "C-0016,C-0001"
+
+
+        Filter by two severities - low or medium (Low baseScore values are 1-3, Medium 4-6, etc.):
+
+        "controlsInfo.failed.id": "1,2,3,4,5,6"'
+      tags:
+      - Repository
+      summary: Get values for inner filter of /repositoryPosture/files POST requests
+      operationId: uniqueValuesRepositoryPostureFiles
+      responses:
+        '200':
+          $ref: '#/components/responses/RepoPostureUniqueValuesResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                countFields:
+                  description: Include hit counts for each field
+                  type: boolean
+                  x-go-name: CountFields
+                fields:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  x-go-name: Fields
+                innerFilters:
+                  description: Which elements of the list to return, each field can hold multiple values separated by comma
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  x-go-name: InnerFilters
+                  example: "\": {\"severity\": \"High,Medium\",\t\t\"type\": \"61539,30303\"}"
+                pageNum:
+                  description: for apis that support pagination
+                  type: integer
+                  format: int64
+                  x-go-name: PageNum
+                pageSize:
+                  type: integer
+                  format: int64
+                  x-go-name: PageSize
+                since:
+                  type: string
+                  format: date-time
+                  default: since - beginning of the time, until - now)
+                  x-go-name: Since
+                ticketManager:
+                  $ref: '#/components/schemas/TicketManager'
+                until:
+                  type: string
+                  format: date-time
+                  x-go-name: Until
+        required: true
+  /uniqueValues/repositoryPosture/repositories:
+    post:
+      description: 'Request object example
+
+        Get the following unique fields for repository summary of report:
+
+        Repository Name
+
+        Number of files
+
+        Scan time
+
+        Failed Control IDs
+
+        Failed Control Severities
+
+
+        {
+
+        "fields": {
+
+        "name": "",
+
+        "childCount": "",
+
+        "timestamp": "",
+
+        "controlsInfo.failed.id": "",
+
+        "controlsInfo.failed.baseScore": ""
+
+        },
+
+        "innerFilters": [
+
+        {
+
+        "reportGUID": "f1580557-5faf-417d-85c7-c6cc7fb5cb57"
+
+        }
+
+        ]
+
+        }
+
+
+        Inner filters examples:
+
+
+        Filter repositories named "kubescape_master" OR "kubescape_dev"
+
+        "name": "kubescape_master,kubescape_dev"
+
+
+        Filter by two failed controls (C-0016 and C-0001):
+
+        "controlsInfo.failed.id": "C-0016,C-0001"
+
+
+        Filter by two severities - low or medium (Low baseScore values are 1-3, Medium 4-6, etc.):
+
+        "controlsInfo.failed.id": "1,2,3,4,5,6"'
+      tags:
+      - Repository
+      summary: Get values for inner filter of /repositoryPosture/repositories POST requests
+      operationId: uniqueValuesRepositoryPostureRepos
+      responses:
+        '200':
+          $ref: '#/components/responses/RepoPostureUniqueValuesResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                countFields:
+                  description: Include hit counts for each field
+                  type: boolean
+                  x-go-name: CountFields
+                fields:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  x-go-name: Fields
+                innerFilters:
+                  description: Which elements of the list to return, each field can hold multiple values separated by comma
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  x-go-name: InnerFilters
+                  example: "\": {\"severity\": \"High,Medium\",\t\t\"type\": \"61539,30303\"}"
+                pageNum:
+                  description: for apis that support pagination
+                  type: integer
+                  format: int64
+                  x-go-name: PageNum
+                pageSize:
+                  type: integer
+                  format: int64
+                  x-go-name: PageSize
+                since:
+                  type: string
+                  format: date-time
+                  default: since - beginning of the time, until - now)
+                  x-go-name: Since
+                ticketManager:
+                  $ref: '#/components/schemas/TicketManager'
+                until:
+                  type: string
+                  format: date-time
+                  x-go-name: Until
+        required: true
+  /uniqueValues/repositoryPosture/resources:
+    post:
+      description: Get values for inner filter of /repositoryPosture/resources POST requests
+      tags:
+      - Repository
+      operationId: uniqueValuesRepositoryPostureResources
+      responses:
+        '200':
+          $ref: '#/components/responses/RepoPostureUniqueValuesResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                countFields:
+                  description: Include hit counts for each field
+                  type: boolean
+                  x-go-name: CountFields
+                fields:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  x-go-name: Fields
+                innerFilters:
+                  description: Which elements of the list to return, each field can hold multiple values separated by comma
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  x-go-name: InnerFilters
+                  example: "\": {\"severity\": \"High,Medium\",\t\t\"type\": \"61539,30303\"}"
+                pageNum:
+                  description: for apis that support pagination
+                  type: integer
+                  format: int64
+                  x-go-name: PageNum
+                pageSize:
+                  type: integer
+                  format: int64
+                  x-go-name: PageSize
+                since:
+                  type: string
+                  format: date-time
+                  default: since - beginning of the time, until - now)
+                  x-go-name: Since
+                ticketManager:
+                  $ref: '#/components/schemas/TicketManager'
+                until:
+                  type: string
+                  format: date-time
+                  x-go-name: Until
+        required: true
+      summary: Unique values repository posture resources
+      x-summary-source: derived
+components:
+  schemas:
+    PostureContainerSummary:
+      type: object
+      properties:
+        containerName:
+          type: string
+          x-go-name: ContainerName
+        image:
+          type: string
+          x-go-name: ImageTag
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    ApprovementStatus:
+      type: integer
+      format: int64
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    TicketManager:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    ControlInfo:
+      description: ControlInfo Basic information about a control
+      type: object
+      properties:
+        baseScore:
+          description: How much this control is critical
+          type: number
+          format: float
+          x-go-name: BaseScore
+          example: 6
+        failedResources:
+          description: How many failed resources for this control
+          type: integer
+          format: int64
+          x-go-name: FailedResources
+          example: 3
+        id:
+          description: ID of the control
+          type: string
+          x-go-name: ID
+          example: C-0034
+        name:
+          type: string
+          x-go-name: Name
+        smartRemediation:
+          type: boolean
+          x-go-name: SmartRemediation
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RepoEntitySummary:
+      type: object
+      title: RepoEntitySummary summary of repo scanning entity.
+      properties:
+        childCount:
+          description: 'Number of children of the entity. For `file`s entity it would be
+
+            the amount of the resources inside this file, and for `repo`s -
+
+            the amount of scanned files'
+          type: integer
+          format: uint64
+          x-go-name: ChildCount
+          example: 13
+        controlsInfo:
+          description: 'Information about the controls that were run on this entity
+
+            The key is the status of the control (`failed`, `passed`, etc)'
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ControlInfo'
+          x-go-name: ControlsInfo
+        controlsStats:
+          description: 'Statistics about the controls that were run
+
+            The key is the status of the control (`failed`, `passed`, etc).
+
+            The value is the number of controls'
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+          x-go-name: ControlsStats
+          example:
+            failed: 3
+            passed: 4
+        designators:
+          $ref: '#/components/schemas/PortalDesignator'
+        framework:
+          description: Single framework this summary is for.
+          type: string
+          x-go-name: Framework
+          example: ArmoBest
+        frameworks:
+          description: 'Frameworks that were run.
+
+            In multi-frameworks-summary, this property is
+
+            taking the place of the `framework` property'
+          type: array
+          items:
+            type: string
+          x-go-name: Frameworks
+          example:
+          - ArmoBest
+          - MITRE
+        kind:
+          $ref: '#/components/schemas/RepoEntityKind'
+        name:
+          description: Name of this entity
+          type: string
+          x-go-name: Name
+          example: '"my-repo"'
+        reportGUID:
+          type: string
+          x-go-name: ReportID
+        statusText:
+          description: Status of the entity
+          type: string
+          x-go-name: StatusText
+          example: failed
+        ticketManager:
+          $ref: '#/components/schemas/TicketManager'
+        tickets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ticket'
+          x-go-name: Tickets
+        timestamp:
+          description: Time of the scan that produced this result
+          type: string
+          format: date-time
+          x-go-name: Timestamp
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    AssociationStatus:
+      type: integer
+      format: int64
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RecommendationAssociation:
+      description: this structure is dedicated to connect between recommendation and specific resource and trace the user actions taken due to this recommendation
+      type: object
+      properties:
+        attributes:
+          type: object
+          additionalProperties: {}
+          x-go-name: Attributes
+        context:
+          description: the context to show this recommendation to this customer
+          type: array
+          items:
+            $ref: '#/components/schemas/ArmoContext'
+          x-go-name: Context
+        designators:
+          $ref: '#/components/schemas/PortalDesignator'
+        guid:
+          type: string
+          x-go-name: GUID
+        name:
+          type: string
+          x-go-name: Name
+        recommendationDetails:
+          $ref: '#/components/schemas/RecommendationSkeletonV1'
+        recommendationPrototypeGUID:
+          description: guid of the recommendation in recommendation DB
+          type: string
+          x-go-name: RecommendationPrototypeGUID
+        status:
+          $ref: '#/components/schemas/AssociationStatus'
+        updatedTime:
+          type: string
+          x-go-name: UpdatedTime
+        updatesAudit:
+          description: audit for user actions taken for this recommendation
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateAuditEntry'
+          x-go-name: UpdatesAudit
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    ArmoContext:
+      description: context attributes based structure to get more flexible and searchable options
+      type: object
+      properties:
+        attribute:
+          type: string
+          x-go-name: Attribute
+        source:
+          type: string
+          x-go-name: Source
+        value:
+          type: string
+          x-go-name: Value
+      x-go-package: github.com/armosec/armoapi-go/identifiers
+    FixPath:
+      type: object
+      properties:
+        path:
+          type: string
+          x-go-name: Path
+        value:
+          type: string
+          x-go-name: Value
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RepoEntityKind:
+      description: 'Kind of an entity. Can only be one of the following: `file` or `repo`'
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+      example: repo
+    PostureExceptionPolicy:
+      type: object
+      properties:
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostureExceptionPolicyActions'
+          x-go-name: Actions
+        attributes:
+          type: object
+          additionalProperties: {}
+          x-go-name: Attributes
+        createdBy:
+          type: string
+          x-go-name: CreatedBy
+        creationTime:
+          type: string
+          x-go-name: CreationTime
+        expirationDate:
+          type: string
+          format: date-time
+          x-go-name: ExpirationDate
+        guid:
+          type: string
+          x-go-name: GUID
+        name:
+          type: string
+          x-go-name: Name
+        policyType:
+          type: string
+          x-go-name: PolicyType
+        posturePolicies:
+          type: array
+          items:
+            $ref: '#/components/schemas/PosturePolicy'
+          x-go-name: PosturePolicies
+        reason:
+          type: string
+          x-go-name: Reason
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/PortalDesignator'
+          x-go-name: Resources
+        updatedTime:
+          type: string
+          x-go-name: UpdatedTime
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RecordStatus:
+      type: integer
+      format: int64
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PosturePolicy:
+      type: object
+      properties:
+        controlID:
+          type: string
+          x-go-name: ControlID
+        controlName:
+          description: deprecated - use ControlID instead
+          type: string
+          x-go-name: ControlName
+        frameworkName:
+          type: string
+          x-go-name: FrameworkName
+        ruleName:
+          type: string
+          x-go-name: RuleName
+        severityScore:
+          type: integer
+          format: int64
+          x-go-name: SeverityScore
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    UniqueValuesResponseFieldsCount:
+      description: UniqueValuesResponseFieldsCount  holds response data of UniqueValuesResponseV2 request
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+          x-go-name: Count
+        key:
+          type: string
+          x-go-name: Field
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PostureExceptionPolicyActions:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PostureResourceSummary:
+      type: object
+      properties:
+        armoBestScore:
+          type: integer
+          format: int64
+          x-go-name: ArmoBestScore
+        clusterShortName:
+          type: string
+          x-go-name: ClusterShortName
+        containers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostureContainerSummary'
+          x-go-name: Images
+        controlsInfo:
+          description: 'Information about the controls that were run on this entity
+
+            The key is the status of the control (`failed`, `passed`, etc)'
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ControlInfo'
+          x-go-name: ControlsInfo
+        criticalSeverityControls:
+          description: Counters - Failed controls by severity
+          type: integer
+          format: int64
+          x-go-name: CriticalSeverityControls
+        deletionStatus:
+          $ref: '#/components/schemas/RecordStatus'
+        designators:
+          $ref: '#/components/schemas/PortalDesignator'
+        exceptionApplied:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostureExceptionPolicy'
+          x-go-name: ExceptionApplied
+        exceptionRecommendaion:
+          type: string
+          x-go-name: ExceptionRecommendaion
+        failedControls:
+          description: gives upto PostureResourceMaxCtrls controls as an example
+          type: array
+          items:
+            type: string
+          x-go-name: FailedControl
+        failedControlsCount:
+          description: totalcount (including the failed/warning controls slices)
+          type: integer
+          format: int64
+          x-go-name: FailedControlCount
+        frameworkName:
+          type: string
+          x-go-name: FrameworkName
+        highSeverityControls:
+          type: integer
+          format: int64
+          x-go-name: HighSeverityControls
+        highlightsPerControl:
+          type: array
+          items:
+            $ref: '#/components/schemas/HighlightsByControl'
+          x-go-name: HighlightsPerCtrl
+        lowSeverityControls:
+          type: integer
+          format: int64
+          x-go-name: LowSeverityControls
+        mediumSeverityControls:
+          type: integer
+          format: int64
+          x-go-name: MediumSeverityControls
+        name:
+          type: string
+          x-go-name: Name
+        recommendations:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecommendationAssociation'
+          x-go-name: Recommendations
+        relatedExceptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostureExceptionPolicy'
+          x-go-name: RelatedExceptions
+        remediation:
+          type: array
+          items:
+            type: string
+          x-go-name: Remediation
+        reportGUID:
+          type: string
+          x-go-name: ReportID
+        resourceHash:
+          type: string
+          x-go-name: ResourceHash
+        resourceID:
+          type: string
+          x-go-name: ResourceID
+        resourceKind:
+          type: string
+          x-go-name: ResourceKind
+        skippedControls:
+          type: array
+          items:
+            type: string
+          x-go-name: SkippedControls
+        skippedControlsCount:
+          type: integer
+          format: int64
+          x-go-name: SkippedControlCount
+        smartRemediation:
+          description: if True, at least one failed control supports smart remediation
+          type: boolean
+          x-go-name: SmartRemediation
+        status:
+          type: integer
+          format: int64
+          x-go-name: Status
+        statusText:
+          type: string
+          x-go-name: StatusText
+        statusToControls:
+          description: maps statusText 2 list of controlIDs
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          x-go-name: StatusToControls
+        subStatusText:
+          type: string
+          x-go-name: SubStatusText
+        ticketManager:
+          $ref: '#/components/schemas/TicketManager'
+        tickets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ticket'
+          x-go-name: Tickets
+        timestamp:
+          type: string
+          format: date-time
+          x-go-name: Timestamp
+        warningControls:
+          type: array
+          items:
+            type: string
+          x-go-name: WarningControls
+        warningControlsCount:
+          type: integer
+          format: int64
+          x-go-name: WarningControlCount
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    Ticket:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          x-go-name: CreatedBy
+        customerGUID:
+          description: metadata for the ticket
+          type: string
+          x-go-name: CustomerGUID
+        error:
+          type: string
+          x-go-name: Error
+        errorCode:
+          type: integer
+          format: int64
+          x-go-name: ErrorCode
+        guid:
+          type: string
+          x-go-name: GUID
+        jiraCollabGUID:
+          type: string
+          x-go-name: JiraCollabGUID
+        link:
+          type: string
+          x-go-name: Link
+        linkTitle:
+          type: string
+          x-go-name: LinkTitle
+        owner:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: Owner
+        providerData:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: ProviderData
+        severity:
+          type: string
+          x-go-name: Severity
+        status:
+          type: string
+          x-go-name: Status
+        subjects:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+          x-go-name: Subjects
+        ticketManager:
+          $ref: '#/components/schemas/TicketManager'
+        timestamp:
+          type: string
+          format: date-time
+          x-go-name: Timestamp
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PortalDesignator:
+      description: PortalDesignator represents a single designation option
+      type: object
+      properties:
+        attributes:
+          description: Attributes that describe the targets
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: Attributes
+        designatorType:
+          type: string
+          enum:
+          - Attributes
+          - Attribute
+          - Wlid
+          - WildWlid
+          - WlidContainer
+          - WlidProcess
+          - Sid
+          x-go-enum-desc: 'Attributes DesignatorAttributes
+
+            Attribute DesignatorAttribute
+
+            Wlid DesignatorWlid  WorkloadID format.   Has two formats:   1. Kubernetes format: wlid://cluster-<cluster>/namespace-<namespace>/<kind>-<name>   2. Native format: wlid://datacenter-<datacenter>/project-<project>/native-<name>
+
+            WildWlid DesignatorWildWlid  A WorkloadID wildcard expression.   A wildcard expression that includes a cluster:    wlid://cluster-<cluster>/   An expression that includes a cluster and namespace (filters out all other namespaces):    wlid://cluster-<cluster>/namespace-<namespace>/
+
+            WlidContainer DesignatorWlidContainer
+
+            WlidProcess DesignatorWlidProcess
+
+            Sid DesignatorSid'
+          x-go-name: DesignatorType
+        sid:
+          description: A specific Secret ID
+          type: string
+          x-go-name: SID
+        wildwlid:
+          description: An expression that describes applicable workload IDs
+          type: string
+          x-go-name: WildWLID
+        wlid:
+          description: A specific Workload ID
+          type: string
+          x-go-name: WLID
+      x-go-package: github.com/armosec/armoapi-go/identifiers
+    ApprovementState:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ApprovementStatus'
+        timestamp:
+          type: string
+          format: date-time
+          x-go-name: Timestamp
+        userName:
+          type: string
+          x-go-name: UserName
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    UpdateAuditEntry:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          x-go-name: Timestamp
+        userName:
+          type: string
+          x-go-name: UserName
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RepoScanningFailedControlSummary:
+      type: object
+      properties:
+        ARMOimprovement:
+          type: number
+          format: float
+          x-go-name: ARMOImprovement
+        baseScore:
+          type: number
+          format: float
+          x-go-name: BaseScore
+        description:
+          type: string
+          x-go-name: Description
+        id:
+          type: string
+          x-go-name: ControlID
+        name:
+          type: string
+          x-go-name: Name
+        remediation:
+          type: string
+          x-go-name: Remediation
+      x-go-package: github.com/armosec/cadashboardbe/datastructures
+    RecommendationSkeletonV1:
+      type: object
+      properties:
+        action:
+          description: the action the user should take
+          type: string
+          x-go-name: Action
+        approvement:
+          $ref: '#/components/schemas/ApprovementState'
+        attributes:
+          type: object
+          additionalProperties: {}
+          x-go-name: Attributes
+        context:
+          description: the context to show this recommendation in
+          type: array
+          items:
+            $ref: '#/components/schemas/ArmoContext'
+          x-go-name: Context
+        description:
+          type: string
+          x-go-name: Description
+        descriptionLink:
+          description: link to some well explained description of this recommendation
+          type: string
+          x-go-name: DescriptionLink
+        guid:
+          type: string
+          x-go-name: GUID
+        name:
+          type: string
+          x-go-name: Name
+        updatedTime:
+          type: string
+          x-go-name: UpdatedTime
+        updatesAudit:
+          description: audit for manual changes made in this recommendation
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateAuditEntry'
+          x-go-name: UpdatesAudit
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RespTotal:
+      type: object
+      properties:
+        relation:
+          type: string
+          x-go-name: Relation
+        value:
+          type: integer
+          format: int64
+          x-go-name: Value
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    HighlightsByControl:
+      type: object
+      properties:
+        controlID:
+          type: string
+          x-go-name: ControlID
+        deletePaths:
+          type: array
+          items:
+            type: string
+          x-go-name: DeletePaths
+        fixCommand:
+          type: string
+          x-go-name: FixCommand
+        fixPaths:
+          type: array
+          items:
+            $ref: '#/components/schemas/FixPath'
+          x-go-name: FixPaths
+        highlights:
+          type: array
+          items:
+            type: string
+          x-go-name: Highlights
+        reviewPaths:
+          type: array
+          items:
+            type: string
+          x-go-name: ReviewPaths
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+  responses:
+    RepoPostureUniqueValuesResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              fields:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+                x-go-name: Fields
+              fieldsCount:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/UniqueValuesResponseFieldsCount'
+                x-go-name: FieldsCount
+    RepoScanningFailedControlSummaryResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/RepoScanningFailedControlSummary'
+    RepoPostureResourceSummary:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cursor:
+                description: Cursor for quick access to the next page. Not supported yet
+                type: string
+                x-go-name: Cursor
+              response:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostureResourceSummary'
+                x-go-name: Response
+              total:
+                $ref: '#/components/schemas/RespTotal'
+    RepoPostureEntitySummaryResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cursor:
+                description: Cursor for quick access to the next page. Not supported yet
+                type: string
+                x-go-name: Cursor
+              response:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RepoEntitySummary'
+                x-go-name: Response
+              total:
+                $ref: '#/components/schemas/RespTotal'
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

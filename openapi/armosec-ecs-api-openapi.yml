@@ -1,0 +1,428 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM ECS API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: ECS
+paths:
+  /accounts/ecs:
+    get:
+      description: 'Returns a CloudFormation console link for deploying the ARMO ECS stack
+
+        into the cluster''s AWS account and region. Also configures ECR cross-account
+
+        permissions for the operator and agent images.'
+      tags:
+      - ECS
+      summary: Get CloudFormation stack link
+      operationId: getECSStackLink
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      - x-go-name: ClusterARN
+        description: AWS ECS cluster ARN.
+        name: clusterARN
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ecsStackLinkResp'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+    post:
+      description: 'Registers an ECS cluster with ARMO by its ARN.
+
+        Returns the created cluster object.'
+      tags:
+      - ECS
+      summary: Connect an ECS cluster
+      operationId: createECSConnection
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/ecsCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - clusterARN
+              properties:
+                clusterARN:
+                  description: AWS ECS cluster ARN.
+                  type: string
+                  x-go-name: ClusterARN
+                  example: arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster
+        required: true
+    delete:
+      description: Removes an ECS cluster registration from ARMO.
+      tags:
+      - ECS
+      summary: Disconnect an ECS cluster
+      operationId: deleteECSConnection
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - clusterARN
+              properties:
+                clusterARN:
+                  description: AWS ECS cluster ARN.
+                  type: string
+                  x-go-name: ClusterARN
+                  example: arn:aws:ecs:us-east-1:123456789012:cluster/my-cluster
+        required: true
+  /accounts/ecs/list:
+    post:
+      description: Returns a paginated list of ECS clusters connected to the account.
+      tags:
+      - ECS
+      summary: List ECS clusters
+      operationId: listECSClusters
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ecsClusterListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginationRequest'
+components:
+  responses:
+    ecsClusterListResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cursor:
+                type: string
+                x-go-name: Cursor
+              response:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EcsCluster'
+                x-go-name: Response
+              total:
+                $ref: '#/components/schemas/RespTotal'
+    BadRequestResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                detail:
+                  description: Error detail (Optional)
+                  type: string
+                  x-go-name: Detail
+                  example: '"invalid set crone job request"'
+                message:
+                  description: User-Friendly Error Messages (Optional)
+                  type: string
+                  x-go-name: Message
+                  example: '"You are running an old version of Kubescape Helm chart"'
+                url:
+                  description: URL to documentation / future investigation (Optional)
+                  type: string
+                  x-go-name: URL
+                  example: '"https://docs.armo.cloud"'
+    ecsStackLinkResp:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              stackLink:
+                description: CloudFormation console link for deploying the ARMO ECS stack.
+                type: string
+                x-go-name: StackLink
+    ecsCreateResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              clusterARN:
+                type: string
+                x-go-name: ClusterARN
+    ErrorResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int64
+                x-go-name: Code
+              message:
+                type: string
+                x-go-name: Message
+    SysterErrorResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                detail:
+                  description: Error detail (Optional)
+                  type: string
+                  x-go-name: Detail
+                  example: '"invalid set crone job request"'
+                message:
+                  description: User-Friendly Error Messages (Optional)
+                  type: string
+                  x-go-name: Message
+                  example: '"You are running an old version of Kubescape Helm chart"'
+                url:
+                  description: URL to documentation / future investigation (Optional)
+                  type: string
+                  x-go-name: URL
+                  example: '"https://docs.armo.cloud"'
+  schemas:
+    Duration:
+      type: integer
+    SearchAfterResp:
+      type: object
+      properties:
+        sort:
+          x-go-name: Sort
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    Cursor:
+      type: object
+      properties:
+        id:
+          type: string
+          x-go-name: Id
+        keepAlive:
+          $ref: '#/components/schemas/Duration'
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    TicketManager:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    EcsCluster:
+      type: object
+      title: EcsCluster represents an ECS cluster in the backend.
+      properties:
+        awsAccountID:
+          type: string
+          x-go-name: AWSAccountID
+        clusterARN:
+          type: string
+          x-go-name: ClusterARN
+        clusterName:
+          type: string
+          x-go-name: ClusterName
+        clusterStatus:
+          type: string
+          x-go-name: ClusterStatus
+        customerGUID:
+          type: string
+          x-go-name: CustomerGUID
+        lastKeepAlive:
+          type: string
+          x-go-name: LastKeepAlive
+        operatorStatus:
+          type: string
+          x-go-name: OperatorStatus
+        operatorUptime:
+          type: string
+          x-go-name: OperatorUptime
+        operatorVersion:
+          type: string
+          x-go-name: OperatorVersion
+        operatorVersionUpdatedAt:
+          type: string
+          x-go-name: OperatorVersionUpdatedAt
+        region:
+          type: string
+          x-go-name: Region
+      x-go-package: github.com/armosec/armosec-infra/ecs/backend
+    PaginationRequest:
+      description: 'TODO use armotypes.V2ListRequest
+
+        V2ListRequest descripts what portion of the list the client is requesting'
+      type: object
+      properties:
+        cursor:
+          type: string
+          x-go-name: CursorDepracated
+        cursorV1:
+          $ref: '#/components/schemas/Cursor'
+        fieldsToUpdate:
+          description: 'For PUT request, can be used to update only specific fields with specific values
+
+            map of field name to new value'
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: FieldsToUpdate
+        ignoreDefaultOrderBy:
+          description: 'When true, the default sort order is ignored
+
+            TODO: take it off, and use the default sort order when OrderBy is empty'
+          type: boolean
+          x-go-name: IgnoreDefaultSort
+        innerFilters:
+          description: 'Which elements of the list to return, each field can hold multiple values separated by comma
+
+            An empty map means "return the complete list"'
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+          x-go-name: InnerFilters
+          example:
+          - severity: High,Medium
+            type: 61539,30303
+        orderBy:
+          description: 'How to order (sort) the list, field name + sort order (asc/desc), like https://www.w3schools.com/sql/sql_orderby.asp
+
+            When empty, the default sort order is used. To disable the default sort order, set IgnoreDefaultSort to true'
+          type: string
+          x-go-name: OrderBy
+          example: timestamp:asc,severity:desc
+        pageNum:
+          description: One can leave it empty for 0, then call ValidatePageProperties
+          type: integer
+          format: int64
+          x-go-name: PageNum
+        pageSize:
+          description: 'properties of the requested next page
+
+            Use ValidatePageProperties to set PageSize field'
+          type: integer
+          format: int64
+          x-go-name: PageSize
+        searchAfter:
+          $ref: '#/components/schemas/SearchAfterResp'
+        since:
+          type: string
+          format: date-time
+          default: since - begining og the time, until - now.
+          x-go-name: Since
+        ticketManager:
+          $ref: '#/components/schemas/TicketManager'
+        until:
+          type: string
+          format: date-time
+          x-go-name: Until
+      x-go-name: V2ListRequest
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RespTotal:
+      type: object
+      properties:
+        relation:
+          type: string
+          x-go-name: Relation
+        value:
+          type: integer
+          format: int64
+          x-go-name: Value
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

@@ -1,36 +1,73 @@
 {
   "provider": "armosec",
   "sources": [
-    "_original/armosec-openapi.yml"
+    "_original/armosec-openapi.json"
   ],
   "outputs": [
-    "armosec-access-keys-api-openapi.yml",
-    "armosec-clusters-api-openapi.yml",
+    "armosec-accesskeys-api-openapi.yml",
+    "armosec-alertchannel-api-openapi.yml",
+    "armosec-attackchains-api-openapi.yml",
+    "armosec-collaboration-api-openapi.yml",
+    "armosec-commands-api-openapi.yml",
+    "armosec-customerstate-api-openapi.yml",
+    "armosec-ecs-api-openapi.yml",
+    "armosec-exception-api-openapi.yml",
+    "armosec-features-api-openapi.yml",
     "armosec-integrations-api-openapi.yml",
+    "armosec-inventory-api-openapi.yml",
+    "armosec-jiraintegration-api-openapi.yml",
+    "armosec-kubernetesaccounts-api-openapi.yml",
+    "armosec-login-api-openapi.yml",
+    "armosec-networkpolicy-api-openapi.yml",
     "armosec-posture-api-openapi.yml",
     "armosec-registry-api-openapi.yml",
+    "armosec-repository-api-openapi.yml",
     "armosec-runtime-api-openapi.yml",
-    "armosec-security-risks-api-openapi.yml",
-    "armosec-vulnerabilities-api-openapi.yml"
+    "armosec-runtimepolicies-api-openapi.yml",
+    "armosec-siemintegrations-api-openapi.yml",
+    "armosec-seccomp-api-openapi.yml",
+    "armosec-securityrisks-api-openapi.yml",
+    "armosec-sensors-api-openapi.yml",
+    "armosec-tenants-api-openapi.yml",
+    "armosec-vulnerability-api-openapi.yml",
+    "armosec-workload-api-openapi.yml"
   ],
   "archived": [],
-  "errors": [
-    "armosec-openapi.yml: dangling $ref: #/components/schemas/ScanRequest"
-  ],
+  "errors": [],
   "warnings": [],
   "notes": [
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
-    "armosec-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "apis.yml register: already-registered"
+    "armosec-openapi.json: upgraded swagger 2.0 -> OpenAPI 3.2.0",
+    "armosec-openapi.json: tagged paths GET /integrations/jira/configV2 -> Integrations",
+    "armosec-openapi.json: tagged paths POST /runtime/exceptions/new -> Runtime",
+    "armosec-openapi.json: declared missing tag: AccessKeys",
+    "armosec-openapi.json: declared missing tag: AlertChannel",
+    "armosec-openapi.json: declared missing tag: AttackChains",
+    "armosec-openapi.json: declared missing tag: Collaboration",
+    "armosec-openapi.json: declared missing tag: Commands",
+    "armosec-openapi.json: declared missing tag: CustomerState",
+    "armosec-openapi.json: declared missing tag: ECS",
+    "armosec-openapi.json: declared missing tag: Exception",
+    "armosec-openapi.json: declared missing tag: Features",
+    "armosec-openapi.json: declared missing tag: Integrations",
+    "armosec-openapi.json: declared missing tag: Inventory",
+    "armosec-openapi.json: declared missing tag: JiraIntegration",
+    "armosec-openapi.json: declared missing tag: KubernetesAccounts",
+    "armosec-openapi.json: declared missing tag: Login",
+    "armosec-openapi.json: declared missing tag: NetworkPolicy",
+    "armosec-openapi.json: declared missing tag: Posture",
+    "armosec-openapi.json: declared missing tag: Registry",
+    "armosec-openapi.json: declared missing tag: Repository",
+    "armosec-openapi.json: declared missing tag: Runtime",
+    "armosec-openapi.json: declared missing tag: RuntimePolicies",
+    "armosec-openapi.json: declared missing tag: SIEMIntegrations",
+    "armosec-openapi.json: declared missing tag: Seccomp",
+    "armosec-openapi.json: declared missing tag: SecurityRisks",
+    "armosec-openapi.json: declared missing tag: Sensors",
+    "armosec-openapi.json: declared missing tag: Tenants",
+    "armosec-openapi.json: declared missing tag: Vulnerability",
+    "armosec-openapi.json: declared missing tag: Workload",
+    "apis.yml register: written (+23 apis, 27 total)"
   ],
-  "skipped": [
-    "armosec-access-keys-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "armosec-clusters-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "armosec-integrations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "armosec-posture-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "armosec-registry-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "armosec-runtime-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "armosec-security-risks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "armosec-vulnerabilities-api-openapi.yml: previously refined output, superseded by openapi/_original/"
-  ]
+  "skipped": []
 }

@@ -1,0 +1,254 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Runtime Policies API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: RuntimePolicies
+paths:
+  /runtime/policies:
+    post:
+      description: 'Creates a new runtime policy for monitoring and responding to security incidents. The policy defines which alerts to act on (via rules/incident types), which resources
+
+        to monitor (via scope designators), and what to do when a match occurs (notifications + actions). ### Query params
+
+        `customerGUID` - required. Unique identifier for the customer. ### Validation rules
+
+        `name` is mandatory. `ruleSetType` must be "Managed" or "Custom". If `ruleSetType` is "Managed", `managedRuleSetIDs` must be non-empty. `incidentTypeIDs` and `managedRuleSetIDs` are mutually exclusive. If notifications include Slack, `slackChannel.channelID` is mandatory. If `sensorPlatform` is set, it must be a positive integer: 1 (K8sAgent), 2 (HostAgent), 3 (Cloud), 4 (ECSAgent), 5 (PtraceAgent). If both `sensorPlatform` and `service` are set, they must be consistent: CDR requires platform 3, ADR requires any non-Cloud platform. ### Scope semantics
+
+        Multiple designators are OR''d — the policy matches if ANY designator matches the alert. Fields within a single designator are AND''d — ALL non-null fields must match. Omitted (null) fields act as wildcards — they match any value.'
+      tags:
+      - RuntimePolicies
+      summary: Creates a new runtime incident policy
+      operationId: createRuntimePolicy
+      parameters:
+      - x-go-name: CustomerGUID
+        description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: ''
+        '400':
+          description: ''
+        '401':
+          description: ''
+        '403':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - ruleSetType
+              properties:
+                actions:
+                  description: Array of response actions to take when policy matches.
+                  type: array
+                  items: {}
+                  x-go-name: Actions
+                applyNetworkPolicy:
+                  description: Whether to apply network policy as a response action.
+                  type: boolean
+                  x-go-name: ApplyNetworkPolicy
+                applySeccompProfile:
+                  description: Whether to apply seccomp profile as a response action.
+                  type: boolean
+                  x-go-name: ApplySeccompProfile
+                description:
+                  description: Description of what the policy does.
+                  type: string
+                  x-go-name: Description
+                enabled:
+                  description: Whether the policy is enabled.
+                  type: boolean
+                  x-go-name: Enabled
+                incidentTypeIDs:
+                  description: Array of incident type IDs. Mutually exclusive with managedRuleSetIDs.
+                  type: array
+                  items:
+                    type: string
+                  x-go-name: IncidentTypeIDs
+                managedRuleSetIDs:
+                  description: Array of managed rule set GUIDs. Required if ruleSetType is "Managed". Mutually exclusive with incidentTypeIDs.
+                  type: array
+                  items:
+                    type: string
+                  x-go-name: ManagedRuleSetIDs
+                name:
+                  description: Name of the policy.
+                  type: string
+                  x-go-name: Name
+                notifications:
+                  description: Array of notification configurations.
+                  type: array
+                  items: {}
+                  x-go-name: Notifications
+                ruleSetType:
+                  description: 'Type of rule set: "Managed" or "Custom".'
+                  type: string
+                  x-go-name: RuleSetType
+                scope:
+                  description: Scope to which the policy applies.
+                  type: object
+                  properties:
+                    cves:
+                      description: Array of CVEs to monitor.
+                      type: array
+                      items:
+                        type: string
+                      x-go-name: CVEs
+                    designators:
+                      description: 'Array of designators specifying resource scope. Multiple designators are OR''d.
+
+                        Fields within a single designator are AND''d. Omitted fields act as wildcards.'
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          accountID:
+                            description: Cloud account ID. Omit for wildcard.
+                            type: string
+                            x-go-name: AccountID
+                          cloudProvider:
+                            description: 'Cloud provider: "aws", "azure", "gcp". Omit for wildcard.'
+                            type: string
+                            x-go-name: CloudProvider
+                          cluster:
+                            description: Kubernetes cluster name. Omit for wildcard.
+                            type: string
+                            x-go-name: Cluster
+                          instanceID:
+                            description: Host instance ID (e.g. "i-0abc123def456"). Omit for wildcard.
+                            type: string
+                            x-go-name: InstanceID
+                          kind:
+                            description: 'Workload kind: "Deployment", "StatefulSet", "DaemonSet", etc. Omit for wildcard.'
+                            type: string
+                            x-go-name: Kind
+                          labels:
+                            description: Label in "key:value" format. Omit for wildcard.
+                            type: string
+                            x-go-name: Labels
+                          name:
+                            description: Workload name (K8s workload). Omit for wildcard.
+                            type: string
+                            x-go-name: Name
+                          namespace:
+                            description: Kubernetes namespace. Omit for wildcard.
+                            type: string
+                            x-go-name: Namespace
+                          region:
+                            description: Cloud region (e.g. "us-east-1"). Omit for wildcard.
+                            type: string
+                            x-go-name: Region
+                          sensorPlatform:
+                            description: 'Platform ID (int): 1=K8sAgent, 2=HostAgent, 3=Cloud, 4=ECSAgent, 5=PtraceAgent. Must be consistent with service: CDR=3, ADR=non-Cloud. Omit for wildcard.'
+                            type: integer
+                            format: int64
+                            x-go-name: SensorPlatform
+                          service:
+                            description: 'Service type: "ADR" (K8s/Host/ECS — anything not Cloud) or "CDR" (Cloud only). Omit for wildcard.'
+                            type: string
+                            x-go-name: Service
+                      x-go-name: Designators
+                    riskFactors:
+                      description: Array of risk factors to monitor.
+                      type: array
+                      items:
+                        type: string
+                      x-go-name: RiskFactors
+                  x-go-name: Scope
+        description: Request body containing policy details.
+        required: true
+  /runtime/policies/{guid}:
+    put:
+      description: 'Same payload as create, but the guid field must match the policy being updated.
+
+        Same validation rules apply. The server sets updatedBy and updatedTime automatically.'
+      tags:
+      - RuntimePolicies
+      summary: Updates an existing runtime incident policy
+      operationId: updateRuntimePolicy
+      parameters:
+      - x-go-name: CustomerGUID
+        description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      - x-go-name: GUID
+        description: Policy GUID.
+        name: guid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+        '401':
+          description: ''
+        '403':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Request body. Same schema as create, but guid must be included.
+        required: true
+components:
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

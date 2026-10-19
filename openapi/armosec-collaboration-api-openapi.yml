@@ -1,0 +1,404 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Collaboration API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Collaboration
+paths:
+  /collaboration/config:
+    put:
+      description: Update collaboration configuration
+      tags:
+      - Collaboration
+      operationId: putCollaborationConfig
+      responses:
+        '200':
+          description: CollaborationConfig
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollaborationConfig'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CollaborationConfig'
+      summary: Put collaboration config
+      x-summary-source: derived
+    post:
+      description: Create collaboration configuration
+      tags:
+      - Collaboration
+      operationId: postCollaborationConfig
+      parameters:
+      - x-go-name: ConfigGUID
+        name: configGUID
+        in: query
+        schema:
+          type: string
+          format: uuid4
+      - x-go-name: ConfigName
+        name: configName
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: CollaborationConfig
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollaborationConfig'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CollaborationConfig'
+      summary: Post collaboration config
+      x-summary-source: derived
+    delete:
+      description: Delete collaboration configuration
+      tags:
+      - Collaboration
+      operationId: deleteCollaborationConfig
+      parameters:
+      - x-go-name: ConfigGUID
+        name: configGUID
+        in: query
+        schema:
+          type: string
+          format: uuid4
+      - x-go-name: ConfigName
+        name: configName
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      summary: Delete collaboration config
+      x-summary-source: derived
+  /collaboration/config/options:
+    get:
+      description: Get collaboration context options for given platform
+      tags:
+      - Collaboration
+      summary: Get collaboration configuration options
+      operationId: getCollaborationConfigOptions
+      parameters:
+      - x-go-name: Provider
+        name: provider
+        in: query
+        required: true
+        schema:
+          type: string
+      - x-go-name: ConfigID
+        name: configID
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/CollaborationConfigOptionsResponse'
+    post:
+      description: Get context options for given platform, specific level and chosen options so far
+      tags:
+      - Collaboration
+      summary: Get collaboration configuration options
+      operationId: postCollaborationConfigOptions
+      parameters:
+      - x-go-name: Provider
+        name: provider
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/CollaborationConfigOptionsResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - type: object
+                properties:
+                  configID:
+                    description: Collaboration configuration GUID (optional), if set then configuration options are also added to the request selected options scope
+                    type: string
+                    x-go-name: ConfigID
+                    example: 8313c5a0-bee1-4a3c-8f4f-71ce698259876
+                  cursor:
+                    description: Cursor of the page of results (optional), the value of cursor should set to 0 in the first request and then use value of the nextCursor in case of a paginated response
+                    type: integer
+                    format: int64
+                    x-go-name: Cursor
+                    example: 0
+                  query:
+                    description: Query string to filter results (e.g. name of assignee)
+                    type: string
+                    x-go-name: Query
+                    example: john
+                  selected:
+                    description: Selected config options
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/CollaborationConfigOption'
+                    x-go-name: Selected
+                  typeName:
+                    description: Requested config options type
+                    type: string
+                    x-go-name: TypeName
+                    example: project
+  /collaboration/config/templates:
+    get:
+      description: Get available collaboration configuration templates
+      tags:
+      - Collaboration
+      summary: Get collaboration configuration templates
+      operationId: getCollaborationConfigTemplates
+      responses:
+        '200':
+          $ref: '#/components/responses/CollaborationConfigurationTemplateResponse'
+  /collaboration/share:
+    post:
+      description: Share data using specific collaboration configuration
+      tags:
+      - Collaboration
+      summary: Share data
+      operationId: postCollaborationShare
+      responses:
+        '200':
+          $ref: '#/components/responses/CollaborationShareResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - type: object
+                properties:
+                  configID:
+                    description: Collaboration configuration GUID
+                    type: string
+                    x-go-name: ConfigID
+                    example: 8313c5a0-bee1-4a3c-8f4f-71ce698259876
+                  description:
+                    description: Share description (body)
+                    type: string
+                    x-go-name: Description
+                    example: '"High number of critical vulnerabilities in main cluster"'
+                  options:
+                    description: Selected options for this share in addition or instead of the options selected in the configuration (e.g. add assignee option or override jira project option)
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/CollaborationConfigOption'
+                    x-go-name: Options
+                  summary:
+                    description: Share issue summary
+                    type: string
+                    x-go-name: Summary
+                    example: '"High number of critical vulnerabilities in main cluster"'
+                  title:
+                    description: Share title
+                    type: string
+                    x-go-name: Title
+                    example: '"Critical Vulnerabilities"'
+components:
+  schemas:
+    CollaborationConfigOption:
+      description: Collaboration provider config option
+      type: object
+      properties:
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: Headers
+        iconBase64:
+          description: Icon for the option encoded in base64. Optional
+          type: string
+          x-go-name: IconBase64
+        iconURL:
+          description: Icon url for the option. Optional
+          type: string
+          x-go-name: IconURL
+          example: https://site-admin-avatar-cdn.prod.public.atl-paas.net/avatars/240/triangle.png
+        id:
+          description: ID of the option
+          type: string
+          x-go-name: ID
+          example: 8313c5a0-bee1-4a3c-8f4f-71ce698259876 or https://teams/mywebhook or jira siteID
+        name:
+          description: Name of the option
+          type: string
+          x-go-name: Name
+          example: jira-main-project
+        type:
+          $ref: '#/components/schemas/CollaborationConfigOptionType'
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    CollaborationConfig:
+      type: object
+      properties:
+        attributes:
+          type: object
+          additionalProperties: {}
+          x-go-name: Attributes
+        context:
+          description: The context of sharing (for example in jira it will be cloud, project, etc)
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/CollaborationConfigOption'
+          x-go-name: Context
+        creationTime:
+          type: string
+          x-go-name: CreationTime
+        guid:
+          type: string
+          x-go-name: GUID
+        hostName:
+          description: Host name for private hosting
+          type: string
+          x-go-name: HostName
+          example: http://example.com
+        iconBase64:
+          description: Icon for the option encoded in base64. Optional
+          type: string
+          x-go-name: IconBase64
+        iconURL:
+          description: Icon url for the option. Optional
+          type: string
+          x-go-name: IconURL
+          example: https://site-admin-avatar-cdn.prod.public.atl-paas.net/avatars/240/triangle.png
+        name:
+          type: string
+          x-go-name: Name
+        provider:
+          $ref: '#/components/schemas/ChannelProvider'
+        updatedTime:
+          type: string
+          x-go-name: UpdatedTime
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    CollaborationConfigOptionType:
+      description: Config option type
+      type: object
+      properties:
+        customInput:
+          description: Custom input available or not
+          type: boolean
+          x-go-name: CustomInput
+          example: false
+        name:
+          description: Name of the type
+          type: string
+          x-go-name: Name
+          example: project
+        required:
+          description: Indicates if this option is a mandatory for collaboration configuration
+          type: boolean
+          x-go-name: ConfigRequired
+          example: false
+      x-go-package: github.com/armosec/armoapi-go/notifications
+    ChannelProvider:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/notifications
+  responses:
+    CollaborationConfigOptionsResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                nextCursor:
+                  description: Cursor of the next page or results or 0 if this is the last page of options
+                  type: integer
+                  format: int64
+                  x-go-name: NextCursor
+                nextTypes:
+                  description: Next type of options for config
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CollaborationConfigOptionType'
+                  x-go-name: NextTypes
+                options:
+                  description: Options available for this specific type
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CollaborationConfigOption'
+                  x-go-name: Options
+                type:
+                  $ref: '#/components/schemas/CollaborationConfigOptionType'
+    CollaborationConfigurationTemplateResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Templates:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CollaborationConfig'
+    CollaborationShareResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                link:
+                  description: Link to the new shared data
+                  type: string
+                  x-go-name: Link
+                  example: https://github.com/go-openapi/spec/issues/23
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

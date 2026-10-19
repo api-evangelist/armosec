@@ -1,0 +1,223 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM SIEM Integrations API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: SIEMIntegrations
+paths:
+  /siem/{provider}:
+    post:
+      description: '## Path params
+
+        `provider` - required. Provider of the siem integration.
+
+        There are 4 providers:
+
+        sumoLogic
+
+        splunk
+
+        microsoftSentinel
+
+        webhook
+
+
+        ## Query params
+
+        `customerGUID` - required. Unique identifier for the customer.
+
+
+        ## Request object
+
+        The request body contains details about the siem integration to be created.
+
+
+        ### Request object examples
+
+        Create a siem integration for Microsoft Sentinel:
+
+        ```json
+
+        {
+
+        "name": "Microsoft Sentinel SIEM Integration",
+
+        "configuration": {
+
+        "workSpaceID": "1234567",
+
+        "primaryKey": "14rwetge6253456"
+
+        },
+
+        }
+
+        ```
+
+
+        Create a siem integration for Sumo Logic:
+
+        ```json
+
+        {
+
+        "name": "Sumo Logic SIEM Integration",
+
+        "configuration": {
+
+        "httpSourceAddress": "https://endpointX.collection..sumologic.com/receiver/v1/http/"
+
+        },
+
+        }
+
+        ```
+
+
+        Create a siem integration for Splunk:
+
+        ```json
+
+        {
+
+        "name": "Splunk SIEM Integration",
+
+        "configuration": {
+
+        "url": "https://http-inputs-your_instance_name.splunkcloud.com",
+
+        "port": "8080",
+
+        "token": "some_token"
+
+        },
+
+        }
+
+        ```
+
+
+        Create a siem integration for Webhook:
+
+        headers is optional.
+
+        ```json
+
+        {
+
+        "name": "Webhook SIEM Integration",
+
+        "configuration": {
+
+        "webhookURL": "some_webhookURL",
+
+        "headers": {
+
+        "some_header": "some_value"
+
+        }
+
+        }
+
+        }
+
+        ```'
+      tags:
+      - SIEMIntegrations
+      summary: Creates a new siem integration with the specified configuration
+      operationId: createSiemIntegration
+      parameters:
+      - x-go-name: Provider
+        description: Provider of the siem integration.
+        name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+      - x-go-name: CustomerGUID
+        description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+        '401':
+          description: ''
+        '403':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                configuration:
+                  description: Configuration of the siem integration.
+                  x-go-name: Configuration
+                isEnabled:
+                  description: Is the siem integration enabled.
+                  type: boolean
+                  x-go-name: IsEnabled
+                name:
+                  description: Name of the siem integration.
+                  type: string
+                  x-go-name: Name
+                provider:
+                  description: Provider of the siem integration.
+                  type: string
+                  x-go-name: Provider
+        description: Request body containing siem integration details.
+        required: true
+components:
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

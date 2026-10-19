@@ -1,138 +1,199 @@
 openapi: 3.2.0
 info:
-  title: ARMO Platform Integrations API
-  description: The ARMO Platform API exposes ARMO's cloud-native and Kubernetes security data over REST.
-  version: '1.0'
-  contact:
-    name: ARMO
-    url: https://www.armosec.io
-  license:
-    name: ARMO Platform Terms
-    url: https://www.armosec.io/terms-of-service/
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Integrations API
+  version: 1.0.0
 servers:
 - url: https://api.armosec.io/api/v1
-  description: EU region
-- url: https://api.us.armosec.io/api/v1
-  description: US region
+- url: http://api.armosec.io/api/v1
 security:
-- apiKeyAuth: []
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
 tags:
 - name: Integrations
-  description: Jira and collaboration/notification integrations.
 paths:
-  /integrations/jira/config:
+  /integrations/jira/configV2:
     get:
-      operationId: getJiraConfig
-      tags:
-      - Integrations
-      summary: Get Jira configuration
+      description: Get Jira integration configuration
+      operationId: JiraIntegration
       responses:
         '200':
-          description: Jira configuration.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-    post:
-      operationId: saveJiraConfig
+          $ref: '#/components/responses/JiraConfigResp'
       tags:
       - Integrations
-      summary: Save Jira configuration
-      requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
-      responses:
-        '200':
-          description: Saved.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /integrations/jira/issueV2:
-    post:
-      operationId: createJiraIssue
+      summary: Jira integration
+      x-summary-source: derived
+  /integrations/link/{guid}:
+    delete:
       tags:
       - Integrations
-      summary: Create a Jira issue (ticket)
-      description: Creates a Jira issue/ticket from an ARMO finding.
-      requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
+      summary: Get integrations connection status
+      operationId: unlinkIssue
+      parameters:
+      - x-go-name: Guid
+        name: guid
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: Created.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /collaboration/config:
-    post:
-      operationId: createCollaborationConfig
-      tags:
-      - Integrations
-      summary: Create a collaboration configuration
-      requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
-      responses:
-        '200':
-          description: Created.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /collaboration/share:
-    post:
-      operationId: shareCollaboration
-      tags:
-      - Integrations
-      summary: Share data using a collaboration config
-      requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
-      responses:
-        '200':
-          description: Shared.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+          description: ''
 components:
-  responses:
-    Unauthorized:
-      description: Missing or invalid X-API-KEY.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  requestBodies:
-    GenericBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            additionalProperties: true
   schemas:
-    GenericResponse:
+    IntOrString:
+      description: '+protobuf=true
+
+        +protobuf.options.(gogoproto.goproto_stringer)=false
+
+        +k8s:openapi-gen=true
+
+        +k8s:openapi-model-package=io.k8s.apimachinery.pkg.util.intstr'
       type: object
-      additionalProperties: true
-    Error:
+      title: 'IntOrString is a type that can hold an int32 or a string.  When used in
+
+        JSON or YAML marshalling and unmarshalling, it produces or consumes the
+
+        inner type.  This allows you to have, for example, a JSON field that can
+
+        accept a name or number.
+
+        TODO: Rename to Int32OrString'
+      properties:
+        IntVal:
+          type: integer
+          format: int32
+        StrVal:
+          type: string
+        Type:
+          $ref: '#/components/schemas/Type'
+      x-go-package: k8s.io/apimachinery/pkg/util/intstr
+    Type:
+      type: integer
+      format: int64
+      title: Type represents the stored type of IntOrString.
+      x-go-package: k8s.io/apimachinery/pkg/util/intstr
+    AuthenticationType:
+      type: string
+      x-go-package: github.com/armosec/cadashboardbe/integrations/tickets/jira
+    JiraProjectConfig:
       type: object
       properties:
-        error:
+        autoClosureSettings:
+          $ref: '#/components/schemas/JiraAutoClosureSettings'
+        defaultIssueType:
           type: string
-        message:
+          x-go-name: DefaultIssueType
+        id:
+          $ref: '#/components/schemas/IntOrString'
+        isDefault:
+          type: boolean
+          x-go-name: IsDefault
+        name:
           type: string
+          x-go-name: Name
+      x-go-package: github.com/armosec/armosec-infra/jira
+    AuthConfig:
+      type: object
+      properties:
+        authType:
+          $ref: '#/components/schemas/AuthenticationType'
+        token:
+          type: string
+          x-go-name: Token
+      x-go-package: github.com/armosec/cadashboardbe/integrations/tickets/jira
+    JiraAutoClosureSettings:
+      type: object
+      properties:
+        isEnabled:
+          type: boolean
+          x-go-name: IsEnabled
+        issueTypeIdToResolvedStatusId:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: IssueTypeIdToResolvedStatusId
+      x-go-package: github.com/armosec/armosec-infra/jira
+    JiraEntity:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/IntOrString'
+        name:
+          type: string
+          x-go-name: Name
+      x-go-package: github.com/armosec/armosec-infra/jira
+    JiraConfig:
+      type: object
+      properties:
+        authConfig:
+          $ref: '#/components/schemas/AuthConfig'
+        connectionError:
+          description: Connection error fields
+          type: string
+          x-go-name: ConnectionError
+        connectionErrorStatus:
+          type: integer
+          format: int64
+          x-go-name: ConnectionErrorStatus
+        isSelfHosted:
+          type: boolean
+          x-go-name: IsSelfHosted
+        jiraCollabGUID:
+          type: string
+          x-go-name: JiraCollabGUID
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/JiraProjectConfig'
+          x-go-name: Projects
+        selectedSite:
+          $ref: '#/components/schemas/JiraEntity'
+      x-go-package: github.com/armosec/cadashboardbe/integrations/tickets/jira
+  responses:
+    JiraConfigResp:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JiraConfig'
   securitySchemes:
-    apiKeyAuth:
+    accessKey:
       type: apiKey
+      name: x-api-key
       in: header
-      name: X-API-KEY
-      description: Account access key (Agent Access Key) generated in ARMO Platform under Settings, sent in the X-API-KEY header.
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

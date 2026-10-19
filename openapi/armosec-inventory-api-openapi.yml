@@ -1,0 +1,342 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Inventory API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Inventory
+paths:
+  /inventory/list:
+    post:
+      description: 'Returns a unified view of Kubernetes workloads, cloud host agents,
+
+        CSPM cloud resources, and vulnerability-scanned hosts for a customer.
+
+        Cloud hosts from multiple sources are deduplicated into a single row
+
+        per host using COALESCE precedence (CHA > CSPM > vulnerability hosts).'
+      tags:
+      - Inventory
+      summary: Retrieve inventory list
+      operationId: getInventory
+      parameters:
+      - name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/inventoryResponse'
+        '400':
+          description: ''
+        '500':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                innerFilters:
+                  description: Optional filters.
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  x-go-name: InnerFilters
+                  example:
+                  - accountId: string
+                    cluster: string
+                    hostName: string
+                    kind: string
+                    namespace: string
+                    provider: string
+                    region: string
+                    riskFactors: string
+                    status: string
+                    workloadName: string
+                orderBy:
+                  description: Sort order.
+                  type: string
+                  x-go-name: OrderBy
+                  example: workloadName:asc
+                pageNum:
+                  description: Page number to retrieve.
+                  type: integer
+                  format: int64
+                  x-go-name: PageNum
+                  example: 1
+                pageSize:
+                  description: Page size of the page.
+                  type: integer
+                  format: int64
+                  x-go-name: PageSize
+                  example: 50
+        description: Optional filters and pagination config.
+  /uniqueValues/inventory:
+    post:
+      description: 'Returns distinct values for filterable fields in the inventory list endpoint.
+
+        Use this to populate filter dropdowns in the UI.'
+      tags:
+      - Inventory
+      summary: Get unique values for inventory filters
+      operationId: uniqueValuesInventory
+      parameters:
+      - name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/inventoryUniqueValuesResponse'
+        '400':
+          description: ''
+        '500':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                countFields:
+                  description: Include hit counts for each field
+                  type: boolean
+                  x-go-name: CountFields
+                fields:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  x-go-name: Fields
+                innerFilters:
+                  description: Which elements of the list to return, each field can hold multiple values separated by comma
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties:
+                      type: string
+                  x-go-name: InnerFilters
+                  example: "\": {\"severity\": \"High,Medium\",\t\t\"type\": \"61539,30303\"}"
+                pageNum:
+                  description: for apis that support pagination
+                  type: integer
+                  format: int64
+                  x-go-name: PageNum
+                pageSize:
+                  type: integer
+                  format: int64
+                  x-go-name: PageSize
+                since:
+                  type: string
+                  format: date-time
+                  default: since - beginning of the time, until - now)
+                  x-go-name: Since
+                ticketManager:
+                  $ref: '#/components/schemas/TicketManager'
+                until:
+                  type: string
+                  format: date-time
+                  x-go-name: Until
+        required: true
+components:
+  schemas:
+    InventoryItem:
+      type: object
+      properties:
+        accountId:
+          description: Cloud account ID.
+          type: string
+          x-go-name: AccountID
+        accountName:
+          description: Cloud account name.
+          type: string
+          x-go-name: AccountName
+        cluster:
+          description: K8s cluster name. Empty for cloud hosts.
+          type: string
+          x-go-name: Cluster
+        completionStatus:
+          description: Completion status (completed, partial, missing, failed).
+          type: string
+          x-go-name: CompletionStatus
+        creationTimestamp:
+          description: Application profile creation timestamp (K8s only).
+          type: string
+          x-go-name: CreationTimestamp
+        hostIPs:
+          description: Host IP addresses.
+          type: array
+          items:
+            type: string
+          x-go-name: HostIPs
+        hostName:
+          description: Cloud host name. Non-empty for cloud hosts, empty for K8s workloads.
+          type: string
+          x-go-name: HostName
+        instanceId:
+          description: Cloud instance ID.
+          type: string
+          x-go-name: InstanceID
+        kind:
+          description: Resource kind (e.g. Deployment, ec2, Virtual Machine). Will be deprecated in favor of type.
+          type: string
+          x-go-name: Kind
+        learningPercentage:
+          description: Learning completion percentage. K8s only.
+          type: integer
+          format: int64
+          x-go-name: LearningPercentage
+        learningPeriod:
+          description: Learning period duration (e.g. "24h"). K8s only.
+          type: string
+          x-go-name: LearningPeriod
+        namespace:
+          description: K8s namespace. Empty for cloud hosts.
+          type: string
+          x-go-name: Namespace
+        provider:
+          description: Cloud provider (aws, azure, gke, etc.).
+          type: string
+          x-go-name: Provider
+        region:
+          description: Cloud region.
+          type: string
+          x-go-name: Region
+        riskFactors:
+          description: Risk factors associated with the workload.
+          type: array
+          items:
+            type: string
+          x-go-name: RiskFactors
+        status:
+          description: Workload status (completed, learning, partial, failed, missing).
+          type: string
+          x-go-name: Status
+        tags:
+          description: Host tags as "key:value" strings.
+          type: array
+          items:
+            type: string
+          x-go-name: Tags
+        type:
+          description: Resource type — same value as kind, eventual replacement.
+          type: string
+          x-go-name: Type
+        workloadName:
+          description: Name of the workload or cloud host.
+          type: string
+          x-go-name: WorkloadName
+      x-go-package: github.com/armosec/cadashboardbe/docs
+    UniqueValuesResponseFieldsCount:
+      description: UniqueValuesResponseFieldsCount  holds response data of UniqueValuesResponseV2 request
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+          x-go-name: Count
+        key:
+          type: string
+          x-go-name: Field
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    TicketManager:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    InventoryResponse:
+      type: object
+      properties:
+        response:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryItem'
+          x-go-name: Response
+        total:
+          type: object
+          properties:
+            relation:
+              type: string
+              x-go-name: Relation
+            value:
+              type: integer
+              format: int64
+              x-go-name: Value
+          x-go-name: Total
+      x-go-package: github.com/armosec/cadashboardbe/docs
+  responses:
+    inventoryUniqueValuesResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              fields:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+                x-go-name: Fields
+              fieldsCount:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/UniqueValuesResponseFieldsCount'
+                x-go-name: FieldsCount
+    inventoryResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InventoryResponse'
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

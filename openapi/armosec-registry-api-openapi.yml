@@ -1,103 +1,231 @@
 openapi: 3.2.0
 info:
-  title: ARMO Platform Registry API
-  description: The ARMO Platform API exposes ARMO's cloud-native and Kubernetes security data over REST.
-  version: '1.0'
-  contact:
-    name: ARMO
-    url: https://www.armosec.io
-  license:
-    name: ARMO Platform Terms
-    url: https://www.armosec.io/terms-of-service/
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Registry API
+  version: 1.0.0
 servers:
 - url: https://api.armosec.io/api/v1
-  description: EU region
-- url: https://api.us.armosec.io/api/v1
-  description: US region
+- url: http://api.armosec.io/api/v1
 security:
-- apiKeyAuth: []
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
 tags:
 - name: Registry
-  description: Container registry scanning.
 paths:
   /registry/scan:
-    post:
-      operationId: issueRegistryScan
-      tags:
-      - Registry
-      summary: Issue a registry scan or set scheduler
-      description: Issues a container registry scan or sets a scan scheduler (cron).
-      requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
-      responses:
-        '200':
-          description: Scan accepted.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
     put:
+      description: Update registry cron job
+      tags:
+      - Registry
       operationId: updateRegistryScan
-      tags:
-      - Registry
-      summary: Update the registry scan cron job
+      responses:
+        '202':
+          $ref: '#/components/responses/RegistryScanResponse'
       requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
-      responses:
-        '200':
-          description: Updated.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-    delete:
-      operationId: deleteRegistryScan
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/RegistryJobParams'
+      summary: Update registry scan
+      x-summary-source: derived
+    post:
+      description: Issue a scan for a specific registry or set sceduler to scan(if CronTabSchedule is not empty)
       tags:
       - Registry
-      summary: Delete the registry scan cron job
+      operationId: postRegistryScan
       responses:
-        '200':
-          description: Deleted.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+        '202':
+          $ref: '#/components/responses/RegistryScanResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '403':
+          description: ''
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/RegistryScanRequest'
+      summary: Post registry scan
+      x-summary-source: derived
+    delete:
+      description: Delete registry cron job
+      tags:
+      - Registry
+      operationId: deleteRegistryScan
+      responses:
+        '202':
+          $ref: '#/components/responses/RegistryScanResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/RegistryJobParams'
+      summary: Delete registry scan
+      x-summary-source: derived
 components:
   responses:
-    Unauthorized:
-      description: Missing or invalid X-API-KEY.
+    RegistryScanResponse:
+      description: ''
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
-  requestBodies:
-    GenericBody:
-      required: true
+            type: array
+            items:
+              type: object
+              properties:
+                clusterName:
+                  type: string
+                  x-go-name: ClusterName
+                cronTabSchedule:
+                  type: string
+                  x-go-name: CronTabSchedule
+                id:
+                  type: string
+                  x-go-name: ID
+                jobID:
+                  type: string
+                  x-go-name: JobID
+                name:
+                  type: string
+                  x-go-name: Name
+                registryName:
+                  type: string
+                  x-go-name: RegistryName
+    BadRequestResponse:
+      description: ''
       content:
         application/json:
           schema:
-            type: object
-            additionalProperties: true
+            type: array
+            items:
+              type: object
+              properties:
+                detail:
+                  description: Error detail (Optional)
+                  type: string
+                  x-go-name: Detail
+                  example: '"invalid set crone job request"'
+                message:
+                  description: User-Friendly Error Messages (Optional)
+                  type: string
+                  x-go-name: Message
+                  example: '"You are running an old version of Kubescape Helm chart"'
+                url:
+                  description: URL to documentation / future investigation (Optional)
+                  type: string
+                  x-go-name: URL
+                  example: '"https://docs.armo.cloud"'
+    SysterErrorResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                detail:
+                  description: Error detail (Optional)
+                  type: string
+                  x-go-name: Detail
+                  example: '"invalid set crone job request"'
+                message:
+                  description: User-Friendly Error Messages (Optional)
+                  type: string
+                  x-go-name: Message
+                  example: '"You are running an old version of Kubescape Helm chart"'
+                url:
+                  description: URL to documentation / future investigation (Optional)
+                  type: string
+                  x-go-name: URL
+                  example: '"https://docs.armo.cloud"'
   schemas:
-    GenericResponse:
-      type: object
-      additionalProperties: true
-    Error:
+    RegistryJobParams:
       type: object
       properties:
-        error:
+        clusterName:
           type: string
-        message:
+          x-go-name: ClusterName
+        cronTabSchedule:
           type: string
+          x-go-name: CronTabSchedule
+        id:
+          type: string
+          x-go-name: ID
+        jobID:
+          type: string
+          x-go-name: JobID
+        name:
+          type: string
+          x-go-name: Name
+        registryName:
+          type: string
+          x-go-name: RegistryName
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RegistryScanRequest:
+      type: object
+      properties:
+        clusterName:
+          description: ClusterName
+          type: string
+          x-go-name: ClusterName
+          example: logging-prod
+        cronTabSchedule:
+          description: CronTabSchedule is optional
+          type: string
+          x-go-name: CronTabSchedule
+          example: 22 */2 * * *
+        registryName:
+          description: RegistryName
+          type: string
+          x-go-name: RegistryName
+          example: red-team/web
+      x-go-package: github.com/armosec/cadashboardbe/docs
   securitySchemes:
-    apiKeyAuth:
+    accessKey:
       type: apiKey
+      name: x-api-key
       in: header
-      name: X-API-KEY
-      description: Account access key (Agent Access Key) generated in ARMO Platform under Settings, sent in the X-API-KEY header.
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

@@ -1,0 +1,104 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Attack Chains API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: AttackChains
+paths:
+  /attackchains:
+    post:
+      tags:
+      - AttackChains
+      summary: Retrieves a list of attack chains that match the provided filters
+      operationId: getAttackChains
+      parameters:
+      - x-go-name: CustomerGUID
+        description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                innerFilters:
+                  description: Array of inner filters to narrow down the attack chains.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      attackChainID:
+                        description: Unique identifier for the attack chain.
+                        type: string
+                        x-go-name: AttackChainID
+                      clusterName:
+                        description: Name of the cluster.
+                        type: string
+                        x-go-name: ClusterName
+                      resourceName:
+                        description: Name of the resource.
+                        type: string
+                        x-go-name: ResourceName
+                      resourceNamespace:
+                        description: Namespace of the resource.
+                        type: string
+                        x-go-name: ResourceNamespace
+                  x-go-name: InnerFilters
+        description: Request body containing optional filters for retrieving specific attack chains.
+components:
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

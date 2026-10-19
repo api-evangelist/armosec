@@ -1,0 +1,96 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Sensors API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Sensors
+paths:
+  /sensors/version:
+    get:
+      description: Returns the current versions of all agents.
+      tags:
+      - Sensors
+      summary: Get sensors versions
+      operationId: getSensorsVersion
+      responses:
+        '200':
+          $ref: '#/components/responses/sensorsVersionResponse'
+components:
+  schemas:
+    SensorsVersionConfig:
+      type: object
+      title: SensorsVersionConfig holds the version strings for sensor agents.
+      properties:
+        armoctl:
+          type: string
+          x-go-name: Armoctl
+        ecsAgent:
+          type: string
+          x-go-name: ECSAgent
+        ecsOperator:
+          type: string
+          x-go-name: ECSOperator
+        hostAgent:
+          type: string
+          x-go-name: HostAgent
+        nodeAgent:
+          type: string
+          x-go-name: NodeAgent
+        ptraceAgent:
+          type: string
+          x-go-name: PtraceAgent
+      x-go-package: github.com/armosec/cadashboardbe/datastructures
+  responses:
+    sensorsVersionResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SensorsVersionConfig'
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

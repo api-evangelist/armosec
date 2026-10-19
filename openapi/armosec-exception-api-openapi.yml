@@ -1,0 +1,552 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Exception API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Exception
+paths:
+  /postureExceptionPolicy:
+    get:
+      description: Returns exception object or list of objects
+      tags:
+      - Exception
+      operationId: getPostureExceptionHandler
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        schema:
+          type: string
+          format: uuid4
+      - x-go-name: PolicyName
+        name: policyName
+        in: query
+        schema:
+          type: string
+      - x-go-name: PolicyGUID
+        name: policyGUID
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ExceptionsPostureExceptionHandlerResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+      summary: Get posture exception handler
+      x-summary-source: derived
+    put:
+      description: Updating existing exception
+      tags:
+      - Exception
+      operationId: putPostureExceptionHandler
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        schema:
+          type: string
+          format: uuid4
+      responses:
+        '200':
+          $ref: '#/components/responses/ExceptionPostureExceptionHandlerSingleResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+      summary: Put posture exception handler
+      x-summary-source: derived
+    post:
+      description: Create new exception
+      tags:
+      - Exception
+      operationId: postPostureExceptionHandler
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        schema:
+          type: string
+          format: uuid4
+      responses:
+        '200':
+          $ref: '#/components/responses/ExceptionPostureExceptionHandlerSingleResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+      summary: Post posture exception handler
+      x-summary-source: derived
+    delete:
+      description: Deleting existing exception
+      tags:
+      - Exception
+      operationId: delPostureExceptionHandler
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        schema:
+          type: string
+          format: uuid4
+      - x-go-name: PolicyName
+        name: policyName
+        in: query
+        schema:
+          type: string
+      - x-go-name: PolicyGUID
+        name: policyGUID
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+      summary: Del posture exception handler
+      x-summary-source: derived
+  /vulnerabilityExceptionPolicy:
+    get:
+      description: Get an exception policy object or list of objects
+      tags:
+      - Exception
+      operationId: getVulnerabilityExceptionHandler
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        schema:
+          type: string
+          format: uuid4
+      - x-go-name: PolicyName
+        name: policyName
+        in: query
+        schema:
+          type: string
+      - x-go-name: PolicyGUID
+        name: policyGUID
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ExceptionsVulnerabilityExceptionHandlerResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+      summary: Get vulnerability exception handler
+      x-summary-source: derived
+    put:
+      tags:
+      - Exception
+      summary: Update an existing exception
+      operationId: putVulnerabilityExceptionHandler
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        schema:
+          type: string
+          format: uuid4
+      responses:
+        '200':
+          $ref: '#/components/responses/ExceptionsVulnerabilityExceptionSingleHandlerResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VulnerabilityExceptionPolicy'
+    post:
+      tags:
+      - Exception
+      summary: Create vulnerability exceptions
+      operationId: postVulnerabilityExceptionHandler
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        schema:
+          type: string
+          format: uuid4
+      - x-go-name: Bulk
+        name: bulk
+        in: query
+        schema:
+          type: boolean
+      - x-go-name: Actions
+        name: actions
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ExceptionsVulnerabilityExceptionSingleHandlerResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/SysterErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VulnerabilityExceptionPolicy'
+    delete:
+      tags:
+      - Exception
+      summary: Delete vulnerability exceptions
+      operationId: delVulnerabilityExceptionHandler
+      parameters:
+      - x-go-name: CustomerGUID
+        name: customerGUID
+        in: query
+        schema:
+          type: string
+          format: uuid4
+      - x-go-name: PolicyName
+        name: policyName
+        in: query
+        schema:
+          type: string
+      - x-go-name: PolicyGUID
+        name: policyGUID
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+components:
+  schemas:
+    PosturePolicy:
+      type: object
+      properties:
+        controlID:
+          type: string
+          x-go-name: ControlID
+        controlName:
+          description: deprecated - use ControlID instead
+          type: string
+          x-go-name: ControlName
+        frameworkName:
+          type: string
+          x-go-name: FrameworkName
+        ruleName:
+          type: string
+          x-go-name: RuleName
+        severityScore:
+          type: integer
+          format: int64
+          x-go-name: SeverityScore
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    VulnerabilityExceptionPolicyActions:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    VulnerabilityExceptionPolicy:
+      type: object
+      required:
+      - policyType
+      - actions
+      - designators
+      - vulnerabilities
+      properties:
+        actions:
+          description: Actions to apply (currently only 'ignore' is available)
+          type: array
+          minimum: 1
+          items:
+            $ref: '#/components/schemas/VulnerabilityExceptionPolicyActions'
+          x-go-name: Actions
+          example:
+          - ignore
+        attributes:
+          type: object
+          additionalProperties: {}
+          x-go-name: Attributes
+        createdBy:
+          type: string
+          x-go-name: CreatedBy
+        creationTime:
+          description: Creation time of the policy
+          type: string
+          x-go-name: CreationTime
+          example: '2022-03-31T08:57:58.048014'
+        designators:
+          description: Items to apply the actions on
+          type: array
+          minimum: 1
+          items:
+            $ref: '#/components/schemas/PortalDesignator'
+          x-go-name: Designatores
+        expirationDate:
+          type: string
+          format: date-time
+          x-go-name: ExpirationDate
+        expiredOnFix:
+          type: boolean
+          x-go-name: ExpiredOnFix
+        guid:
+          type: string
+          x-go-name: GUID
+        name:
+          type: string
+          x-go-name: Name
+        policyType:
+          description: Policy type. Must be 'vulnerabilityExceptionPolicy'
+          type: string
+          x-go-name: PolicyType
+          example: vulnerabilityExceptionPolicy
+        reason:
+          type: string
+          x-go-name: Reason
+        updatedTime:
+          type: string
+          x-go-name: UpdatedTime
+        vulnerabilities:
+          description: Vulnerabilities to take the actions on
+          type: array
+          minimum: 1
+          items:
+            $ref: '#/components/schemas/VulnerabilityPolicy'
+          x-go-name: VulnerabilityPolicies
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PostureExceptionPolicyActions:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    PortalDesignator:
+      description: PortalDesignator represents a single designation option
+      type: object
+      properties:
+        attributes:
+          description: Attributes that describe the targets
+          type: object
+          additionalProperties:
+            type: string
+          x-go-name: Attributes
+        designatorType:
+          type: string
+          enum:
+          - Attributes
+          - Attribute
+          - Wlid
+          - WildWlid
+          - WlidContainer
+          - WlidProcess
+          - Sid
+          x-go-enum-desc: 'Attributes DesignatorAttributes
+
+            Attribute DesignatorAttribute
+
+            Wlid DesignatorWlid  WorkloadID format.   Has two formats:   1. Kubernetes format: wlid://cluster-<cluster>/namespace-<namespace>/<kind>-<name>   2. Native format: wlid://datacenter-<datacenter>/project-<project>/native-<name>
+
+            WildWlid DesignatorWildWlid  A WorkloadID wildcard expression.   A wildcard expression that includes a cluster:    wlid://cluster-<cluster>/   An expression that includes a cluster and namespace (filters out all other namespaces):    wlid://cluster-<cluster>/namespace-<namespace>/
+
+            WlidContainer DesignatorWlidContainer
+
+            WlidProcess DesignatorWlidProcess
+
+            Sid DesignatorSid'
+          x-go-name: DesignatorType
+        sid:
+          description: A specific Secret ID
+          type: string
+          x-go-name: SID
+        wildwlid:
+          description: An expression that describes applicable workload IDs
+          type: string
+          x-go-name: WildWLID
+        wlid:
+          description: A specific Workload ID
+          type: string
+          x-go-name: WLID
+      x-go-package: github.com/armosec/armoapi-go/identifiers
+    PostureExceptionPolicy:
+      type: object
+      properties:
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostureExceptionPolicyActions'
+          x-go-name: Actions
+        attributes:
+          type: object
+          additionalProperties: {}
+          x-go-name: Attributes
+        createdBy:
+          type: string
+          x-go-name: CreatedBy
+        creationTime:
+          type: string
+          x-go-name: CreationTime
+        expirationDate:
+          type: string
+          format: date-time
+          x-go-name: ExpirationDate
+        guid:
+          type: string
+          x-go-name: GUID
+        name:
+          type: string
+          x-go-name: Name
+        policyType:
+          type: string
+          x-go-name: PolicyType
+        posturePolicies:
+          type: array
+          items:
+            $ref: '#/components/schemas/PosturePolicy'
+          x-go-name: PosturePolicies
+        reason:
+          type: string
+          x-go-name: Reason
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/PortalDesignator'
+          x-go-name: Resources
+        updatedTime:
+          type: string
+          x-go-name: UpdatedTime
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    VulnerabilityPolicy:
+      type: object
+      properties:
+        name:
+          description: The name of the vulnerability
+          type: string
+          x-go-name: Name
+          example: CVE-2022-28128
+        severityScore:
+          type: integer
+          format: int64
+          x-go-name: SeverityScore
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+  responses:
+    BadRequestResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                detail:
+                  description: Error detail (Optional)
+                  type: string
+                  x-go-name: Detail
+                  example: '"invalid set crone job request"'
+                message:
+                  description: User-Friendly Error Messages (Optional)
+                  type: string
+                  x-go-name: Message
+                  example: '"You are running an old version of Kubescape Helm chart"'
+                url:
+                  description: URL to documentation / future investigation (Optional)
+                  type: string
+                  x-go-name: URL
+                  example: '"https://docs.armo.cloud"'
+    ExceptionsPostureExceptionHandlerResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PostureExceptionPolicy'
+    ExceptionsVulnerabilityExceptionHandlerResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/VulnerabilityExceptionPolicy'
+    ExceptionPostureExceptionHandlerSingleResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PostureExceptionPolicy'
+    SysterErrorResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                detail:
+                  description: Error detail (Optional)
+                  type: string
+                  x-go-name: Detail
+                  example: '"invalid set crone job request"'
+                message:
+                  description: User-Friendly Error Messages (Optional)
+                  type: string
+                  x-go-name: Message
+                  example: '"You are running an old version of Kubescape Helm chart"'
+                url:
+                  description: URL to documentation / future investigation (Optional)
+                  type: string
+                  x-go-name: URL
+                  example: '"https://docs.armo.cloud"'
+    ExceptionsVulnerabilityExceptionSingleHandlerResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VulnerabilityExceptionPolicy'
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

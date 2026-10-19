@@ -1,0 +1,155 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Tenants API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Tenants
+paths:
+  /tenants/createTenant:
+    get:
+      description: Users whose allowed to multiple customers must specify customer or customer GUID
+      tags:
+      - Tenants
+      summary: Create new tenant (customer) in ARMO portal and in ARMO identity managment and…
+      operationId: CreateTenant
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateTenantResponse'
+  /tenants/deleteTenant:
+    delete:
+      description: 'Deletes the tenant and all associated data. Requires proper authorization.
+
+
+        Tenant ID can be provided either in the request body or as a query parameter.'
+      tags:
+      - Tenants
+      summary: Delete tenant (customer) from ARMO portal and ARMO identity management
+      operationId: DeleteTenant
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+components:
+  schemas:
+    TenantInvitationResponse:
+      description: swaggerfixes:oneOf
+      type: object
+      properties:
+        agentAccessKey:
+          $ref: '#/components/schemas/Token'
+        expires:
+          description: When is this token expires
+          type: string
+          x-go-name: ExpiresTime
+          example: '2021-09-06T15:04:26+03:00'
+        tenantId:
+          description: Customer GUID for the new tenant
+          type: string
+          x-go-name: TenantID
+          example: 540afde9-aaad-4e1c-b577-f0ddae1ebced
+        token:
+          description: The actual invitation token to use by the user
+          type: string
+          x-go-name: Token
+          example: abcdef-1234567890-abcdef-1234
+      x-go-package: github.com/armosec/cadashboardbe/fronteggadapter
+    Token:
+      type: object
+      properties:
+        accessKeyGuid:
+          type: string
+          x-go-name: GUID
+        createdBy:
+          type: string
+          x-go-name: CreatedBy
+        creationDate:
+          type: string
+          format: date-time
+          x-go-name: CreatedDate
+        customerGuid:
+          type: string
+          x-go-name: CustomerGuid
+        isActive:
+          type: boolean
+          x-go-name: IsActive
+        isDefault:
+          type: boolean
+          x-go-name: IsDefault
+        name:
+          type: string
+          x-go-name: Name
+        updatedDate:
+          type: string
+          format: date-time
+          x-go-name: UpdatedDate
+        value:
+          type: string
+          x-go-name: Value
+      x-go-package: github.com/armosec/authentication-service/api/token_service
+  responses:
+    CreateTenantResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              adminMail:
+                description: 'swaggerfixes:oneOf
+
+
+                  In case the customer already belongs to user
+
+                  some hint about the identity of the customer admin'
+                type: string
+                x-go-name: AdminMail
+              invitation:
+                $ref: '#/components/schemas/TenantInvitationResponse'
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

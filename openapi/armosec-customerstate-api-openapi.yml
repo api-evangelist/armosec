@@ -1,0 +1,283 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Customer State API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: CustomerState
+paths:
+  /customerState/gettingStarted:
+    get:
+      description: Returns the "getting started" state
+      tags:
+      - CustomerState
+      summary: Get customer's "getting started" checklist state
+      operationId: getGettingStartedState
+      responses:
+        '200':
+          $ref: '#/components/responses/GettingStartedStateResponse'
+    put:
+      description: Returns the updated state
+      tags:
+      - CustomerState
+      summary: Update customer's "getting started" checklist state
+      operationId: updateGettingStartedState
+      responses:
+        '200':
+          $ref: '#/components/responses/GettingStartedStateUpdateResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - type: object
+                properties:
+                  dismiss:
+                    type: boolean
+                    x-go-name: Dismiss
+  /customerState/onboarding:
+    get:
+      description: Returns the onboarding state of the customer
+      tags:
+      - CustomerState
+      summary: Get customer's onboarding state
+      operationId: getOnboardingState
+      responses:
+        '200':
+          $ref: '#/components/responses/OnboardingStateResponse'
+    put:
+      description: Returns the updated onboarding state
+      tags:
+      - CustomerState
+      summary: Update customer's onboarding state
+      operationId: updateOnboardingState
+      responses:
+        '200':
+          $ref: '#/components/responses/OnboardingStateResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - type: object
+                properties:
+                  companySize:
+                    type: string
+                    x-go-name: CompanySize
+                  completed:
+                    type: boolean
+                    x-go-name: Completed
+                  interests:
+                    type: array
+                    items:
+                      type: string
+                    x-go-name: Interests
+                  orgName:
+                    type: string
+                    x-go-name: OrgName
+                  role:
+                    type: string
+                    x-go-name: Role
+  /customerState/reports/imageScan:
+    get:
+      description: Returns a boolean state - if any image scans exist
+      tags:
+      - CustomerState
+      operationId: getImageScanReportsState
+      parameters:
+      - x-go-name: IncludeLastReport
+        name: includeLastReport
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/ReportStateResponse'
+      summary: Get image scan reports state
+      x-summary-source: derived
+  /customerState/reports/postureScan:
+    get:
+      description: Returns a boolean state - if any posture reports exist
+      tags:
+      - CustomerState
+      operationId: getPostureReportsState
+      parameters:
+      - x-go-name: IncludeLastReport
+        name: includeLastReport
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/ReportStateResponse'
+      summary: Get posture reports state
+      x-summary-source: derived
+  /customerState/reports/registryScan:
+    get:
+      description: Returns a boolean state - if any registry scans exist
+      tags:
+      - CustomerState
+      operationId: getRegistryScanReportsState
+      parameters:
+      - x-go-name: IncludeLastReport
+        name: includeLastReport
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/ReportStateResponse'
+      summary: Get registry scan reports state
+      x-summary-source: derived
+  /customerState/reports/repositoryPostureScan:
+    get:
+      description: Returns a boolean state - if any repository scans exist
+      tags:
+      - CustomerState
+      operationId: getRepoPostureReportsState
+      parameters:
+      - x-go-name: IncludeLastReport
+        name: includeLastReport
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/ReportStateResponse'
+      summary: Get repo posture reports state
+      x-summary-source: derived
+components:
+  responses:
+    GettingStartedStateUpdateResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                dismiss:
+                  type: boolean
+                  x-go-name: Dismiss
+    GettingStartedStateResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                dismissed:
+                  type: boolean
+                  x-go-name: Dismissed
+                dismissible:
+                  type: boolean
+                  x-go-name: Dismissible
+                everCollaborated:
+                  type: boolean
+                  x-go-name: EverCollaborated
+                everConnectedAlerting:
+                  type: boolean
+                  x-go-name: EverConnectedAlerting
+                everConnectedCluster:
+                  type: boolean
+                  x-go-name: EverConnectedCluster
+                everConnectedTicketing:
+                  type: boolean
+                  x-go-name: EverConnectedTicketing
+                everInvitedTeammate:
+                  type: boolean
+                  x-go-name: EverInvitedTeammate
+                everScannedRegistry:
+                  type: boolean
+                  x-go-name: EverScannedRegistry
+                everScannedRepository:
+                  type: boolean
+                  x-go-name: EverScannedRepository
+                everUsedRbacVisualizer:
+                  type: boolean
+                  x-go-name: EverUsedRbacVisualizer
+    ReportStateResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                exists:
+                  type: boolean
+                  x-go-name: Exists
+                lastReport:
+                  x-go-name: LastReport
+    OnboardingStateResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                companySize:
+                  type: string
+                  x-go-name: CompanySize
+                completed:
+                  type: boolean
+                  x-go-name: Completed
+                interests:
+                  type: array
+                  items:
+                    type: string
+                  x-go-name: Interests
+                orgName:
+                  type: string
+                  x-go-name: OrgName
+                role:
+                  type: string
+                  x-go-name: Role
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

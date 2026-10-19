@@ -1,0 +1,157 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Seccomp API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: Seccomp
+paths:
+  /seccomp/generate:
+    post:
+      description: 'This endpoint generates seccomp profiles for Kubernetes resources based on the provided customer GUID
+
+        and optional filters in the request body.'
+      tags:
+      - Seccomp
+      summary: Generate seccomp profiles
+      operationId: generateSeccompProfiles
+      parameters:
+      - x-go-name: CustomerGUID
+        description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                innerFilters:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      k8sResourceHash:
+                        description: Unique hash of the Kubernetes resource.
+                        type: string
+                        x-go-name: K8sResourceHash
+                  x-go-name: InnerFilters
+        description: Optional filters for generating seccomp profiles.
+  /seccomp/list:
+    post:
+      description: 'This endpoint retrieves a list of seccomp-related resources for the specified customer GUID.
+
+        You can apply optional filters in the request body to narrow down the results.'
+      tags:
+      - Seccomp
+      summary: Retrieve a list of seccomp-related resources
+      operationId: getSeccompList
+      parameters:
+      - x-go-name: CustomerGUID
+        description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                innerFilters:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      clusterName:
+                        description: Name of the cluster.
+                        type: string
+                        x-go-name: ClusterName
+                      kind:
+                        description: Kind of the resource.
+                        type: string
+                        x-go-name: Kind
+                      label:
+                        description: Label associated with the resource.
+                        type: string
+                        x-go-name: Label
+                      name:
+                        description: Name of the resource.
+                        type: string
+                        x-go-name: Name
+                      namespace:
+                        description: Namespace of the resource.
+                        type: string
+                        x-go-name: Namespace
+                      profileStatus:
+                        description: Status of the seccomp profile.
+                        type: string
+                        x-go-name: ProfileStatus
+                      riskFactors:
+                        description: Risk factor of the resource.
+                        type: string
+                        x-go-name: RiskFactors
+                  x-go-name: InnerFilters
+        description: Optional filters for retrieving seccomp-related resources.
+components:
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

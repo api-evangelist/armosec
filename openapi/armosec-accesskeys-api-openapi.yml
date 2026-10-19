@@ -1,0 +1,240 @@
+openapi: 3.2.0
+info:
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Access Keys API
+  version: 1.0.0
+servers:
+- url: https://api.armosec.io/api/v1
+- url: http://api.armosec.io/api/v1
+security:
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
+tags:
+- name: AccessKeys
+paths:
+  /authentication/accessKeys:
+    get:
+      tags:
+      - AccessKeys
+      operationId: getAllAccessKeys
+      responses:
+        '200':
+          $ref: '#/components/responses/AccessKeyListResp'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/ErrorResponse'
+      summary: Get all access keys
+      x-summary-source: derived
+    put:
+      description: Update an access key
+      tags:
+      - AccessKeys
+      operationId: updateAccessKey
+      responses:
+        '200':
+          $ref: '#/components/responses/AccessKeyResp'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '409':
+          $ref: '#/components/responses/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateToken'
+      summary: Update access key
+      x-summary-source: derived
+    post:
+      description: Create new access key
+      tags:
+      - AccessKeys
+      operationId: createAccessKey
+      responses:
+        '200':
+          $ref: '#/components/responses/AccessKeyResp'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+      summary: Create access key
+      x-summary-source: derived
+  /authentication/accessKeys/{guid}:
+    get:
+      description: Get an access key by GUID
+      tags:
+      - AccessKeys
+      operationId: getAccessKey
+      parameters:
+      - x-go-name: Guid
+        name: guid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/AccessKeyResp'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/ErrorResponse'
+      summary: Get access key
+      x-summary-source: derived
+    delete:
+      description: Delete an access key
+      tags:
+      - AccessKeys
+      operationId: deleteAccessKey
+      parameters:
+      - x-go-name: Guid
+        name: guid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/ErrorResponse'
+      summary: Delete access key
+      x-summary-source: derived
+components:
+  schemas:
+    UpdateToken:
+      type: object
+      properties:
+        accessKeyGuid:
+          type: string
+          x-go-name: GUID
+        customerGuid:
+          type: string
+          x-go-name: CustomerGuid
+        name:
+          type: string
+          x-go-name: Name
+      x-go-package: github.com/armosec/authentication-service/api/token_service
+    Token:
+      type: object
+      properties:
+        accessKeyGuid:
+          type: string
+          x-go-name: GUID
+        createdBy:
+          type: string
+          x-go-name: CreatedBy
+        creationDate:
+          type: string
+          format: date-time
+          x-go-name: CreatedDate
+        customerGuid:
+          type: string
+          x-go-name: CustomerGuid
+        isActive:
+          type: boolean
+          x-go-name: IsActive
+        isDefault:
+          type: boolean
+          x-go-name: IsDefault
+        name:
+          type: string
+          x-go-name: Name
+        updatedDate:
+          type: string
+          format: date-time
+          x-go-name: UpdatedDate
+        value:
+          type: string
+          x-go-name: Value
+      x-go-package: github.com/armosec/authentication-service/api/token_service
+  responses:
+    AccessKeyResp:
+      description: ''
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Token'
+    ErrorResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int64
+                x-go-name: Code
+              message:
+                type: string
+                x-go-name: Message
+    AccessKeyListResp:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Token'
+    SuccessResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                x-go-name: Message
+  securitySchemes:
+    accessKey:
+      type: apiKey
+      name: x-api-key
+      in: header
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query

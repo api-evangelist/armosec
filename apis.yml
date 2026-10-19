@@ -61,48 +61,6 @@ created: '2026-07-11'
 modified: '2026-07-11'
 specificationVersion: '0.23'
 apis:
-- aid: armosec:armosec-access-keys-api
-  name: ARMO Access Keys API
-  description: Account API access key management.
-  humanURL: https://hub.armosec.io/reference
-  baseURL: https://api.armosec.io/api/v1
-  tags:
-  - Access Keys
-  properties:
-  - type: OpenAPI
-    url: openapi/armosec-access-keys-api-openapi.yml
-  - type: Documentation
-    url: https://hub.armosec.io/docs/armo-swagger-api
-  - type: APIReference
-    url: https://api.armosec.io/openapi/v2/swaggerui
-  - type: PostmanCollection
-    url: collections/armosec.postman_collection.json
-  - type: OpenCollection
-    url: collections/armosec.opencollection.json
-  - type: Documentation
-    url: https://hub.armosec.io/docs/workloads
-- aid: armosec:armosec-clusters-api
-  name: ARMO Clusters API
-  description: Connected clusters and workloads.
-  humanURL: https://hub.armosec.io/reference
-  baseURL: https://api.armosec.io/api/v1
-  tags:
-  - Cluster
-  tags_raw:
-  - Clusters
-  properties:
-  - type: OpenAPI
-    url: openapi/armosec-clusters-api-openapi.yml
-  - type: Documentation
-    url: https://hub.armosec.io/docs/armo-swagger-api
-  - type: APIReference
-    url: https://api.armosec.io/openapi/v2/swaggerui
-  - type: PostmanCollection
-    url: collections/armosec.postman_collection.json
-  - type: OpenCollection
-    url: collections/armosec.opencollection.json
-  - type: Documentation
-    url: https://hub.armosec.io/docs/workloads
 - aid: armosec:armosec-integrations-api
   name: ARMO Integrations API
   description: Jira and collaboration/notification integrations.
@@ -185,16 +143,16 @@ apis:
     url: collections/armosec.opencollection.json
   - type: Documentation
     url: https://hub.armosec.io/docs/workloads
-- aid: armosec:armosec-security-risks-api
-  name: ARMO Security Risks API
-  description: Correlated security risks and attack chains.
+- aid: armosec:armosec-accesskeys-api
+  name: ARMO Access Keys API
+  description: The AccessKeys API from ARMO — 2 operation(s) for accesskeys.
   humanURL: https://hub.armosec.io/reference
   baseURL: https://api.armosec.io/api/v1
   tags:
-  - Security Risks
+  - AccessKeys
   properties:
   - type: OpenAPI
-    url: openapi/armosec-security-risks-api-openapi.yml
+    url: openapi/armosec-accesskeys-api-openapi.yml
   - type: Documentation
     url: https://hub.armosec.io/docs/armo-swagger-api
   - type: APIReference
@@ -205,16 +163,436 @@ apis:
     url: collections/armosec.opencollection.json
   - type: Documentation
     url: https://hub.armosec.io/docs/workloads
-- aid: armosec:armosec-vulnerabilities-api
-  name: ARMO Vulnerabilities API
-  description: Image and workload vulnerability scanning and results.
+- aid: armosec:armosec-alertchannel-api
+  name: ARMO Alert Channel API
+  description: The AlertChannel API from ARMO — 1 operation(s) for alertchannel.
   humanURL: https://hub.armosec.io/reference
   baseURL: https://api.armosec.io/api/v1
   tags:
-  - Vulnerabilities
+  - AlertChannel
   properties:
   - type: OpenAPI
-    url: openapi/armosec-vulnerabilities-api-openapi.yml
+    url: openapi/armosec-alertchannel-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-attackchains-api
+  name: ARMO Attack Chains API
+  description: The AttackChains API from ARMO — 1 operation(s) for attackchains.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - AttackChains
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-attackchains-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-collaboration-api
+  name: ARMO Collaboration API
+  description: The Collaboration API from ARMO — 4 operation(s) for collaboration.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Collaboration
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-collaboration-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-commands-api
+  name: ARMO Commands API
+  description: The Commands API from ARMO — 1 operation(s) for commands.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Commands
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-commands-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-customerstate-api
+  name: ARMO Customer State API
+  description: The CustomerState API from ARMO — 6 operation(s) for customerstate.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - CustomerState
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-customerstate-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-ecs-api
+  name: ARMO ECS API
+  description: The ECS API from ARMO — 2 operation(s) for ecs.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - ECS
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-ecs-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-exception-api
+  name: ARMO Exception API
+  description: The Exception API from ARMO — 2 operation(s) for exception.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Exception
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-exception-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-features-api
+  name: ARMO Features API
+  description: The Features API from ARMO — 1 operation(s) for features.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Features
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-features-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-inventory-api
+  name: ARMO Inventory API
+  description: The Inventory API from ARMO — 2 operation(s) for inventory.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Inventory
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-inventory-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-jiraintegration-api
+  name: ARMO Jira Integration API
+  description: The JiraIntegration API from ARMO — 6 operation(s) for jiraintegration.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - JiraIntegration
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-jiraintegration-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-kubernetesaccounts-api
+  name: ARMO Kubernetes Accounts API
+  description: The KubernetesAccounts API from ARMO — 1 operation(s) for kubernetesaccounts.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - KubernetesAccounts
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-kubernetesaccounts-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-login-api
+  name: ARMO Login API
+  description: The Login API from ARMO — 7 operation(s) for login.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Login
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-login-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-repository-api
+  name: ARMO Repository API
+  description: The Repository API from ARMO — 7 operation(s) for repository.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Repository
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-repository-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-runtimepolicies-api
+  name: ARMO Runtime Policies API
+  description: The RuntimePolicies API from ARMO — 2 operation(s) for runtimepolicies.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - RuntimePolicies
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-runtimepolicies-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-seccomp-api
+  name: ARMO Seccomp API
+  description: The Seccomp API from ARMO — 2 operation(s) for seccomp.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Seccomp
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-seccomp-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-securityrisks-api
+  name: ARMO Security Risks API
+  description: The SecurityRisks API from ARMO — 3 operation(s) for securityrisks.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - SecurityRisks
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-securityrisks-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-sensors-api
+  name: ARMO Sensors API
+  description: The Sensors API from ARMO — 1 operation(s) for sensors.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Sensors
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-sensors-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-siemintegrations-api
+  name: ARMO SIEM Integrations API
+  description: The SIEMIntegrations API from ARMO — 1 operation(s) for siemintegrations.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - SIEMIntegrations
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-siemintegrations-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-tenants-api
+  name: ARMO Tenants API
+  description: The Tenants API from ARMO — 2 operation(s) for tenants.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Tenants
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-tenants-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-vulnerability-api
+  name: ARMO Vulnerability API
+  description: The Vulnerability API from ARMO — 10 operation(s) for vulnerability.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Vulnerability
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-vulnerability-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-workload-api
+  name: ARMO Workload API
+  description: The Workload API from ARMO — 1 operation(s) for workload.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Workload
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-workload-api-openapi.yml
+  - type: Documentation
+    url: https://hub.armosec.io/docs/armo-swagger-api
+  - type: APIReference
+    url: https://api.armosec.io/openapi/v2/swaggerui
+  - type: PostmanCollection
+    url: collections/armosec.postman_collection.json
+  - type: OpenCollection
+    url: collections/armosec.opencollection.json
+  - type: Documentation
+    url: https://hub.armosec.io/docs/workloads
+- aid: armosec:armosec-network-policy-api
+  name: ARMO Network Policy API
+  description: The Network Policy API from ARMO — 2 operation(s) for network policy.
+  humanURL: https://hub.armosec.io/reference
+  baseURL: https://api.armosec.io/api/v1
+  tags:
+  - Network Policy
+  properties:
+  - type: OpenAPI
+    url: openapi/armosec-network-policy-api-openapi.yml
   - type: Documentation
     url: https://hub.armosec.io/docs/armo-swagger-api
   - type: APIReference

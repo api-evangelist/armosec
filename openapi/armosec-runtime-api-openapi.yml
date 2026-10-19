@@ -1,291 +1,749 @@
 openapi: 3.2.0
 info:
-  title: ARMO Platform Runtime API
-  description: The ARMO Platform API exposes ARMO's cloud-native and Kubernetes security data over REST.
-  version: '1.0'
-  contact:
-    name: ARMO
-    url: https://www.armosec.io
-  license:
-    name: ARMO Platform Terms
-    url: https://www.armosec.io/terms-of-service/
+  description: 'Documentation of Armo Platform API
+
+    How to get the API key Get the API key from the Armo platform
+
+
+    Navigate to the https://cloud.armosec.io
+
+
+    Click on Settings (bottom left corner)
+
+
+    Under the Agent Access Keys section, generate a new access key or use an existing one.
+
+
+    Copy and save the access key, as it will not appear again.
+
+
+    Using the API Key in Requests Pass the access key in the request headers under the key x-api-key as shown below:
+
+    curl -X ''POST'' \
+
+    ''https://api.armosec.io/api/v1/some-endpoint'' \
+
+    -H ''accept: application/json'' \
+
+    -H ''x-api-key: YOUR_ACCESS_KEY'' \
+
+    -d ''{}'''
+  title: ARMO PLATFORM Runtime API
+  version: 1.0.0
 servers:
 - url: https://api.armosec.io/api/v1
-  description: EU region
-- url: https://api.us.armosec.io/api/v1
-  description: US region
+- url: http://api.armosec.io/api/v1
 security:
-- apiKeyAuth: []
+- customerGUID:
+  - '[]'
+- accessKey:
+  - '[]'
+- openID:
+  - '[]'
 tags:
 - name: Runtime
-  description: Runtime incidents (CADR), network and runtime policies.
 paths:
+  /runtime/exceptions/new:
+    post:
+      description: '### Query params
+
+        `customerGUID` - required. Unique identifier for the customer.
+
+
+        ### Request object
+
+        The request body contains details about the runtime exception policy to be created.
+
+
+        #### Request object examples
+
+        Create an exception for a runtime incident for all EC2 instances:
+
+        ```json
+
+        {
+
+        "policyIDs": ["I006"],
+
+        "reason": "Approved business requirement for this runtime behavior",
+
+        "policyType": "runtimeIncidentExceptionPolicy",
+
+        "resources": [
+
+        {
+
+        "designatorType": "Attributes",
+
+        "attributes": {
+
+        "accountID": "",
+
+        "cloudProvider": "",
+
+        "cluster": "",
+
+        "kind": "",
+
+        "name": "",
+
+        "namespace": "",
+
+        "region": "",
+
+        "service": "EC2Instance"
+
+        }
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+        policyType: securityRiskExceptionPolicy, runtimeIncidentExceptionPolicy'
+      summary: Creates a new policy exception for specified resources
+      operationId: createPolicyException
+      parameters:
+      - x-go-name: CustomerGUID
+        description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+        '401':
+          description: ''
+        '403':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                policyIDs:
+                  description: Array of policy IDs to create exceptions for.
+                  type: array
+                  items:
+                    type: string
+                  x-go-name: PolicyIDs
+                policyType:
+                  description: Type of policy exception.
+                  type: string
+                  x-go-name: PolicyType
+                reason:
+                  description: Reason for creating the exception.
+                  type: string
+                  x-go-name: Reason
+                resources:
+                  description: Resources to which the exception applies.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      attributes:
+                        description: Attributes of the resource.
+                        type: object
+                        additionalProperties:
+                          type: string
+                        x-go-name: Attributes
+                      designatorType:
+                        description: Type of designator for the resource.
+                        type: string
+                        x-go-name: DesignatorType
+                  x-go-name: Resources
+        description: Request body containing policy exception details.
+        required: true
+      tags:
+      - Runtime
   /runtime/incidents:
-    get:
-      operationId: listRuntimeIncidents
+    post:
+      description: 'This endpoint retrieves all runtime incidents for the provided customer GUID.
+
+        You can optionally include filters in the request body.
+
+
+        ### Ticketing filters (MVP)
+
+
+        Runtime incidents may include an `attributes.hasTicket` boolean.
+
+        You can filter incidents by ticket presence using:
+
+
+        ```json
+
+        {
+
+        "filters": {
+
+        "hasTicket": true
+
+        }
+
+        }
+
+        ```
+
+
+        Use `false` to retrieve incidents without tickets.'
       tags:
       - Runtime
-      summary: List runtime incidents
-      description: Retrieves all runtime incidents detected by ARMO's runtime sensor.
+      summary: Retrieve all runtime incidents for a customer
+      operationId: getAllRuntimeIncidents
+      parameters:
+      - description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: A list of runtime incidents.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /runtime/incidents/severity:
-    get:
-      operationId: getRuntimeIncidentsSeverity
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Optional filters for retrieving runtime incidents.
+  /runtime/incidents/{incidentGUID}/alerts/list:
+    post:
+      description: This endpoint retrieves all runtime alerts for a specific incident identified by the incident GUID.
       tags:
       - Runtime
-      summary: Get runtime incidents grouped by severity
+      summary: Retrieve runtime alerts for a specific incident
+      operationId: getRuntimeAlerts
+      parameters:
+      - x-go-name: CustomerGUID
+        description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      - description: Unique identifier for the incident.
+        name: incidentGUID
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: Incidents grouped by severity.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /runtime/incidents/{incidentGUID}/alerts:
-    parameters:
-    - $ref: '#/components/parameters/IncidentGUID'
-    get:
-      operationId: getRuntimeIncidentAlerts
-      tags:
-      - Runtime
-      summary: Get alerts for an incident
-      responses:
-        '200':
-          description: Incident alerts.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Optional body for the request. If not applicable, send an empty object ('{}').
   /runtime/incidents/{incidentGUID}/explain:
-    parameters:
-    - $ref: '#/components/parameters/IncidentGUID'
-    post:
-      operationId: explainRuntimeIncident
+    get:
+      description: This endpoint provides a detailed explanation for a runtime incident.
       tags:
       - Runtime
-      summary: Explain a runtime incident
-      description: Returns a detailed explanation for the specified incident.
+      summary: Provide a detailed explanation for a runtime incident
+      operationId: explainRuntimeIncident
+      parameters:
+      - x-go-name: IncidentGUID
+        description: Unique identifier for the incident.
+        name: incidentGUID
+        in: path
+        required: true
+        schema:
+          type: string
+      - x-go-name: CustomerGUID
+        description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: Incident explanation.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
+          $ref: '#/components/responses/ExplainRuntimeIncidentResponse'
+        '400':
+          description: ''
   /runtime/incidents/{incidentGUID}/resolve:
-    parameters:
-    - $ref: '#/components/parameters/IncidentGUID'
     post:
-      operationId: resolveRuntimeIncident
+      description: This endpoint resolves a runtime incident by marking it as a "FalsePositive" or "Suspicious".
       tags:
       - Runtime
       summary: Resolve a runtime incident
+      operationId: resolveRuntimeIncident
+      parameters:
+      - description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      - description: Unique identifier for the incident.
+        name: incidentGUID
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: Resolved.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  description: Reasons for resolving the incident.
+                  type: string
+                  x-go-name: Reason
+                  example: FalsePositive
+        description: Request body containing reasons for resolving the incident.
+        required: true
   /runtime/incidents/{incidentGUID}/unresolve:
-    parameters:
-    - $ref: '#/components/parameters/IncidentGUID'
-    post:
-      operationId: unresolveRuntimeIncident
+    patch:
+      description: This endpoint reverts a resolved runtime incident back to an unresolved state.
       tags:
       - Runtime
       summary: Unresolve a runtime incident
+      operationId: unresolveRuntimeIncident
+      parameters:
+      - description: Unique identifier for the incident.
+        name: incidentGUID
+        in: path
+        required: true
+        schema:
+          type: string
+      - description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: Unresolved.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /network/policies:
+          description: ''
+        '400':
+          description: ''
+  /runtime/incidentsPerSeverity:
+    post:
+      description: This endpoint retrieves the count of runtime incidents grouped by severity for the provided customer GUID.
+      tags:
+      - Runtime
+      summary: Get incidents per severity
+      operationId: getIncidentsPerSeverity
+      parameters:
+      - description: Unique identifier for the customer.
+        name: customerGUID
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Optional body for the request. If not applicable, send an empty object ('{}').
+  /runtime/rules:
+    put:
+      description: This endpoint updates an existing runtime rule.
+      tags:
+      - Runtime
+      summary: Update an existing runtime rule
+      operationId: updateRuntimeRule
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Runtime rule to update.
+        required: true
+    post:
+      description: This endpoint creates a new runtime rule.
+      tags:
+      - Runtime
+      summary: Create a new runtime rule
+      operationId: createRuntimeRule
+      responses:
+        '201':
+          description: ''
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+        description: Runtime rule to create.
+        required: true
+  /runtime/rules/evaluate:
+    post:
+      description: This endpoint evaluates a runtime rule against provided input data and returns the evaluation result.
+      tags:
+      - Runtime
+      summary: Evaluate a runtime rule against input data
+      operationId: evaluateRuntimeRule
+      responses:
+        '200':
+          $ref: '#/components/responses/RuntimeRulesEvaluateResponse'
+        '400':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuntimeRulesEvaluateRequest'
+        description: Rule evaluation request containing the rule and input data.
+        required: true
+  /runtime/rules/list:
+    post:
+      description: This endpoint retrieves a list of runtime rules with optional filtering and pagination.
+      tags:
+      - Runtime
+      summary: Get a list of runtime rules
+      operationId: getRuntimeRulesList
+      responses:
+        '200':
+          $ref: '#/components/responses/RuntimeRulesListResponse'
+        '400':
+          description: ''
+        '500':
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filters:
+                  type: object
+                  additionalProperties: {}
+                  x-go-name: Filters
+                pageNum:
+                  type: integer
+                  format: int64
+                  x-go-name: PageNum
+                pageSize:
+                  description: 'Pagination and filtering options
+
+                    You can include fields like "pageSize", "pageNum", "filters", etc.'
+                  type: integer
+                  format: int64
+                  x-go-name: PageSize
+        description: List request parameters for filtering and pagination.
+        required: true
+  /runtime/rules/{ruleGUID}:
     get:
-      operationId: listNetworkPolicies
+      description: This endpoint retrieves a specific runtime rule by its unique identifier.
       tags:
       - Runtime
-      summary: List network policies
-      description: Retrieves generated Kubernetes network policies.
+      summary: Get a specific runtime rule by GUID
+      operationId: getRuntimeRuleByGUID
+      parameters:
+      - description: Unique identifier for the rule.
+        name: ruleGUID
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: Network policies.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /network/policies/generate:
-    post:
-      operationId: generateNetworkPolicies
+          $ref: '#/components/responses/RuntimeRuleResponse'
+        '400':
+          description: ''
+        '500':
+          description: ''
+    delete:
+      description: This endpoint deletes a specific runtime rule by its unique identifier.
       tags:
       - Runtime
-      summary: Generate network policies
-      description: Generates Kubernetes network policies for the specified workloads from observed traffic.
-      requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
+      summary: Delete a specific runtime rule by GUID
+      operationId: deleteRuntimeRuleByGUID
+      parameters:
+      - description: Unique identifier for the rule to delete.
+        name: ruleGUID
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: Generated network policies.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /runtime/seccomp/list:
-    get:
-      operationId: listSeccompProfiles
-      tags:
-      - Runtime
-      summary: List seccomp resources
-      responses:
-        '200':
-          description: Seccomp resources.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /runtime/seccomp/generate:
-    post:
-      operationId: generateSeccompProfiles
-      tags:
-      - Runtime
-      summary: Generate seccomp profiles
-      requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
-      responses:
-        '200':
-          description: Generated seccomp profiles.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /runtime/policy/create:
-    post:
-      operationId: createRuntimePolicy
-      tags:
-      - Runtime
-      summary: Create a runtime policy
-      requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
-      responses:
-        '200':
-          description: Created.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /runtime/policy/exception/create:
-    post:
-      operationId: createRuntimePolicyException
-      tags:
-      - Runtime
-      summary: Create a runtime policy exception
-      requestBody:
-        $ref: '#/components/requestBodies/GenericBody'
-      responses:
-        '200':
-          description: Created.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+          description: ''
+        '400':
+          description: ''
+        '500':
+          description: ''
 components:
-  parameters:
-    IncidentGUID:
-      name: incidentGUID
-      in: path
-      required: true
-      description: The GUID of the runtime incident.
-      schema:
-        type: string
   schemas:
-    ListResponse:
+    RuntimeRule:
       type: object
       properties:
-        total:
+        agentVersionRequirement:
+          type: string
+          x-go-name: AgentVersionRequirement
+        category:
+          type: string
+          x-go-name: Category
+        description:
+          type: string
+          x-go-name: Description
+        documentation:
+          description: 'Documentation is the rendered markdown documentation for this rule,
+
+            sourced from the rule''s README.md in the rulelibrary repo. Empty for
+
+            customer-authored rules.'
+          type: string
+          x-go-name: Documentation
+        enabled:
+          type: boolean
+          x-go-name: Enabled
+        expressions:
+          $ref: '#/components/schemas/RuleExpressions'
+        id:
+          type: string
+          x-go-name: ID
+        incidentTypeId:
+          type: string
+          x-go-name: IncidentTypeId
+        isTriggerAlert:
+          type: boolean
+          x-go-name: IsTriggerAlert
+        mitreTactic:
+          type: string
+          x-go-name: MitreTactic
+        mitreTechnique:
+          type: string
+          x-go-name: MitreTechnique
+        name:
+          type: string
+          x-go-name: Name
+        profileDataRequired:
+          $ref: '#/components/schemas/ProfileDataRequired'
+        profileDependency:
+          $ref: '#/components/schemas/ProfileDependency'
+        severity:
+          type: integer
+          format: int64
+          x-go-name: Severity
+        severityString:
+          type: string
+          x-go-name: SeverityString
+        state:
           type: object
-          properties:
-            value:
-              type: integer
-        response:
+          additionalProperties: {}
+          x-go-name: State
+        supportPolicy:
+          type: boolean
+          x-go-name: SupportPolicy
+        tags:
           type: array
           items:
-            type: object
-            additionalProperties: true
-      additionalProperties: true
-    Error:
+            type: string
+          x-go-name: Tags
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RuleExpression:
       type: object
       properties:
-        error:
+        eventType:
+          $ref: '#/components/schemas/EventType'
+        expression:
           type: string
+          x-go-name: Expression
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    ProfileDataField:
+      description: 'ProfileDataField is a tagged union: either All == true (the rule needs every
+
+        entry on this surface) or Patterns is non-empty (the rule needs entries
+
+        matching any pattern). The YAML/JSON form is either the literal string "all"
+
+        or a list of ProfileDataPattern objects.'
+      type: object
+      properties:
+        All:
+          type: boolean
+        Patterns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProfileDataPattern'
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    EventType:
+      type: string
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    ProfileDataPattern:
+      description: 'ProfileDataPattern declares a single match pattern for a profile-data
+
+        surface. Exactly one of the four fields must be non-empty.'
+      type: object
+      properties:
+        contains:
+          type: string
+          x-go-name: Contains
+        exact:
+          type: string
+          x-go-name: Exact
+        prefix:
+          type: string
+          x-go-name: Prefix
+        suffix:
+          type: string
+          x-go-name: Suffix
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    ProfileDataRequired:
+      description: 'ProfileDataRequired declares which subsets of the container profile this rule
+
+        needs at runtime. Each surface field is optional; absence means "this rule
+
+        does not query this surface".'
+      type: object
+      properties:
+        capabilities:
+          $ref: '#/components/schemas/ProfileDataField'
+        egressAddresses:
+          $ref: '#/components/schemas/ProfileDataField'
+        egressDomains:
+          $ref: '#/components/schemas/ProfileDataField'
+        endpoints:
+          $ref: '#/components/schemas/ProfileDataField'
+        execs:
+          $ref: '#/components/schemas/ProfileDataField'
+        ingressAddresses:
+          $ref: '#/components/schemas/ProfileDataField'
+        ingressDomains:
+          $ref: '#/components/schemas/ProfileDataField'
+        opens:
+          $ref: '#/components/schemas/ProfileDataField'
+        syscalls:
+          $ref: '#/components/schemas/ProfileDataField'
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    RuntimeRulesEvaluateRequest:
+      type: object
+      properties:
+        input:
+          description: Input data to evaluate against the rule.
+          type: object
+          x-go-name: Input
+        rule:
+          $ref: '#/components/schemas/RuntimeRule'
+      x-go-package: github.com/armosec/cadashboardbe/docs
+    RuleExpressions:
+      type: object
+      properties:
         message:
           type: string
-    GenericResponse:
-      type: object
-      additionalProperties: true
+          x-go-name: Message
+        ruleExpression:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleExpression'
+          x-go-name: RuleExpression
+        uniqueId:
+          type: string
+          x-go-name: UniqueID
+      x-go-package: github.com/armosec/armoapi-go/armotypes
+    ProfileDependency:
+      type: integer
+      format: int64
+      x-go-package: github.com/armosec/armoapi-go/armotypes
   responses:
-    Unauthorized:
-      description: Missing or invalid X-API-KEY.
+    RuntimeRuleResponse:
+      description: 'RuntimeRuleResponse returns a single runtime rule.
+
+        The Rule.Documentation field carries rendered markdown for managed
+
+        rules (populated from the rule''s README.md via the sync job); it is
+
+        empty for customer-authored rules.'
       content:
         application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  requestBodies:
-    GenericBody:
-      required: true
+          schema: {}
+    RuntimeRulesListResponse:
+      description: 'RuntimeRulesListResponse returns a paginated list of runtime rules.
+
+        Each Rule.Documentation field carries rendered markdown for managed
+
+        rules (populated from the rule''s README.md via the sync job); it is
+
+        empty for customer-authored rules.'
       content:
         application/json:
           schema:
             type: object
-            additionalProperties: true
+            properties:
+              rules:
+                description: List of runtime rules.
+                type: array
+                items: {}
+                x-go-name: Rules
+              total:
+                description: Total count of rules.
+                type: integer
+                format: int64
+                x-go-name: Total
+    RuntimeRulesEvaluateResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                description: Error information if evaluation failed.
+                type: string
+                x-go-name: Error
+              errorType:
+                description: Type of evaluation error if any.
+                type: string
+                x-go-name: ErrorType
+              isValid:
+                description: Whether the rule evaluation was successful.
+                type: boolean
+                x-go-name: IsValid
+              output:
+                description: Output result of the rule evaluation.
+                type: string
+                x-go-name: Output
+    ExplainRuntimeIncidentResponse:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              explanation:
+                description: Detailed explanation of the incident.
+                type: string
+                x-go-name: Explanation
   securitySchemes:
-    apiKeyAuth:
+    accessKey:
       type: apiKey
+      name: x-api-key
       in: header
-      name: X-API-KEY
-      description: Account access key (Agent Access Key) generated in ARMO Platform under Settings, sent in the X-API-KEY header.
+    customerGUID:
+      type: apiKey
+      name: customerGUID
+      in: query
