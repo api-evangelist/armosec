@@ -149,6 +149,8 @@ apis:
   humanURL: https://hub.armosec.io/reference
   baseURL: https://api.armosec.io/api/v1
   tags:
+  - Access Keys
+  tags_raw:
   - AccessKeys
   properties:
   - type: OpenAPI
@@ -549,6 +551,8 @@ apis:
   humanURL: https://hub.armosec.io/reference
   baseURL: https://api.armosec.io/api/v1
   tags:
+  - Vulnerabilities
+  tags_raw:
   - Vulnerability
   properties:
   - type: OpenAPI
