@@ -1,4 +1,4 @@
-# ARMO (armosec)
+# ARMO
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,116 +64,140 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-ARMO is the cloud-native and Kubernetes security company behind the leading open-source project **Kubescape**. ARMO Platform is a runtime-driven CNAPP that unifies Kubernetes Security Posture Management (KSPM), vulnerability and image scanning, compliance frameworks, network and seccomp policy generation, and runtime **Cloud Application Detection and Response (CADR)** — correlating in-cluster runtime behavior with posture and vulnerability data to cut alert noise and surface exploitable attack chains.
+ARMO is the cloud-native and Kubernetes security company behind the leading open-source project Kubescape. ARMO Platform is a runtime-driven CNAPP that unifies Kubernetes Security Posture Management (KSPM), vulnerability and image scanning, compliance frameworks, network and seccomp policy generation, and runtime Cloud Application Detection and Response (CADR) - correlating runtime behavior with posture and vulnerabilities to cut alert noise. ARMO exposes a documented REST API over HTTPS (base https://api.armosec.io/api/v1 in the EU region and https://api.us.armosec.io/api/v1 in the US region), authenticated with an account access key sent in the X-API-KEY header. The API covers clusters, workloads, vulnerabilities, posture and compliance, security risks, runtime incidents, attack chains, network and runtime policies, registry scanning, and integrations. API access is available to platform customers who have generated an Agent Access Key; the endpoints below are documented but the data returned requires a connected account and clusters.
 
-ARMO exposes a **documented REST API** over HTTPS. Requests go to a regional base URL — `https://api.armosec.io/api/v1` (EU) or `https://api.us.armosec.io/api/v1` (US) — and are authenticated with an account **access key** (Agent Access Key) sent in the `X-API-KEY` header. Interactive docs are available at `https://api.armosec.io/openapi/v2/swaggerui` (Swagger UI), `/rapi` (RapiDoc), and `/docs` (ReDoc).
+**Areas:** Kubernetes Security · Cloud Native Security · CNAPP · DevSecOps · KSPM · Vulnerability Management · Compliance · Runtime Security · CADR · Kubescape · Container Security
 
-**Access model:** The API surface and its OpenAPI/Swagger are publicly documented, but the API is operationally **account-gated**. Calls require an access key generated in ARMO Platform, and meaningful data requires a connected account with reporting Kubernetes clusters (via the Kubescape/ARMO Helm-deployed operator) or connected registries and repositories. There is no anonymous public data endpoint. The endpoint list in this catalog is honestly modeled from ARMO's public API reference and Swagger; verify exact request/response payloads against the live Swagger UI.
+## ARMO on APIs.io
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/armosec/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/armosec/refs/heads/main/apis.yml)
+Everything profiled for ARMO is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/armosec/](https://apis.io/providers/armosec/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (8)
 
-- Kubernetes Security
-- Cloud Native Security
-- CNAPP
-- DevSecOps
-- KSPM
-- Vulnerability Management
-- Compliance
-- Runtime Security
-- CADR
-- Kubescape
-- Container Security
+- [ARMO Access Keys API](https://apis.io/apis/armosec/armosec-access-keys-api/) — Account API access key management.
+- [ARMO Clusters API](https://apis.io/apis/armosec/armosec-clusters-api/) — Connected clusters and workloads.
+- [ARMO Integrations API](https://apis.io/apis/armosec/armosec-integrations-api/) — Jira and collaboration/notification integrations.
+- [ARMO Posture API](https://apis.io/apis/armosec/armosec-posture-api/) — KSPM posture and compliance framework results.
+- [ARMO Registry API](https://apis.io/apis/armosec/armosec-registry-api/) — Container registry scanning.
+- [ARMO Runtime API](https://apis.io/apis/armosec/armosec-runtime-api/) — Runtime incidents (CADR), network and runtime policies.
+- [ARMO Security Risks API](https://apis.io/apis/armosec/armosec-security-risks-api/) — Correlated security risks and attack chains.
+- [ARMO Vulnerabilities API](https://apis.io/apis/armosec/armosec-vulnerabilities-api/) — Image and workload vulnerability scanning and results.
 
-## Timestamps
+### Published properties
 
-- **Created:** 2026-07-11
-- **Modified:** 2026-07-11
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### MCP servers (1)
 
-### ARMO Vulnerabilities API
+Model Context Protocol servers that expose the API to agents.
 
-Query image and workload vulnerabilities. Issue scans for a workload or context, retrieve scan-result summaries and details, severity roll-ups, top vulnerabilities, and vulnerability lists scoped by component or image, and manage vulnerability exceptions.
+- [armosec](https://apis.io/servers/armosec/armosec/)
 
-- **Base URL:** `https://api.armosec.io/api/v1`
-- Tags: Vulnerabilities, CVE, Image Scanning, Kubernetes Security
+#### Agentic access (1)
 
-### ARMO Posture and Compliance API
+Which operations an agent can call, which act, and which need a human in the loop.
 
-KSPM results across compliance frameworks. Get per-framework scan summaries, control run results and framework sections, affected resources, repository (IaC) posture reports, and manage posture exceptions.
+- [Armosec Agentic Access](https://apis.io/agentic-access/armosec/armosec-agentic-access/)
 
-- **Base URL:** `https://api.armosec.io/api/v1`
-- Tags: Compliance, KSPM, Posture, Cloud Native Security
+#### Collections (9)
 
-### ARMO Clusters and Workloads API
+Postman and Open Collection request collections.
 
-Inventory of connected Kubernetes clusters and workloads. Retrieve the cluster list with history over time, list workloads with their vulnerability and posture context, and check onboarding and scan report state.
+- [ARMO Platform API](https://apis.io/collections/armosec/open-armosec/)
+- [ARMO Platform Access Keys API](https://apis.io/collections/armosec/open-armosec-access-keys-api/)
+- [ARMO Platform Access Keys Clusters API](https://apis.io/collections/armosec/open-armosec-clusters-api/)
+- [ARMO Platform Access Keys Integrations API](https://apis.io/collections/armosec/open-armosec-integrations-api/)
+- [ARMO Platform Access Keys Posture API](https://apis.io/collections/armosec/open-armosec-posture-api/)
+- [ARMO Platform Access Keys Registry API](https://apis.io/collections/armosec/open-armosec-registry-api/)
+- [ARMO Platform Access Keys Runtime API](https://apis.io/collections/armosec/open-armosec-runtime-api/)
+- [ARMO Platform Access Keys Security Risks API](https://apis.io/collections/armosec/open-armosec-security-risks-api/)
+- [ARMO Platform Access Keys Vulnerabilities API](https://apis.io/collections/armosec/open-armosec-vulnerabilities-api/)
 
-- **Base URL:** `https://api.armosec.io/api/v1`
-- Tags: Clusters, Workloads, Kubernetes Security
+#### Security (2)
 
-### ARMO Runtime Incidents API
+Authentication, trust centre, and vulnerability disclosure.
 
-Runtime CADR. List runtime incidents and their alerts, get an incident explanation, resolve/unresolve incidents, and get incidents grouped by severity — built on ARMO's eBPF runtime sensor.
+- [Armosec Authentication](https://apis.io/security/armosec/armosec-authentication/)
+- [Armosec Domain Security](https://apis.io/security/armosec/armosec-domain-security/)
 
-- **Base URL:** `https://api.armosec.io/api/v1`
-- Tags: Runtime Security, CADR, Threat Detection, Incidents
+#### Plans and pricing (1)
 
-### ARMO Security Risks and Attack Chains API
+Published plans, tiers and prices.
 
-Prioritized, correlated security risks and attack chains. List security risks, associated resources, and severity summaries, and retrieve attack chains that combine posture, vulnerability, and runtime signals into exploitable paths.
+- [Armosec Plans Pricing](https://apis.io/plans/armosec/armosec-plans-pricing/)
 
-- **Base URL:** `https://api.armosec.io/api/v1`
-- Tags: Security Risks, Attack Path, CNAPP, Cloud Native Security
+#### Rate limits (1)
 
-### ARMO Network and Runtime Policies API
+Published request limits.
 
-Generate and manage hardening policies from observed runtime behavior. Retrieve and generate Kubernetes network policies, generate and list seccomp profiles, and create runtime policies and exceptions.
+- [Armosec Rate Limits](https://apis.io/rate-limits/armosec/armosec-rate-limits/)
 
-- **Base URL:** `https://api.armosec.io/api/v1`
-- Tags: Network Policies, Seccomp, Runtime Policies, DevSecOps
+#### FinOps (1)
 
-### ARMO Registry Scanning API
+What the API costs to run, by operation.
 
-Scan container image registries on demand or on a schedule. Issue a registry scan or set a scan scheduler (cron), and update or delete the registry scan cron job.
+- [Armosec Finops](https://apis.io/finops/armosec/armosec-finops/)
 
-- **Base URL:** `https://api.armosec.io/api/v1`
-- Tags: Registry, Image Scanning, Container Security
+## Where to find this API
 
-### ARMO Integrations API
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-Push ARMO findings into ticketing and collaboration tools. Configure Jira, look up projects/issue types/fields, create Jira issues from findings, and manage collaboration and notification configurations.
-
-- **Base URL:** `https://api.armosec.io/api/v1`
-- Tags: Integrations, Jira, Notifications
-
-### ARMO Access Keys API
-
-Programmatically manage the Agent Access Keys used to authenticate API calls. List, create, get by GUID, update, and delete access keys.
-
-- **Base URL:** `https://api.armosec.io/api/v1`
-- Tags: Authentication, Access Keys, Account
-
-## Common Properties
-
-- [Domain Security](security/armosec-domain-security.yml)
-- [Authentication](authentication/armosec-authentication.yml)
-- [GitHub Organization](https://github.com/armosec)
-- [LinkedIn](https://www.linkedin.com/company/armosec)
 - [Website](https://www.armosec.io/)
 - [Documentation](https://hub.armosec.io/docs/armo-platform)
-- [Plans](plans/armosec-plans-pricing.yml)
-- [Rate Limits](rate-limits/armosec-rate-limits.yml)
-- [Fin Ops](finops/armosec-finops.yml)
 - [Blog](https://www.armosec.io/blog/)
+- [GitHub](https://github.com/armosec)
 
-## Open Source
+## API Evangelist rating
 
-ARMO's core scanning engine is the open-source **Kubescape** project ([github.com/kubescape/kubescape](https://github.com/kubescape/kubescape), a CNCF project) plus supporting components (eBPF node-agent sensor, storage, operator). ARMO Platform is the managed SaaS built on top, and is what the documented REST API belongs to.
+**Kin Score 25.2** — emerging · rubric 0.25.0 · scored 2026-10-23
 
-## Maintainers
+| Facet | Score |
+|---|---|
+| Discoverability | 68.3 |
+| Contract quality | 44.4 |
+| Contract governance | 0.0 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 27.4 |
+| Access clarity | 7.9 |
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Agent readiness 28.5** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | mostly |
+
+**Regulatory alignment 11.8** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/armosec/](https://apis.io/providers/armosec/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for ARMO: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/armosec/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
